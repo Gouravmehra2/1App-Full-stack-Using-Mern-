@@ -43,12 +43,12 @@ const ForgotPassword = () => {
 
                     <div style={{ marginBottom: 28 }}>
                         <h2 style={{ fontWeight: 800, fontSize: '1.8rem', marginBottom: 8 }}>
-                            Forgot <span style={{ color: '#2d7a3a' }}>Password?</span>
+                            Forgot <span style={{ color: '#A5732F' }}>Password?</span>
                         </h2>
                         <p style={{ color: '#777', fontSize: '0.9rem', lineHeight: 1.5 }}>
                             No worries! Enter your {useEmail ? 'email address' : 'phone number'} and we'll send you a link to reset your password.
                         </p>
-                        <div style={{ width: 40, height: 3, background: '#2d7a3a', marginTop: 12 }} />
+                        <div style={{ width: 40, height: 3, background: '#A5732F', marginTop: 12 }} />
                     </div>
 
                     <form onSubmit={handleSubmit}>
@@ -69,14 +69,14 @@ const ForgotPassword = () => {
                             </div>
                             <div style={{ textAlign: 'right', marginTop: 4 }}>
                                 <button type="button" onClick={() => { setUseEmail(!useEmail); setIdentifier(''); }}
-                                    style={{ background: 'none', border: 'none', color: '#2d7a3a', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', padding: 0 }}>
+                                    style={{ background: 'none', border: 'none', color: '#A5732F', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', padding: 0 }}>
                                     {useEmail ? 'Use Phone Number' : 'Use Email'}
                                 </button>
                             </div>
                         </div>
 
                         <button type="submit" disabled={loading}
-                            style={{ width: '100%', background: '#2d7a3a', color: '#fff', border: 'none', borderRadius: 8, padding: '13px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', marginTop: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                            style={{ width: '100%', background: '#A5732F', color: '#fff', border: 'none', borderRadius: 8, padding: '13px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', marginTop: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                             {loading ? 'Sending...' : 'Send Reset Link'} <span style={{ fontSize: '1.1rem' }}>→</span>
                         </button>
                     </form>
@@ -89,7 +89,7 @@ const ForgotPassword = () => {
 
                     <p style={{ textAlign: 'center', fontSize: '0.88rem', color: '#555' }}>
                         Remember your Password?{' '}
-                        <Link to="/login" style={{ color: '#2d7a3a', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link>
+                        <Link to="/login" style={{ color: '#A5732F', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link>
                     </p>
                 </div>
             </div>
@@ -116,7 +116,7 @@ const ForgotIllustration = () => (
             {/* Phone mockup placeholder */}
             <div style={{ background: '#fff', borderRadius: 32, padding: '32px 24px', boxShadow: '0 8px 32px rgba(0,0,0,0.1)', display: 'inline-block', minWidth: 200 }}>
                 <div style={{ fontSize: '2.5rem', marginBottom: 8 }}>🏠</div>
-                <div style={{ color: '#2d7a3a', fontWeight: 800, fontSize: '1.2rem' }}>OneApp</div>
+                <div style={{ color: '#A5732F', fontWeight: 800, fontSize: '1.2rem' }}>OneApp</div>
                 <div style={{ color: '#888', fontSize: '0.8rem' }}>All Services, One App</div>
                 <div style={{ marginTop: 20, background: '#f5f5f5', borderRadius: 12, padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                     <span style={{ fontSize: '1.5rem' }}>🔒</span>
@@ -124,8 +124,8 @@ const ForgotIllustration = () => (
                 </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 24 }}>
-                <div style={{ width: 48, height: 48, background: '#2d7a3a', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>✓</div>
-                <div style={{ width: 48, height: 48, background: '#2d7a3a', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>✓</div>
+                <div style={{ width: 48, height: 48, background: '#A5732F', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>✓</div>
+                <div style={{ width: 48, height: 48, background: '#A5732F', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>✓</div>
             </div>
         </div>
     </div>

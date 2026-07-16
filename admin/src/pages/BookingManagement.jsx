@@ -129,7 +129,7 @@ const BookingManagement = () => {
                     </div>
 
                     <div className="col-md-3">
-                        <button type="submit" className="btn btn-dark w-100 fw-bold">Apply Filter</button>
+                        <button type="submit" className="btn btn-brand w-100 fw-bold">Apply Filter</button>
                     </div>
                 </form>
             </div>
@@ -163,7 +163,7 @@ const BookingManagement = () => {
                                                     <small className="d-block text-dark fw-semibold">{new Date(booking.serviceDate).toLocaleDateString()}</small>
                                                     <span className="badge bg-light text-muted border text-uppercase" style={{ fontSize: '0.7rem' }}>{booking.timeSlot}</span>
                                                 </td>
-                                                <td className="font-monospace fw-bold text-primary">₹{booking.totalAmount}</td>
+                                                <td className="font-monospace fw-bold text-primary">${booking.totalAmount}</td>
                                                 <td>
                                                     <span className={`badge ${getStatusBadge(booking.status)} px-2.5 py-1 text-uppercase`} style={{ fontSize: '0.7rem' }}>
                                                         {booking.status}
@@ -292,7 +292,7 @@ const BookingManagement = () => {
                                 <button 
                                     type="submit" 
                                     disabled={updating}
-                                    className="btn btn-dark w-100 fw-bold py-2.5 shadow-sm"
+                                    className="btn btn-brand w-100 fw-bold py-2.5 shadow-sm"
                                 >
                                     {updating ? 'Saving changes...' : 'Save Configuration'}
                                 </button>

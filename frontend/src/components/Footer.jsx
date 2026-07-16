@@ -77,7 +77,7 @@ export default function Footer() {
                 <hr style={{ borderColor: '#333', margin: '0 0 28px' }} />
 
                 {/* Currently Live In */}
-                <div style={{ marginBottom: 28 }}>
+                {/* <div style={{ marginBottom: 28 }}>
                     <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1.5px', color: '#666', marginBottom: 16 }}>CURRENTLY LIVE IN</div>
 
                     {Object.entries(CITIES).map(([region, cities]) => (
@@ -94,9 +94,9 @@ export default function Footer() {
                             </div>
                         </div>
                     ))}
-                </div>
+                </div> */}
 
-                <hr style={{ borderColor: '#333', margin: '0 0 24px' }} />
+                {/* <hr style={{ borderColor: '#333', margin: '0 0 24px' }} /> */}
 
                 {/* Bottom Bar */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, paddingBottom: 24 }}>

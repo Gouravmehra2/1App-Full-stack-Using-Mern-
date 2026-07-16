@@ -137,7 +137,7 @@ const SubcategoryManagement = () => {
                     <p className="text-muted">Add specific services with pricing under sub-categories</p>
                 </div>
                 {!showForm && (
-                    <button onClick={handleOpenCreate} className="btn btn-dark fw-bold d-flex align-items-center gap-2 px-4 shadow-sm">
+                    <button onClick={handleOpenCreate} className="btn btn-brand fw-bold d-flex align-items-center gap-2 px-4 shadow-sm">
                         <FaPlus /><span>Add Service</span>
                     </button>
                 )}
@@ -246,8 +246,8 @@ const SubcategoryManagement = () => {
                             </div>
                         </div>
                         <div className="d-flex gap-2 justify-content-end">
-                            <button type="button" onClick={() => setShowForm(false)} className="btn btn-outline-secondary px-4 py-2">Cancel</button>
-                            <button type="submit" disabled={submitting} className="btn btn-dark fw-bold px-4 py-2 shadow-sm">
+                            <button type="button" onClick={() => setShowForm(false)} className="btn btn-outline-brand px-4 py-2">Cancel</button>
+                            <button type="submit" disabled={submitting} className="btn btn-brand fw-bold px-4 py-2 shadow-sm">
                                 {submitting ? 'Saving...' : 'Save Service'}
                             </button>
                         </div>
@@ -282,7 +282,7 @@ const SubcategoryManagement = () => {
                                         <td className="fw-semibold">
                                             <FaLayerGroup className="text-primary me-2" />{svc.name}
                                         </td>
-                                        <td className="fw-bold text-primary">₹{svc.price}</td>
+                                        <td className="fw-bold text-primary">${svc.price}</td>
                                         <td><span className="badge bg-light text-dark border">{svc.duration} min</span></td>
                                         <td>
                                             {svc.isActive ? (

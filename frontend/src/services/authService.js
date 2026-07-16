@@ -8,7 +8,7 @@ const authService = {
             : { phone: identifier, password };
         const response = await API.post('/auth/login', payload);
         if (response.data.token) {
-            localStorage.setItem('vmarc_token', response.data.token);
+            localStorage.setItem('1App_token', response.data.token);
         }
         return response.data;
     },
@@ -16,13 +16,26 @@ const authService = {
     register: async (userData) => {
         const response = await API.post('/auth/register', userData);
         if (response.data.token) {
-            localStorage.setItem('vmarc_token', response.data.token);
+            localStorage.setItem('1App_token', response.data.token);
+        }
+        return response.data;
+    },
+
+    startRegister: async (userData) => {
+        const response = await API.post('/auth/start-register', userData);
+        return response.data;
+    },
+
+    verifyRegister: async (phone, code) => {
+        const response = await API.post('/auth/verify-register', { phone, code });
+        if (response.data.token) {
+            localStorage.setItem('1App_token', response.data.token);
         }
         return response.data;
     },
 
     logout: () => {
-        localStorage.removeItem('vmarc_token');
+        localStorage.removeItem('1App_token');
     },
 
     getMe: async () => {

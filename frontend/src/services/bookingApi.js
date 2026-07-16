@@ -18,7 +18,7 @@ export async function fetchAvailableSlots() {
 
 export async function createBooking(payload) {
     const res = await fetch(`${API_ROOT}/api/bookings`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` }, body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error('Booking failed');
     return res.json();

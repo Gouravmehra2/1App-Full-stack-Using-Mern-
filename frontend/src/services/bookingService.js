@@ -11,6 +11,11 @@ const bookingService = {
         return response.data;
     },
 
+    verifyStripePayment: async (bookingId, stripePaymentIntentId) => {
+        const response = await API.post('/bookings/verify', { bookingId, stripePaymentIntentId });
+        return response.data;
+    },
+
     getMyBookings: async () => {
         const response = await API.get('/bookings/my-bookings');
         return response.data;
@@ -32,7 +37,18 @@ const bookingService = {
             responseType: 'blob'
         });
         return response.data;
-    }
+    },
+
+    getReviewableServices: async (bookingId) => {
+        const response = await API.get(`/bookings/${bookingId}/reviewable-services`);
+        return response.data;
+    },
+
+    submitServiceReview: async (serviceId, payload) => {
+        // payload: { rating, review, bookingId }
+        const response = await API.post(`/services/${serviceId}/reviews`, payload);
+        return response.data;
+    },
 };
 
 export default bookingService;

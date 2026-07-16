@@ -7,7 +7,7 @@ export const AuthPanel = () => (
             background: '#f5ede0',
             backgroundImage: `url(${heroImg})`,
             backgroundRepeat: 'no-repeat',
-            backgroundSize: 'contain',
+            backgroundSize: 'cover',
             backgroundPosition: 'center',
             height: '100%',
         }}
@@ -20,7 +20,7 @@ export const ResetAuthPanel = () => (
             background: '#f5ede0',
             backgroundImage: `url(${resetImg})`,
             backgroundRepeat: 'no-repeat',
-            backgroundSize: 'contain',
+            backgroundSize: 'cover',
             backgroundPosition: 'center',
             height: '100%',
         }}

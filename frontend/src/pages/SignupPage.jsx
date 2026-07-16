@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { FaUser, FaPhone, FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaUser, FaPhone, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaSms } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useGoogleLogin } from '@react-oauth/google';
 import AuthPanel from './AuthPanel';
@@ -18,7 +18,7 @@ const getStrength = (pwd) => {
 };
 
 const strengthLabel = ['', 'Weak', 'Fair', 'Good', 'Strong'];
-const strengthColor = ['', '#e53935', '#fb8c00', '#fdd835', '#2d7a3a'];
+const strengthColor = ['', '#e53935', '#fb8c00', '#fdd835', '#A5732F'];
 
 const inputStyle = { border: 'none', outline: 'none', flex: 1, fontSize: '0.95rem', background: 'transparent' };
 
@@ -42,7 +42,7 @@ const GoogleIcon = () => (
 );
 
 const SignupPage = () => {
-    const { register, isAuthenticated, loading } = useContext(AuthContext);
+    const { startRegister, verifyRegister, isAuthenticated, loading } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
     const fromPath = location.state?.from?.pathname || '/';
@@ -51,6 +51,8 @@ const SignupPage = () => {
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [otp, setOtp] = useState('');
+    const [registrationStep, setRegistrationStep] = useState('details');
     const [showPass, setShowPass] = useState(false);
     const strength = getStrength(password);
 
@@ -60,13 +62,39 @@ const SignupPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!name.trim() || !phone.trim()) { toast.error('All fields are required'); return; }
+
+        if (registrationStep === 'otp') {
+            if (!otp.trim()) {
+                toast.error('Please enter the OTP');
+                return;
+            }
+
+            try {
+                await verifyRegister(phone, otp);
+                toast.success('Phone verified. Account created!');
+            } catch (err) {
+                toast.error(err.message || 'OTP verification failed');
+            }
+            return;
+        }
+
+        if (!name.trim() || !phone.trim() || !email.trim() || !password.trim()) {
+            toast.error('All fields are required');
+            return;
+        }
+
         try {
-            await register({ name, email, phone, password });
-            toast.success('Account created! Welcome to 1App.');
+            await startRegister({ name, email, phone, password });
+            setRegistrationStep('otp');
+            toast.success('OTP sent. Verify your phone to create your account.');
         } catch (err) {
             toast.error(err.message || 'Registration failed');
         }
+    };
+
+    const editDetails = () => {
+        setOtp('');
+        setRegistrationStep('details');
     };
 
     const googleLogin = useGoogleLogin({
@@ -75,9 +103,13 @@ const SignupPage = () => {
                 const { data } = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
                     headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
                 });
-                await register({ name: data.name, email: data.email, googleId: data.sub, picture: data.picture, password: data.sub });
-                toast.success('Signed up with Google!');
-            } catch { toast.error('Google signup failed'); }
+                setName(data.name || '');
+                setEmail(data.email || '');
+                setRegistrationStep('details');
+                toast.info('Google details added. Enter phone and password to receive OTP.');
+            } catch {
+                toast.error('Google signup failed');
+            }
         },
         onError: () => toast.error('Google signup failed'),
         scope: 'openid email profile',
@@ -87,80 +119,98 @@ const SignupPage = () => {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '100vh' }}>
             <AuthPanel />
 
-            {/* Right: Form */}
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '48px 56px', background: '#fff' }}>
                 <div style={{ maxWidth: 420, width: '100%', margin: '0 auto' }}>
-
-                    {/* Header */}
                     <div style={{ textAlign: 'center', marginBottom: 28 }}>
                         <p style={{ fontWeight: 700, fontSize: '1.1rem', color: '#1a1a1a', marginBottom: 2 }}>
-                            <span style={{ color: '#2d7a3a' }}>1APP</span> Portal
+                            <span style={{ color: '#A5732F' }}>1APP</span> Portal
                         </p>
-                        <h2 style={{ fontWeight: 800, fontSize: '1.9rem', color: '#2d7a3a', margin: '4px 0 6px' }}>Create Account</h2>
-                        <p style={{ color: '#888', fontSize: '0.9rem', margin: 0 }}>Create your account to get started</p>
-                        <div style={{ width: 40, height: 3, background: '#2d7a3a', margin: '10px auto 0', borderRadius: 2 }} />
+                        <h2 style={{ fontWeight: 800, fontSize: '1.9rem', color: '#A5732F', margin: '4px 0 6px' }}>Create Account</h2>
+                        <p style={{ color: '#888', fontSize: '0.9rem', margin: 0 }}>
+                            {registrationStep === 'details' ? 'Enter your details to receive an OTP' : 'Verify OTP to finish signup'}
+                        </p>
+                        <div style={{ width: 40, height: 3, background: '#A5732F', margin: '10px auto 0', borderRadius: 2 }} />
                     </div>
 
                     <form onSubmit={handleSubmit}>
-                        <Field label="Full Name" icon={<FaUser color="#888" size={14} />}>
-                            <input type="text" required placeholder="John Doe" value={name}
-                                onChange={e => setName(e.target.value)} style={inputStyle} />
-                        </Field>
+                        {registrationStep === 'details' ? (
+                            <>
+                                <Field label="Full Name" icon={<FaUser color="#888" size={14} />}>
+                                    <input type="text" required placeholder="John Doe" value={name}
+                                        onChange={e => setName(e.target.value)} style={inputStyle} />
+                                </Field>
 
-                        <Field label="Phone Number" icon={<FaPhone color="#888" size={14} />}>
-                            <input type="tel" required placeholder="+91 98765 43210" value={phone}
-                                onChange={e => setPhone(e.target.value)} style={inputStyle} />
-                        </Field>
+                                <Field label="Phone Number" icon={<FaPhone color="#888" size={14} />}>
+                                    <input type="tel" required placeholder="+91 98765 43210" value={phone}
+                                        onChange={e => setPhone(e.target.value)} style={inputStyle} />
+                                </Field>
 
-                        <Field label="Email Address" icon={<FaEnvelope color="#888" size={14} />}>
-                            <input type="email" required placeholder="name@example.com" value={email}
-                                onChange={e => setEmail(e.target.value)} style={inputStyle} />
-                        </Field>
+                                <Field label="Email Address" icon={<FaEnvelope color="#888" size={14} />}>
+                                    <input type="email" required placeholder="name@example.com" value={email}
+                                        onChange={e => setEmail(e.target.value)} style={inputStyle} />
+                                </Field>
 
-                        {/* Password */}
-                        <div style={{ marginBottom: 16 }}>
-                            <label style={{ fontWeight: 700, fontSize: '0.85rem', display: 'block', marginBottom: 6, color: '#1a1a1a' }}>Password</label>
-                            <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #ccc', borderRadius: 8, padding: '10px 14px', gap: 10 }}>
-                                <FaLock color="#888" size={14} />
-                                <input type={showPass ? 'text' : 'password'} required placeholder="••••••••"
-                                    value={password} onChange={e => setPassword(e.target.value)}
-                                    style={{ ...inputStyle, flex: 1 }} />
-                                <button type="button" onClick={() => setShowPass(!showPass)}
-                                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#aaa', display: 'flex' }}>
-                                    {showPass ? <FaEye size={15} /> : <FaEyeSlash size={15} />}
-                                </button>
-                            </div>
-                            {/* Strength bars — always show 4 bars, fill based on strength */}
-                            <div style={{ marginTop: 8 }}>
-                                <div style={{ display: 'flex', gap: 6 }}>
-                                    {[1, 2, 3, 4].map(i => (
-                                        <div key={i} style={{
-                                            flex: 1, height: 4, borderRadius: 2,
-                                            background: password && i <= strength ? strengthColor[strength] : '#e0e0e0',
-                                            transition: 'background 0.3s'
-                                        }} />
-                                    ))}
-                                </div>
-                                {password && (
-                                    <div style={{ textAlign: 'right', fontSize: '0.75rem', color: strengthColor[strength], fontWeight: 600, marginTop: 3 }}>
-                                        {strengthLabel[strength]} password
+                                <div style={{ marginBottom: 16 }}>
+                                    <label style={{ fontWeight: 700, fontSize: '0.85rem', display: 'block', marginBottom: 6, color: '#1a1a1a' }}>Password</label>
+                                    <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #ccc', borderRadius: 8, padding: '10px 14px', gap: 10 }}>
+                                        <FaLock color="#888" size={14} />
+                                        <input type={showPass ? 'text' : 'password'} required placeholder="Password"
+                                            value={password} onChange={e => setPassword(e.target.value)}
+                                            style={{ ...inputStyle, flex: 1 }} />
+                                        <button type="button" onClick={() => setShowPass(!showPass)}
+                                            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#aaa', display: 'flex' }}>
+                                            {showPass ? <FaEye size={15} /> : <FaEyeSlash size={15} />}
+                                        </button>
                                     </div>
-                                )}
-                            </div>
-                        </div>
+                                    <div style={{ marginTop: 8 }}>
+                                        <div style={{ display: 'flex', gap: 6 }}>
+                                            {[1, 2, 3, 4].map(i => (
+                                                <div key={i} style={{
+                                                    flex: 1, height: 4, borderRadius: 2,
+                                                    background: password && i <= strength ? strengthColor[strength] : '#e0e0e0',
+                                                    transition: 'background 0.3s'
+                                                }} />
+                                            ))}
+                                        </div>
+                                        {password && (
+                                            <div style={{ textAlign: 'right', fontSize: '0.75rem', color: strengthColor[strength], fontWeight: 600, marginTop: 3 }}>
+                                                {strengthLabel[strength]} password
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div style={{ background: '#f5fbf6', border: '1px solid #d7eadb', borderRadius: 8, padding: 12, marginBottom: 16 }}>
+                                    <div style={{ color: '#A5732F', fontWeight: 800, fontSize: '0.9rem' }}>Verify your phone</div>
+                                    <div style={{ color: '#555', fontSize: '0.85rem', marginTop: 4 }}>OTP sent to {phone}</div>
+                                    <button type="button" onClick={editDetails} style={{ background: 'none', border: 'none', color: '#A5732F', fontWeight: 700, padding: '8px 0 0', cursor: 'pointer' }}>
+                                        Edit details
+                                    </button>
+                                </div>
+
+                                <Field label="OTP Code" icon={<FaSms color="#888" size={14} />}>
+                                    <input type="text" inputMode="numeric" maxLength="6" required placeholder="Enter 6-digit OTP" value={otp}
+                                        onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))} style={inputStyle} />
+                                </Field>
+                            </>
+                        )}
 
                         <button type="submit" disabled={loading} style={{
-                            width: '100%', background: '#2d7a3a', color: '#fff', border: 'none',
+                            width: '100%', background: '#A5732F', color: '#fff', border: 'none',
                             borderRadius: 8, padding: '13px', fontWeight: 700, fontSize: '1rem',
                             cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                             marginTop: 4
                         }}>
-                            <FaUser size={14} />
-                            {loading ? 'Creating account...' : 'Create Account'} <span style={{ fontSize: '1.1rem' }}>→</span>
+                            {registrationStep === 'details' ? <FaUser size={14} /> : <FaSms size={14} />}
+                            {loading
+                                ? (registrationStep === 'details' ? 'Sending OTP...' : 'Verifying OTP...')
+                                : (registrationStep === 'details' ? 'Send OTP' : 'Verify & Create Account')}
+                            <span style={{ fontSize: '1.1rem' }}>→</span>
                         </button>
                     </form>
 
-                    {/* OR divider */}
                     <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', gap: 10 }}>
                         <div style={{ flex: 1, height: 1, background: '#e0e0e0' }} />
                         <span style={{ color: '#aaa', fontSize: '0.8rem', fontWeight: 600, letterSpacing: 1 }}>OR</span>
@@ -178,7 +228,7 @@ const SignupPage = () => {
 
                     <p style={{ textAlign: 'center', marginTop: 20, fontSize: '0.88rem', color: '#555' }}>
                         Already have an account?{' '}
-                        <Link to="/login" style={{ color: '#2d7a3a', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link>
+                        <Link to="/login" style={{ color: '#A5732F', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link>
                     </p>
                 </div>
             </div>

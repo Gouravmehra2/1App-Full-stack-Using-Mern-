@@ -46,7 +46,7 @@ export default function BlogDetail() {
                     <div style={{ borderRadius: 16, overflow: 'hidden', marginBottom: 24 }}>
                         <img src={img} alt={title} style={{ width: '100%', height: 380, objectFit: 'cover' }} />
                     </div>
-                    <div style={{ color: '#2e7d32', fontSize: 12, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>{orderLabel}</div>
+                    <div style={{ color: '#A5732F', fontSize: 12, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>{orderLabel}</div>
                     <h2 style={{ fontWeight: 800, fontSize: '1.6rem', marginBottom: 12 }}>{title}</h2>
                     <p style={{ fontSize: 15, color: '#444', lineHeight: 1.8, maxWidth: 680 }}>{body}</p>
                 </div>
@@ -61,7 +61,7 @@ export default function BlogDetail() {
                         <img src={img} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                     <div style={{ flex: 1 }}>
-                        <div style={{ color: '#2e7d32', fontSize: 12, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>{orderLabel}</div>
+                        <div style={{ color: '#A5732F', fontSize: 12, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>{orderLabel}</div>
                         <h2 style={{ fontWeight: 800, fontSize: '1.5rem', marginBottom: 12 }}>{title}</h2>
                         <p style={{ fontSize: 14, color: '#555', lineHeight: 1.8 }}>{body}</p>
                     </div>
@@ -73,7 +73,7 @@ export default function BlogDetail() {
         if (isEven === 2) {
             return (
                 <div key={index} style={{ marginBottom: 56, textAlign: 'center' }}>
-                    <div style={{ color: '#2e7d32', fontSize: 12, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>{orderLabel}</div>
+                    <div style={{ color: '#A5732F', fontSize: 12, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>{orderLabel}</div>
                     <h2 style={{ fontWeight: 800, fontSize: '1.6rem', marginBottom: 12 }}>{title}</h2>
                     <p style={{ fontSize: 15, color: '#444', lineHeight: 1.8, margin: '0 auto 24px' }}>{body}</p>
                     <div style={{ borderRadius: 16, overflow: 'hidden' }}>
@@ -87,16 +87,16 @@ export default function BlogDetail() {
         return (
             <div key={index} style={{ background: '#111', borderRadius: 16, display: 'flex', gap: 32, padding: 32, marginBottom: 56, alignItems: 'center' }}>
                 <div style={{ flex: 1 }}>
-                    <div style={{ color: '#2e7d32', fontSize: 12, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>{orderLabel}</div>
+                    <div style={{ color: '#A5732F', fontSize: 12, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>{orderLabel}</div>
                     <h2 style={{ fontWeight: 800, fontSize: '1.5rem', marginBottom: 12, color: '#fff' }}>{title}</h2>
                     <p style={{ fontSize: 14, color: '#aaa', lineHeight: 1.8 }}>{body}</p>
-                    <button style={{ marginTop: 20, border: '1.5px solid #fff', background: 'transparent', color: '#fff', borderRadius: 24, padding: '10px 20px', cursor: 'pointer', fontSize: 14 }}>
+                    <button style={{ marginTop: 20, border: '1.5px solid #A5732F', background: '#A5732F', color: '#fff', borderRadius: 24, padding: '10px 20px', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>
                         Enquire About This
                     </button>
                 </div>
                 <div style={{ width: '48%', flexShrink: 0, borderRadius: 12, overflow: 'hidden', height: 280, position: 'relative' }}>
                     <img src={img} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <div style={{ position: 'absolute', bottom: 16, right: 16, background: '#2e7d32', color: '#fff', borderRadius: 8, padding: '8px 14px', fontSize: 13, fontStyle: 'italic', fontWeight: 600 }}>
+                    <div style={{ position: 'absolute', bottom: 16, right: 16, background: '#A5732F', color: '#fff', borderRadius: 8, padding: '8px 14px', fontSize: 13, fontStyle: 'italic', fontWeight: 600 }}>
                         "Quality speaks for itself."
                     </div>
                 </div>
@@ -135,10 +135,10 @@ export default function BlogDetail() {
                     Consult with our 1APP experts to find the perfect solution for your needs.
                 </p>
                 <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-                    <button style={{ background: '#111', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 24px', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
+                    <button style={{ background: '#A5732F', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 24px', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
                         Get a Free Quote
                     </button>
-                    <button onClick={() => navigate('/services')} style={{ background: '#fff', color: '#111', border: '1.5px solid #ddd', borderRadius: 8, padding: '12px 24px', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
+                    <button onClick={() => navigate('/services')} style={{ background: '#fff', color: '#A5732F', border: '1.5px solid #A5732F', borderRadius: 8, padding: '12px 24px', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
                         View All Services
                     </button>
                 </div>

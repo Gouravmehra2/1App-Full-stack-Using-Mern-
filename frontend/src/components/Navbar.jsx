@@ -5,6 +5,7 @@ import { CartContext } from '../context/CartContext';
 import { FaShoppingCart, FaUser, FaListAlt, FaSignOutAlt, FaMapMarkerAlt, FaChevronDown } from 'react-icons/fa';
 import { BsStack } from 'react-icons/bs';
 import SearchAutocomplete from './SearchAutocomplete';
+import ServiceSearchAutocomplete from './ServiceSearchAutocomplete';
 
 const NavigationBar = () => {
     const { isAuthenticated, logout, user } = useContext(AuthContext);
@@ -35,13 +36,10 @@ const NavigationBar = () => {
 
                     {/* Center: Location + Search */}
                     <div className="d-none d-lg-flex align-items-center gap-2 flex-grow-1 justify-content-center">
-                        {/* Search Bar */}
+                        {/* Location Search Bar */}
                         <SearchAutocomplete wrapperStyle={{ flexGrow: 1, maxWidth: '200px' }} />
-                        <div className="d-flex align-items-center gap-2 px-3 py-2 rounded-pill border w-50" style={{ fontSize: '13px', color: '#444', cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                            <FaMapMarkerAlt size={13} className="text-muted" />
-                            <span>Search services...</span>
-                            {/* <FaChevronDown size={11} className="text-muted position-absolute end-0 me-2" /> */}
-                        </div>
+                        {/* Service Search Bar */}
+                        <ServiceSearchAutocomplete wrapperStyle={{ width: '50%' }} />
                     </div>
 
                     {/* Right: Cart + User */}

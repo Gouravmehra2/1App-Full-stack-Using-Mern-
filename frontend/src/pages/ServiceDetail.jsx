@@ -18,6 +18,18 @@ const ServiceDetail = () => {
     const [requirementsOpen, setRequirementsOpen] = useState(true);
     const [addonsOpen, setAddonsOpen] = useState(true);
 
+    // Reviews state
+    const [reviewData, setReviewData] = useState(null);
+    const [reviewsLoading, setReviewsLoading] = useState(false);
+    const [reviewsPage, setReviewsPage] = useState(1);
+    const [showReviewForm, setShowReviewForm] = useState(false);
+    const [selectedStar, setSelectedStar] = useState(0);
+    const [hoverStar, setHoverStar] = useState(0);
+    const [reviewText, setReviewText] = useState('');
+    const [submittingReview, setSubmittingReview] = useState(false);
+    const [existingReview, setExistingReview] = useState(null);
+    const [canReview, setCanReview] = useState(false);
+
     const { addToCart } = useContext(CartContext);
 
     useEffect(() => {
@@ -39,6 +51,67 @@ const ServiceDetail = () => {
         };
         fetchService();
     }, [id]);
+
+    // Fetch reviews whenever service or page changes
+    useEffect(() => {
+        if (!service) return;
+        const fetchReviews = async () => {
+            setReviewsLoading(true);
+            try {
+                const res = await serviceService.getServiceReviews(service._id || id, reviewsPage, 5);
+                if (res.success) {
+                    setReviewData(res.data);
+                    // Check if the logged-in user already reviewed
+                    const userId = JSON.parse(localStorage.getItem('1App_user') || '{}')._id;
+                    if (userId) {
+                        const mine = res.data.reviews.find(r => r.user?._id === userId);
+                        setExistingReview(mine || null);
+                        if (mine) {
+                            setSelectedStar(mine.rating);
+                            setReviewText(mine.review || '');
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load reviews', err);
+            } finally {
+                setReviewsLoading(false);
+            }
+        };
+        fetchReviews();
+    }, [service, reviewsPage]);
+
+    // Determine if current user can write a review (must be logged in)
+    useEffect(() => {
+        const token = localStorage.getItem('1App_token');
+        setCanReview(!!token);
+    }, []);
+
+    const handleSubmitReview = async () => {
+        if (!selectedStar) return;
+        setSubmittingReview(true);
+        try {
+            const payload = { rating: selectedStar, review: reviewText.trim() };
+            let res;
+            if (existingReview) {
+                res = await serviceService.updateReview(service._id || id, existingReview._id, payload);
+            } else {
+                res = await serviceService.submitReview(service._id || id, payload);
+            }
+            if (res.success) {
+                toast.success(existingReview ? 'Review updated!' : 'Review submitted!');
+                setShowReviewForm(false);
+                setReviewsPage(1);
+                // Re-fetch reviews
+                const fresh = await serviceService.getServiceReviews(service._id || id, 1, 5);
+                if (fresh.success) setReviewData(fresh.data);
+            }
+        } catch (err) {
+            toast.error(err?.response?.data?.message || 'Failed to submit review');
+        } finally {
+            setSubmittingReview(false);
+        }
+    };
 
     const galleryImages = service?.gallery?.length > 0
         ? service.gallery.map(g => resolveImageUrl(g.url))
@@ -135,9 +208,9 @@ const ServiceDetail = () => {
                     <a href="#reviews" style={{ color: '#888', fontSize: '13px', textDecoration: 'underline' }}>({service.ratingsQuantity > 0 ? `${service.ratingsQuantity}` : '6.1M'} reviews)</a>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: discountPct > 0 ? '4px' : 0 }}>
-                    <span style={{ fontSize: '16px', fontWeight: '700', color: '#1a1a2e' }}>₹{Math.round(service.offerPrice || service.price).toLocaleString('en-IN')}</span>
+                    <span style={{ fontSize: '16px', fontWeight: '700', color: '#1a1a2e' }}>${Math.round(service.offerPrice || service.price).toLocaleString('en-US')}</span>
                     {discountPct > 0 && (
-                        <span style={{ fontSize: '14px', color: '#999', textDecoration: 'line-through' }}>₹{Math.round(service.actualPrice).toLocaleString('en-IN')}</span>
+                        <span style={{ fontSize: '14px', color: '#999', textDecoration: 'line-through' }}>${Math.round(service.actualPrice).toLocaleString('en-US')}</span>
                     )}
                     <span style={{ color: '#555', fontSize: '14px' }}>• {service.duration} hrs</span>
                 </div>
@@ -145,7 +218,7 @@ const ServiceDetail = () => {
                     const cheapest = service.variants.reduce((min, v) => (v.offerPrice || v.price) < (min.offerPrice || min.price) ? v : min, service.variants[0]);
                     const perUnit = cheapest.quantity > 1 ? Math.round((cheapest.offerPrice || cheapest.price) / cheapest.quantity) : null;
                     return perUnit ? (
-                        <div style={{ color: '#2e7d32', fontSize: '14px', fontWeight: '600' }}>♦ ₹{perUnit} per bathroom</div>
+                        <div style={{ color: '#A5732F', fontSize: '14px', fontWeight: '600' }}>♦ ${perUnit} per bathroom</div>
                     ) : null;
                 })()}
             </div>
@@ -169,18 +242,18 @@ const ServiceDetail = () => {
                             const perUnit = v.quantity > 1 ? Math.round(vOffer / v.quantity) : null;
                             return (
                                 <div key={v._id} onClick={() => setSelectedVariant(v)}
-                                    style={{ ...variantCard, border: isSelected ? '2px solid #2e7d32' : '1.5px solid #ddd', position: 'relative', overflow: 'hidden' }}>
+                                    style={{ ...variantCard, border: isSelected ? '2px solid #A5732F' : '1.5px solid #ddd', position: 'relative', overflow: 'hidden' }}>
                                     {vDiscount > 0 && (
-                                        <div style={{ position: 'absolute', top: 0, right: 0, background: '#e8f5e9', color: '#2e7d32', fontSize: '11px', fontWeight: '700', padding: '3px 8px', borderBottomLeftRadius: '8px' }}>
+                                        <div style={{ position: 'absolute', top: 0, right: 0, background: '#fdf5ea', color: '#A5732F', fontSize: '11px', fontWeight: '700', padding: '3px 8px', borderBottomLeftRadius: '8px' }}>
                                             {vDiscount}% OFF
                                         </div>
                                     )}
                                     <div style={{ fontWeight: '700', fontSize: '15px', marginBottom: '6px', paddingRight: vDiscount > 0 ? '40px' : 0 }}>{v.name}</div>
-                                    <div style={{ fontWeight: '800', fontSize: '18px', color: '#1a1a2e' }}>₹{Math.round(vOffer).toLocaleString('en-IN')}</div>
+                                    <div style={{ fontWeight: '800', fontSize: '18px', color: '#1a1a2e' }}>${Math.round(vOffer).toLocaleString('en-US')}</div>
                                     {vDiscount > 0 && (
-                                        <div style={{ color: '#999', fontSize: '12px', textDecoration: 'line-through', marginTop: '2px' }}>₹{Math.round(vActual).toLocaleString('en-IN')}</div>
+                                        <div style={{ color: '#999', fontSize: '12px', textDecoration: 'line-through', marginTop: '2px' }}>${Math.round(vActual).toLocaleString('en-US')}</div>
                                     )}
-                                    {perUnit && <div style={{ color: '#666', fontSize: '12px', marginTop: '2px' }}>(₹{perUnit}/bathroom)</div>}
+                                    {perUnit && <div style={{ color: '#666', fontSize: '12px', marginTop: '2px' }}>(${perUnit}/bathroom)</div>}
                                 </div>
                             );
                         })}
@@ -202,9 +275,9 @@ const ServiceDetail = () => {
                                 return (
                                     <div key={addon._id} style={{ minWidth: '180px', border: '1.5px solid #ddd', borderRadius: '12px', padding: '14px', flexShrink: 0 }}>
                                         <div style={{ fontWeight: '600', fontSize: '14px', marginBottom: '6px' }}>{addon.name} (additional)</div>
-                                        <div style={{ color: '#2e7d32', fontWeight: '600', fontSize: '14px', marginBottom: '12px' }}>+ ₹{addon.price}</div>
+                                        <div style={{ color: '#A5732F', fontWeight: '600', fontSize: '14px', marginBottom: '12px' }}>+ ${addon.price}</div>
                                         <button onClick={() => toggleAddon(addon)}
-                                            style={{ width: '100%', padding: '8px', border: '1.5px solid #ddd', borderRadius: '8px', background: '#fff', color: added ? '#2e7d32' : '#2e7d32', fontWeight: '600', cursor: 'pointer', fontSize: '14px' }}>
+                                            style={{ width: '100%', padding: '8px', border: '1.5px solid #A5732F', borderRadius: '8px', background: '#fff', color: '#A5732F', fontWeight: '600', cursor: 'pointer', fontSize: '14px' }}>
                                             {added ? 'Added ✓' : 'Add'}
                                         </button>
                                     </div>
@@ -215,24 +288,77 @@ const ServiceDetail = () => {
                 </Section>
             )}
 
-            {/* Our Process - gallery images as process cards */}
-            {galleryImages.length > 0 && (
+            {/* Our Process - exact Urban Company style */}
+            {service.processSteps?.length > 0 && (
                 <Section>
-                    <h2 style={sectionTitle}>Our process</h2>
-                    <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px' }}>
-                        {galleryImages.map((img, i) => (
-                            <div key={i} style={{ minWidth: '220px', height: '200px', borderRadius: '12px', overflow: 'hidden', position: 'relative', flexShrink: 0 }}>
-                                <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'rgba(255,255,255,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        <span style={{ fontSize: '18px', marginLeft: '3px' }}>▶</span>
+                    <h2 style={{ fontSize: '26px', fontWeight: '800', marginBottom: '24px', marginTop: 0, color: '#111' }}>Our process</h2>
+                    <div style={{ position: 'relative' }}>
+                        {/* Vertical connector line running through number circles */}
+                        <div style={{
+                            position: 'absolute',
+                            left: '15px',
+                            top: '28px',
+                            bottom: '28px',
+                            width: '1px',
+                            background: '#e0e0e0',
+                            zIndex: 0,
+                        }} />
+                        {service.processSteps.map((step, i) => {
+                            const hasImage = step.image && step.image.trim() !== '';
+                            return (
+                                <div key={step._id} style={{
+                                    display: 'flex',
+                                    gap: '20px',
+                                    marginBottom: i < service.processSteps.length - 1 ? '32px' : '0',
+                                    position: 'relative',
+                                    zIndex: 1,
+                                }}>
+                                    {/* Step number circle */}
+                                    <div style={{ flexShrink: 0, paddingTop: '2px' }}>
+                                        <div style={{
+                                            width: '30px',
+                                            height: '30px',
+                                            borderRadius: '50%',
+                                            background: '#f0f0f0',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontSize: '13px',
+                                            fontWeight: '700',
+                                            color: '#333',
+                                            zIndex: 1,
+                                            position: 'relative',
+                                        }}>
+                                            {step.stepNumber}
+                                        </div>
+                                    </div>
+                                    {/* Content */}
+                                    <div style={{ flex: 1, paddingTop: '4px' }}>
+                                        <div style={{ fontWeight: '700', fontSize: '16px', color: '#111', marginBottom: step.description ? '6px' : (hasImage ? '12px' : '0') }}>
+                                            {step.title}
+                                        </div>
+                                        {step.description && (
+                                            <div style={{ fontSize: '14px', color: '#555', lineHeight: '1.6', marginBottom: hasImage ? '14px' : '0' }}>
+                                                {step.description}
+                                            </div>
+                                        )}
+                                        {hasImage && (
+                                            <img
+                                                src={resolveImageUrl(step.image)}
+                                                alt={step.title}
+                                                style={{
+                                                    width: '100%',
+                                                    height: '220px',
+                                                    objectFit: 'cover',
+                                                    borderRadius: '14px',
+                                                    display: 'block',
+                                                }}
+                                            />
+                                        )}
                                     </div>
                                 </div>
-                                <div style={{ position: 'absolute', bottom: '12px', left: '12px', color: '#fff', fontWeight: '700', fontSize: '14px', textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
-                                    {service.shortDescription?.[i] ? service.shortDescription[i].split(':')[0] : `Step ${i + 1}`}
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </Section>
             )}
@@ -261,50 +387,105 @@ const ServiceDetail = () => {
                 </Section>
             )}
 
-            {/* Top Cleaners */}
-            <Section style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
-                <div style={{ flex: 1 }}>
-                    <h2 style={{ ...sectionTitle, fontSize: '26px' }}>Top cleaners</h2>
-                    {[
-                        {
-                            text: 'Trained for 100+ hours',
-                            icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8 14l-4 7h16l-4-7"/></svg>
-                        },
-                        {
-                            text: 'Average 4.8+ ratings',
-                            icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        },
-                        {
-                            text: 'Served 100K+ homes',
-                            icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
-                        },
-                        {
-                            text: 'Verified by 1APP',
-                            icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                        },
-                    ].map((item, i) => (
-                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px', fontSize: '15px', color: '#444' }}>
-                            {item.icon}
-                            <span>{item.text}</span>
-                        </div>
-                    ))}
+            {/* Top Professionals */}
+            <Section>
+                <h2 style={sectionTitle}>Top Professionals</h2>
+                <div style={{
+                    background: '#fff',
+                    border: '1px solid #ebebeb',
+                    borderRadius: '16px',
+                    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    alignItems: 'stretch',
+                    minHeight: '220px',
+                }}>
+                    {/* Left: bullet points */}
+                    <div style={{ flex: 1, padding: '22px 20px 22px 22px' }}>
+                        {[
+                            {
+                                text: 'Background verified',
+                                sub: 'Identity & police check completed',
+                                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A5732F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+                            },
+                            {
+                                text: 'Average 4.8+ ratings',
+                                sub: 'Consistently rated by customers',
+                                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A5732F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            },
+                            {
+                                text: '300+ hours of training',
+                                sub: 'Skilled & certified professionals',
+                                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A5732F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                            },
+                            {
+                                text: 'Verified by 1APP',
+                                sub: 'Trusted and quality assured',
+                                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A5732F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                            },
+                        ].map((item, i) => (
+                            <div key={i} style={{
+                                display: 'flex',
+                                alignItems: 'flex-start',
+                                gap: '10px',
+                                marginBottom: i < 3 ? '14px' : '0',
+                            }}>
+                                <div style={{
+                                    width: '36px',
+                                    height: '36px',
+                                    borderRadius: '9px',
+                                    background: '#fdf5ea',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0,
+                                }}>
+                                    {item.icon}
+                                </div>
+                                <div style={{ paddingTop: '2px' }}>
+                                    <div style={{ fontWeight: '600', fontSize: '13px', color: '#1a1a2e' }}>{item.text}</div>
+                                    <div style={{ fontSize: '12px', color: '#888', marginTop: '1px' }}>{item.sub}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    {/* Right: image fills completely, no background color showing */}
+                    <div style={{
+                        width: '400px',
+                        // height:'00px',
+                        flexShrink: 0,
+                        position: 'relative',
+                        overflow: 'hidden',
+                    }}>
+                        <img
+                            src={technicianImage}
+                            alt="Top professionals"
+                            style={{
+                                position: 'absolute',
+                                bottom: 0,
+                                right: 0,
+                                height: '100%',
+                                width: '100%',
+                                objectFit: 'cover',
+                                objectPosition: 'top center',
+                            }}
+                        />
+                    </div>
                 </div>
-                <img
-                    src={technicianImage}
-                    alt="Top cleaners"
-                    style={{width: '200px', height: '100%', objectFit: 'contain', objectPosition: 'center', borderRadius: '0', flexShrink: 0 }}
-                />
             </Section>
 
             {/* Our Cleaning Equipments */}
             {service.tools?.length > 0 && (
                 <Section>
                     <h2 style={sectionTitle}>Our cleaning equipments</h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px 12px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px 12px',background: '#fff',
+                    border: '1px solid #ebebeb',
+                    borderRadius: '16px',
+                    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',}}>
                         {service.tools.map(tool => (
                             <div key={tool._id} style={{ textAlign: 'center' }}>
                                 <img src={resolveImageUrl(tool.image)} alt={tool.name}
-                                    style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '10px', marginBottom: '8px' }} />
+                                    style={{ height: '80px', objectFit: 'contain', borderRadius: '10px', marginBottom: '8px' }} />
                                 <div style={{ fontSize: '13px', color: '#555' }}>{tool.name}</div>
                             </div>
                         ))}
@@ -318,7 +499,7 @@ const ServiceDetail = () => {
                     <h2 style={sectionTitle}>What is covered</h2>
                     {service.includedItems.map(item => (
                         <div key={item._id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 0', borderBottom: '1px solid #f0f0f0' }}>
-                            <span style={{ color: '#2e7d32', fontWeight: '700', fontSize: '16px' }}>✓</span>
+                            <span style={{ color: '#A5732F', fontWeight: '700', fontSize: '16px' }}>✓</span>
                             <span style={{ fontSize: '15px', color: '#444' }}>{item.title}</span>
                         </div>
                     ))}
@@ -358,9 +539,9 @@ const ServiceDetail = () => {
             <Section style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                     <h2 style={{ ...sectionTitle, marginBottom: '4px' }}>Damage protection</h2>
-                    <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>Up to ₹5,000 cover if any damage happens<br />during the job</p>
+                    <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>Up to $5,000 cover if any damage happens<br />during the job</p>
                 </div>
-                <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: '#2e7d32', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: '#A5732F', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <span style={{ color: '#fff', fontSize: '22px' }}>✓</span>
                 </div>
             </Section>
@@ -372,60 +553,149 @@ const ServiceDetail = () => {
                     {service.faqs.map((faq, i) => (
                         <div key={faq._id} style={{ borderBottom: '1px solid #eee' }}>
                             <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                                style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '16px 0', fontSize: '15px', color: '#222', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span>{faq.question}</span>
-                                <span style={{ fontSize: '18px', color: '#888' }}>{openFaq === i ? '∧' : '∨'}</span>
+                                style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '16px 0', fontSize: '15px', color: '#222', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                                    <div style={{
+                                        width: '32px',
+                                        height: '32px',
+                                        borderRadius: '8px',
+                                        background: openFaq === i ? '#fdf5ea' : '#f7f8fa',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        flexShrink: 0,
+                                        transition: 'background 0.2s',
+                                    }}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={openFaq === i ? '#A5732F' : '#888'} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                                        </svg>
+                                    </div>
+                                    <span style={{ fontWeight: openFaq === i ? '600' : '400', color: openFaq === i ? '#1a1a2e' : '#333', lineHeight: '1.4' }}>{faq.question}</span>
+                                </div>
+                                <div style={{
+                                    width: '28px',
+                                    height: '28px',
+                                    borderRadius: '50%',
+                                    background: openFaq === i ? '#A5732F' : '#f0f0f0',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0,
+                                    transition: 'all 0.2s',
+                                }}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={openFaq === i ? '#fff' : '#888'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                                        style={{ transform: openFaq === i ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+                                        <polyline points="6 9 12 15 18 9"/>
+                                    </svg>
+                                </div>
                             </button>
                             {openFaq === i && (
-                                <p style={{ color: '#666', fontSize: '14px', paddingBottom: '14px', margin: 0, lineHeight: '1.6' }}>{faq.answer}</p>
+                                <div style={{ display: 'flex', gap: '12px', paddingBottom: '16px', paddingLeft: '44px' }}>
+                                    <p style={{ color: '#666', fontSize: '14px', margin: 0, lineHeight: '1.65' }}>{faq.answer}</p>
+                                </div>
                             )}
                         </div>
                     ))}
                 </Section>
             )}
 
-            {/* Ratings */}
-            <Section>
+            {/* Ratings & Reviews */}
+            <Section id="reviews">
+                {/* Summary */}
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '4px' }}>
-                    <span style={{ fontSize: '32px', fontWeight: '700' }}>★ {service.ratingsAverage?.toFixed(2) || '4.50'}</span>
+                    <span style={{ fontSize: '32px', fontWeight: '700' }}>
+                        ★ {reviewData?.totalReviews > 0
+                            ? (Object.entries(reviewData.starCounts).reduce((sum, [star, cnt]) => sum + Number(star) * cnt, 0) / reviewData.totalReviews).toFixed(2)
+                            : service.ratingsAverage?.toFixed(2) || '0.00'}
+                    </span>
                 </div>
-                <p style={{ color: '#888', fontSize: '14px', marginBottom: '20px' }}>{service.ratingsQuantity || '7.2M'} reviews</p>
-                {[
-                    { star: 5, pct: 91 }, { star: 4, pct: 12 }, { star: 3, pct: 6 }, { star: 2, pct: 3 }, { star: 1, pct: 5 }
-                ].map(r => (
-                    <div key={r.star} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                        <span style={{ fontSize: '13px', width: '24px' }}>★{r.star}</span>
-                        <div style={{ flex: 1, height: '4px', background: '#e0e0e0', borderRadius: '2px' }}>
-                            <div style={{ width: `${r.pct}%`, height: '100%', background: '#1a1a2e', borderRadius: '2px' }} />
-                        </div>
-                        <span style={{ fontSize: '13px', color: '#888', width: '40px', textAlign: 'right' }}>{r.star === 5 ? '6.6 M' : r.star === 4 ? '251 K' : r.star === 3 ? '114 K' : r.star === 2 ? '61 K' : '122 K'}</span>
-                    </div>
-                ))}
+                <p style={{ color: '#888', fontSize: '14px', marginBottom: '20px' }}>
+                    {reviewData?.totalReviews ?? service.ratingsQuantity ?? 0} reviews
+                </p>
 
-                <div style={{ borderTop: '1px solid #eee', marginTop: '20px', paddingTop: '16px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700' }}>All reviews</h3>
-                        <button style={{ background: 'none', border: 'none', color: '#2e7d32', fontWeight: '700', fontSize: '13px', cursor: 'pointer', letterSpacing: '0.5px' }}>FILTER</button>
-                    </div>
-                    <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
-                        {['Most detailed', 'In my area', 'Frequent users'].map(f => (
-                            <button key={f} style={{ padding: '8px 16px', border: '1.5px solid #ddd', borderRadius: '20px', background: '#fff', fontSize: '14px', cursor: 'pointer' }}>{f}</button>
-                        ))}
-                    </div>
-                    <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
-                            <div>
-                                <div style={{ fontWeight: '700', fontSize: '15px' }}>M P Nair</div>
-                                <div style={{ color: '#888', fontSize: '13px' }}>Jun 28, 2026 • For intense bathroom cleaning, ceiling fan new</div>
+                {/* Star breakdown bars */}
+                {[5, 4, 3, 2, 1].map(star => {
+                    const cnt   = reviewData?.starCounts?.[star] ?? 0;
+                    const total = reviewData?.totalReviews ?? 0;
+                    const pct   = total > 0 ? Math.round((cnt / total) * 100) : 0;
+                    return (
+                        <div key={star} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                            <span style={{ fontSize: '13px', width: '24px' }}>★{star}</span>
+                            <div style={{ flex: 1, height: '4px', background: '#e0e0e0', borderRadius: '2px' }}>
+                                <div style={{ width: `${pct}%`, height: '100%', background: '#1a1a2e', borderRadius: '2px', transition: 'width 0.4s' }} />
                             </div>
-                            <div style={{ background: '#2e7d32', color: '#fff', borderRadius: '6px', padding: '4px 10px', fontSize: '13px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                ★ 5
-                            </div>
+                            <span style={{ fontSize: '13px', color: '#888', width: '30px', textAlign: 'right' }}>{cnt}</span>
                         </div>
-                        <p style={{ color: '#333', fontSize: '14px', lineHeight: '1.6', marginTop: '10px' }}>
-                            Vacant Kumar is a soft spoken sincere professional. He has thorough professional knowledge in cleaning assignments. Reported before appointed time and finished job in given time.
+                    );
+                })}
+
+        
+
+                {/* All Reviews list */}
+                <div style={{ borderTop: '1px solid #eee', marginTop: '24px', paddingTop: '16px' }}>
+                    <h3 style={{ margin: '0 0 16px', fontSize: '18px', fontWeight: '700' }}>All reviews</h3>
+
+                    {reviewsLoading && (
+                        <div style={{ textAlign: 'center', padding: '20px', color: '#888' }}>Loading reviews…</div>
+                    )}
+
+                    {!reviewsLoading && reviewData?.reviews?.length === 0 && (
+                        <p style={{ color: '#aaa', fontSize: '14px', textAlign: 'center', padding: '20px 0' }}>
+                            No reviews yet. Be the first to share your experience!
                         </p>
-                    </div>
+                    )}
+
+                    {!reviewsLoading && reviewData?.reviews?.map((r, i) => (
+                        <div key={r._id} style={{ paddingBottom: '20px', marginBottom: '20px', borderBottom: i < reviewData.reviews.length - 1 ? '1px solid #f0f0f0' : 'none' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    {/* Avatar */}
+                                    <div style={{
+                                        width: '40px', height: '40px', borderRadius: '50%',
+                                        background: '#1a1a2e', display: 'flex', alignItems: 'center',
+                                        justifyContent: 'center', flexShrink: 0,
+                                    }}>
+                                        <span style={{ color: '#fff', fontWeight: '700', fontSize: '15px' }}>
+                                            {(r.user?.name || 'U')[0].toUpperCase()}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <div style={{ fontWeight: '700', fontSize: '15px' }}>{r.user?.name || 'User'}</div>
+                                        <div style={{ color: '#888', fontSize: '12px', marginTop: '1px' }}>
+                                            {new Date(r.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style={{ background: '#1a1a2e', color: '#fff', borderRadius: '6px', padding: '4px 10px', fontSize: '13px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+                                    ★ {r.rating}
+                                </div>
+                            </div>
+                            {r.review && (
+                                <p style={{ color: '#333', fontSize: '14px', lineHeight: '1.65', marginTop: '12px', marginBottom: 0 }}>
+                                    {r.review}
+                                </p>
+                            )}
+                        </div>
+                    ))}
+
+                    {/* Pagination */}
+                    {reviewData?.totalPages > 1 && (
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '16px' }}>
+                            <button
+                                onClick={() => setReviewsPage(p => Math.max(1, p - 1))}
+                                disabled={reviewsPage === 1}
+                                style={{ padding: '7px 16px', border: '1.5px solid #ddd', borderRadius: '8px', background: '#fff', cursor: reviewsPage === 1 ? 'not-allowed' : 'pointer', color: reviewsPage === 1 ? '#ccc' : '#333', fontWeight: '600' }}
+                            >← Prev</button>
+                            <span style={{ padding: '7px 12px', fontSize: '14px', color: '#555' }}>{reviewsPage} / {reviewData.totalPages}</span>
+                            <button
+                                onClick={() => setReviewsPage(p => Math.min(reviewData.totalPages, p + 1))}
+                                disabled={reviewsPage === reviewData?.totalPages}
+                                style={{ padding: '7px 16px', border: '1.5px solid #ddd', borderRadius: '8px', background: '#fff', cursor: reviewsPage === reviewData?.totalPages ? 'not-allowed' : 'pointer', color: reviewsPage === reviewData?.totalPages ? '#ccc' : '#333', fontWeight: '600' }}
+                            >Next →</button>
+                        </div>
+                    )}
                 </div>
             </Section>
 
@@ -433,17 +703,17 @@ const ServiceDetail = () => {
             <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#fff', borderTop: '1px solid #eee', padding: '12px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 100 }}>
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '20px', fontWeight: '800', color: '#1a1a2e' }}>₹{Math.round(getTotalPrice()).toLocaleString('en-IN')}</span>
+                        <span style={{ fontSize: '20px', fontWeight: '800', color: '#1a1a2e' }}>${Math.round(getTotalPrice()).toLocaleString('en-US')}</span>
                         {discountPct > 0 && !selectedVariant && (
-                            <span style={{ background: '#e8f5e9', color: '#2e7d32', fontSize: '12px', fontWeight: '700', padding: '2px 8px', borderRadius: '20px' }}>{discountPct}% OFF</span>
+                            <span style={{ background: '#fdf5ea', color: '#A5732F', fontSize: '12px', fontWeight: '700', padding: '2px 8px', borderRadius: '20px' }}>{discountPct}% OFF</span>
                         )}
                     </div>
                     {discountPct > 0 && !selectedVariant && (
-                        <div style={{ fontSize: '12px', color: '#999', textDecoration: 'line-through' }}>₹{Math.round(service.actualPrice || service.price).toLocaleString('en-IN')}</div>
+                        <div style={{ fontSize: '12px', color: '#999', textDecoration: 'line-through' }}>${Math.round(service.actualPrice || service.price).toLocaleString('en-US')}</div>
                     )}
                 </div>
                 <button onClick={handleAddToCart}
-                    style={{ background: '#2e7d32', color: '#fff', border: 'none', borderRadius: '10px', padding: '12px 32px', fontWeight: '700', fontSize: '16px', cursor: 'pointer' }}>
+                    style={{ background: '#A5732F', color: '#fff', border: 'none', borderRadius: '10px', padding: '12px 32px', fontWeight: '700', fontSize: '16px', cursor: 'pointer' }}>
                     Add to cart
                 </button>
             </div>

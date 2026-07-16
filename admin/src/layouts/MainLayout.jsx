@@ -101,7 +101,7 @@ const MainLayout = () => {
                 <div className="mt-auto p-3 border-top w-100 position-absolute bottom-0" style={{ maxWidth: '260px' }}>
                     <button
                         onClick={handleLogout}
-                        className="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 py-2"
+                        className="btn btn-outline-brand w-100 d-flex align-items-center justify-content-center gap-2 py-2"
                     >
                         <FaSignOutAlt />
                         <span>Logout</span>

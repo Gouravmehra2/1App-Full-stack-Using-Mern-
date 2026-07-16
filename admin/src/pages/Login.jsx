@@ -70,7 +70,7 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="btn btn-dark btn-lg w-100 fw-bold py-2.5 d-flex align-items-center justify-content-center gap-2 shadow"
+                            className="btn btn-brand btn-lg w-100 fw-bold py-2.5 d-flex align-items-center justify-content-center gap-2 shadow"
                         >
                             <FaSignInAlt />
                             <span>{loading ? 'Logging in...' : 'Enter Dashboard'}</span>

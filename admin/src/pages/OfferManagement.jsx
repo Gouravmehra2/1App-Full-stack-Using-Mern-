@@ -6,7 +6,7 @@ const OfferManagement = () => {
     const [offers, setOffers] = useState([
         { code: 'vmarc10', discount: '10% OFF', description: 'Applicable on wiring and cabling services', isActive: true },
         { code: 'ELECTRO20', discount: '20% OFF', description: 'Discount on Smart DB distributions upgrades', isActive: true },
-        { code: 'SAFETYFIRST', discount: 'Flat ₹200 OFF', description: 'Applicable on home inspections', isActive: true }
+        { code: 'SAFETYFIRST', discount: 'Flat $200 OFF', description: 'Applicable on home inspections', isActive: true }
     ]);
     const [showForm, setShowForm] = useState(false);
     const [code, setCode] = useState('');
@@ -48,7 +48,7 @@ const OfferManagement = () => {
                     <p className="text-muted">Configure active promotional coupons, service codes, and discount campaigns.</p>
                 </div>
                 {!showForm && (
-                    <button onClick={() => setShowForm(true)} className="btn btn-dark fw-bold d-flex align-items-center gap-2 px-4 shadow-sm">
+                    <button onClick={() => setShowForm(true)} className="btn btn-brand fw-bold d-flex align-items-center gap-2 px-4 shadow-sm">
                         <FaPlus />
                         <span>Create Coupon</span>
                     </button>
@@ -77,7 +77,7 @@ const OfferManagement = () => {
                                     type="text" 
                                     required 
                                     className="form-control bg-light border-0" 
-                                    placeholder="30% OFF / Flat ₹300 OFF"
+                                    placeholder="30% OFF / Flat $300 OFF"
                                     value={discount}
                                     onChange={(e) => setDiscount(e.target.value)}
                                 />
@@ -88,7 +88,7 @@ const OfferManagement = () => {
                                     type="text" 
                                     required 
                                     className="form-control bg-light border-0" 
-                                    placeholder="On all orders above ₹999"
+                                    placeholder="On all orders above $999"
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                 />
@@ -96,10 +96,10 @@ const OfferManagement = () => {
                         </div>
 
                         <div className="d-flex gap-2 justify-content-end">
-                            <button type="button" onClick={() => setShowForm(false)} className="btn btn-outline-secondary px-4 py-2">
+                            <button type="button" onClick={() => setShowForm(false)} className="btn btn-outline-brand px-4 py-2">
                                 Cancel
                             </button>
-                            <button type="submit" className="btn btn-dark fw-bold px-4 py-2 shadow-sm">
+                            <button type="submit" className="btn btn-brand fw-bold px-4 py-2 shadow-sm">
                                 Create Coupon
                             </button>
                         </div>

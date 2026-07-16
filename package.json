@@ -19,8 +19,12 @@
     "concurrently": "^8.2.0"
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^6.7.0",
+    "@stripe/stripe-js": "^9.9.0",
     "all": "^0.0.0",
     "axios": "^1.18.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "react-map-gl": "^8.1.1"
   }
 }

@@ -59,6 +59,22 @@ const serviceService = {
         const response = await API.get(`/services/subcategories/${subcategoryId}/services`);
         return response.data;
     },
+
+    getServiceReviews: async (serviceId, page = 1, limit = 5) => {
+        const response = await API.get(`/services/${serviceId}/reviews?page=${page}&limit=${limit}`);
+        return response.data;
+    },
+
+    submitReview: async (serviceId, payload) => {
+        // payload: { rating, review }
+        const response = await API.post(`/services/${serviceId}/reviews`, payload);
+        return response.data;
+    },
+
+    updateReview: async (serviceId, reviewId, payload) => {
+        const response = await API.put(`/services/${serviceId}/reviews/${reviewId}`, payload);
+        return response.data;
+    },
 };
 
 export default serviceService;

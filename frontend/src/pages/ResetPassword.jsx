@@ -67,12 +67,12 @@ const ResetPassword = () => {
 
                     <div style={{ marginBottom: 28 }}>
                         <h2 style={{ fontWeight: 800, fontSize: '1.8rem', marginBottom: 8 }}>
-                            Reset <span style={{ color: '#2d7a3a' }}>Password</span>
+                            Reset <span style={{ color: '#A5732F' }}>Password</span>
                         </h2>
                         <p style={{ color: '#777', fontSize: '0.9rem', lineHeight: 1.5 }}>
                             Create a new strong password for your account.
                         </p>
-                        <div style={{ width: 40, height: 3, background: '#2d7a3a', marginTop: 12 }} />
+                        <div style={{ width: 40, height: 3, background: '#A5732F', marginTop: 12 }} />
                     </div>
 
                     <form onSubmit={handleSubmit}>
@@ -99,9 +99,9 @@ const ResetPassword = () => {
                             <label style={{ fontWeight: 700, fontSize: '0.85rem', display: 'block', marginBottom: 6 }}>Confirm Password</label>
                             <div style={{
                                 display: 'flex', alignItems: 'center', borderRadius: 8, padding: '10px 14px', gap: 10,
-                                border: `1.5px solid ${passwordsMismatch ? '#e53935' : passwordsMatch ? '#2d7a3a' : '#ddd'}`,
+                                border: `1.5px solid ${passwordsMismatch ? '#e53935' : passwordsMatch ? '#A5732F' : '#ddd'}`,
                             }}>
-                                <FaLock color={passwordsMismatch ? '#e53935' : passwordsMatch ? '#2d7a3a' : '#888'} size={14} />
+                                <FaLock color={passwordsMismatch ? '#e53935' : passwordsMatch ? '#A5732F' : '#888'} size={14} />
                                 <input
                                     type={showConfirm ? 'text' : 'password'}
                                     required
@@ -119,13 +119,13 @@ const ResetPassword = () => {
                                 <p style={{ color: '#e53935', fontSize: '0.78rem', marginTop: 4, marginBottom: 0 }}>Passwords do not match</p>
                             )}
                             {passwordsMatch && (
-                                <p style={{ color: '#2d7a3a', fontSize: '0.78rem', marginTop: 4, marginBottom: 0 }}>✓ Passwords match</p>
+                                <p style={{ color: '#A5732F', fontSize: '0.78rem', marginTop: 4, marginBottom: 0 }}>✓ Passwords match</p>
                             )}
                         </div>
 
                         <button type="submit" disabled={loading || passwordsMismatch}
                             style={{
-                                width: '100%', background: passwordsMismatch ? '#aaa' : '#2d7a3a', color: '#fff', border: 'none',
+                                width: '100%', background: passwordsMismatch ? '#aaa' : '#A5732F', color: '#fff', border: 'none',
                                 borderRadius: 8, padding: '13px', fontWeight: 700, fontSize: '1rem', cursor: passwordsMismatch ? 'not-allowed' : 'pointer',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                             }}>
@@ -135,7 +135,7 @@ const ResetPassword = () => {
 
                     <p style={{ textAlign: 'center', marginTop: 20, fontSize: '0.88rem', color: '#555' }}>
                         Remember your Password?{' '}
-                        <Link to="/login" style={{ color: '#2d7a3a', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link>
+                        <Link to="/login" style={{ color: '#A5732F', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link>
                     </p>
                 </div>
             </div>

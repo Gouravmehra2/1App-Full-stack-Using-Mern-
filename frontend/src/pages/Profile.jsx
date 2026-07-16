@@ -118,7 +118,7 @@ const Profile = () => {
                         {!user?.isPhoneVerified && (
                             <div className="mt-4 pt-3 border-top w-100">
                                 {!showOtpField ? (
-                                    <button onClick={handleRequestOtp} className="btn w-100 fw-bold py-2 d-flex align-items-center justify-content-center gap-2" style={{ background: '#2d6a4f', color: '#fff', borderRadius: '8px' }}>
+                                    <button onClick={handleRequestOtp} className="btn w-100 fw-bold py-2 d-flex align-items-center justify-content-center gap-2" style={{ background: '#A5732F', color: '#fff', borderRadius: '8px' }}>
                                         <FaCheckDouble size={14} /> Verify Phone Number
                                     </button>
                                 ) : (
@@ -126,7 +126,7 @@ const Profile = () => {
                                         <label className="form-label small fw-bold text-muted mb-2">Enter 6-digit OTP (check server console):</label>
                                         <div className="d-flex gap-2">
                                             <input type="text" maxLength="6" required className="form-control text-center font-monospace" placeholder="999999" value={otpCode} onChange={(e) => setOtpCode(e.target.value)} />
-                                            <button type="submit" disabled={verifying} className="btn fw-bold" style={{ background: '#2d6a4f', color: '#fff' }}>
+                                            <button type="submit" disabled={verifying} className="btn fw-bold" style={{ background: '#A5732F', color: '#fff' }}>
                                                 {verifying ? '...' : 'Verify'}
                                             </button>
                                         </div>
@@ -161,7 +161,7 @@ const Profile = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" disabled={updating} className="btn fw-bold px-4 py-2 mt-3 d-flex align-items-center gap-2" style={{ background: '#2d6a4f', color: '#fff', borderRadius: '8px' }}>
+                            <button type="submit" disabled={updating} className="btn fw-bold px-4 py-2 mt-3 d-flex align-items-center gap-2" style={{ background: '#A5732F', color: '#fff', borderRadius: '8px' }}>
                                 <FaUpload size={14} /> {updating ? 'Saving...' : 'Save Settings'}
                             </button>
                         </form>

@@ -46,7 +46,7 @@ const LoginPage = () => {
     const googleLogin = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
-                const { data } = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+                const { data } = await axios.get('googleapis.com/oauth2/v3/userinfo', {
                     headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
                 });
                 await login(data.email, data.sub, { googleId: data.sub, name: data.name, picture: data.picture });
@@ -67,18 +67,18 @@ const LoginPage = () => {
 
                     {/* Header */}
                     <div style={{ textAlign: 'center', marginBottom: 32 }}>
-                        <p style={{ fontWeight: 800, fontSize: '1.25rem', color: '#1a1a1a', marginBottom: 4, letterSpacing: 0.5 }}>
-                            <span style={{ color: '#2d7a3a' }}>1APP</span> PORTAL
+                        <p style={{ fontWeight: 800, fontSize: '1.25rem', color: '#1A1A1A', marginBottom: 4, letterSpacing: 0.5 }}>
+                            <span style={{ color: '#A5732F' }}>1APP</span> PORTAL
                         </p>
-                        <h2 style={{ fontWeight: 800, fontSize: '1.9rem', color: '#2d7a3a', margin: '4px 0 8px' }}>Welcome Back</h2>
+                        <h2 style={{ fontWeight: 800, fontSize: '1.9rem', color: '#A5732F', margin: '4px 0 8px' }}>Welcome Back</h2>
                         <p style={{ color: '#888', fontSize: '0.9rem', margin: 0 }}>Login to your account to continue</p>
-                        <div style={{ width: 40, height: 3, background: '#2d7a3a', margin: '12px auto 0', borderRadius: 2 }} />
+                        <div style={{ width: 40, height: 3, background: '#A5732F', margin: '12px auto 0', borderRadius: 2 }} />
                     </div>
 
                     <form onSubmit={handleSubmit}>
                         {/* Phone / Email field */}
                         <div style={{ marginBottom: 16 }}>
-                            <label style={{ fontWeight: 700, fontSize: '0.85rem', display: 'block', marginBottom: 6, color: '#1a1a1a' }}>
+                            <label style={{ fontWeight: 700, fontSize: '0.85rem', display: 'block', marginBottom: 6, color: '#1A1A1A' }}>
                                 {useEmail ? 'Email Address' : 'Phone Number'}
                             </label>
                             <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #ccc', borderRadius: 8, padding: '10px 14px', gap: 10 }}>
@@ -94,7 +94,7 @@ const LoginPage = () => {
                             </div>
                             <div style={{ textAlign: 'right', marginTop: 5 }}>
                                 <button type="button" onClick={() => { setUseEmail(!useEmail); setIdentifier(''); }}
-                                    style={{ background: 'none', border: 'none', color: '#2d7a3a', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', padding: 0 }}>
+                                    style={{ background: 'none', border: 'none', color: '#A5732F', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', padding: 0 }}>
                                     {useEmail ? 'Use Phone Number' : 'Use Email'}
                                 </button>
                             </div>
@@ -102,7 +102,7 @@ const LoginPage = () => {
 
                         {/* Password field */}
                         <div style={{ marginBottom: 8 }}>
-                            <label style={{ fontWeight: 700, fontSize: '0.85rem', display: 'block', marginBottom: 6, color: '#1a1a1a' }}>Password</label>
+                            <label style={{ fontWeight: 700, fontSize: '0.85rem', display: 'block', marginBottom: 6, color: '#1A1A1A' }}>Password</label>
                             <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #ccc', borderRadius: 8, padding: '10px 14px', gap: 10 }}>
                                 <FaLock color="#888" size={14} />
                                 <input
@@ -119,14 +119,14 @@ const LoginPage = () => {
                                 </button>
                             </div>
                             <div style={{ textAlign: 'right', marginTop: 5 }}>
-                                <Link to="/forgot-password" style={{ color: '#2d7a3a', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>
+                                <Link to="/forgot-password" style={{ color: '#A5732F', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>
                                     Forgot password ?
                                 </Link>
                             </div>
                         </div>
 
                         <button type="submit" disabled={loading} style={{
-                            width: '100%', background: '#2d7a3a', color: '#fff', border: 'none',
+                            width: '100%', background: '#A5732F', color: '#fff', border: 'none',
                             borderRadius: 8, padding: '13px', fontWeight: 700, fontSize: '1rem',
                             cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                             gap: 8, marginTop: 20
@@ -137,9 +137,9 @@ const LoginPage = () => {
 
                     {/* OR divider */}
                     <div style={{ display: 'flex', alignItems: 'center', margin: '22px 0', gap: 10 }}>
-                        <div style={{ flex: 1, height: 1, background: '#e0e0e0' }} />
+                        <div style={{ flex: 1, height: 1, background: '#E0E0E0' }} />
                         <span style={{ color: '#aaa', fontSize: '0.8rem', fontWeight: 600, letterSpacing: 1 }}>OR</span>
-                        <div style={{ flex: 1, height: 1, background: '#e0e0e0' }} />
+                        <div style={{ flex: 1, height: 1, background: '#E0E0E0' }} />
                     </div>
 
                     <button onClick={() => googleLogin()} style={{
@@ -153,7 +153,7 @@ const LoginPage = () => {
 
                     <p style={{ textAlign: 'center', marginTop: 22, fontSize: '0.88rem', color: '#555' }}>
                         Don't have an account?{' '}
-                        <Link to="/signup" style={{ color: '#2d7a3a', fontWeight: 700, textDecoration: 'none' }}>Sign Up</Link>
+                        <Link to="/signup" style={{ color: '#A5732F', fontWeight: 700, textDecoration: 'none' }}>Sign Up</Link>
                     </p>
                 </div>
             </div>

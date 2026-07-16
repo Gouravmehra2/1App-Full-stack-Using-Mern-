@@ -47,7 +47,7 @@ const SlotModal = ({ open, onClose, onSelect, initial }) => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                         <label style={{ border: '1px solid #e6e6e6', borderRadius: 8, padding: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div>
-                                <div style={{ display: 'inline-block', background: '#e8f5e9', color: '#1b5e20', padding: '4px 8px', borderRadius: 6, fontWeight: 700, marginBottom: 4 }}>Instant</div>
+                <div style={{ display: 'inline-block', background: '#fdf5ea', color: '#A5732F', padding: '4px 8px', borderRadius: 6, fontWeight: 700, marginBottom: 4 }}>Instant</div>
                                 <div style={{ color: '#555' }}>In 50 mins</div>
                             </div>
                             <input type="radio" name="slotMode" checked={mode === 'instant'} onChange={() => setMode('instant')} />
@@ -84,7 +84,7 @@ const SlotModal = ({ open, onClose, onSelect, initial }) => {
                 </div>
 
                 <div style={{ padding: 18, borderTop: '1px solid #eee', display: 'flex', justifyContent: 'center' }}>
-                    <button onClick={handleConfirm} disabled={mode === 'scheduled' && !selectedTime} style={{ background: '#6c47ff', color: '#fff', border: 'none', padding: '14px 28px', borderRadius: 10, fontWeight: 700, cursor: 'pointer', opacity: (mode === 'scheduled' && !selectedTime) ? 0.6 : 1 }}>Proceed to checkout</button>
+                    <button onClick={handleConfirm} disabled={mode === 'scheduled' && !selectedTime} style={{ background: '#A5732F', color: '#fff', border: 'none', padding: '14px 28px', borderRadius: 10, fontWeight: 700, cursor: 'pointer', opacity: (mode === 'scheduled' && !selectedTime) ? 0.6 : 1 }}>Proceed to checkout</button>
                 </div>
             </div>
         </div>

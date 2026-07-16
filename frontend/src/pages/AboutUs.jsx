@@ -113,7 +113,7 @@ export default function AboutUs() {
             {/* ── Our Business ── */}
             <div style={{ maxWidth: 1100, margin: '0 auto', padding: '56px 40px 0' }}>
                 <h2 style={{ fontWeight: 900, fontSize: '1.8rem', marginBottom: 6 }}>Our Business</h2>
-                <a href="#" style={{ color: '#2e7d32', fontWeight: 700, fontSize: '14px', textDecoration: 'none' }}>Company Overview →</a>
+                <a href="#" style={{ color: '#A5732F', fontWeight: 700, fontSize: '14px', textDecoration: 'none' }}>Company Overview →</a>
 
                 <div style={{ marginTop: 40, marginBottom: 8 }}>
                     <h3 style={{ fontWeight: 900, fontSize: '1.6rem', marginBottom: 12 }}>One Platform. Unlimited Possibilities.</h3>
@@ -168,7 +168,7 @@ export default function AboutUs() {
                     <div style={{ borderRadius: 16, overflow: 'hidden', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 160 }}>
                         <svg viewBox="0 0 100 140" width="70" height="100">
                             <rect x="15" y="5" width="70" height="130" rx="10" fill="#fff" stroke="#ddd" strokeWidth="1.5" />
-                            <rect x="20" y="20" width="60" height="40" rx="4" fill="#e8f5e9" />
+                            <rect x="20" y="20" width="60" height="40" rx="4" fill="#fdf5ea" />
                             <rect x="20" y="68" width="28" height="28" rx="4" fill="#f0f0f0" />
                             <rect x="52" y="68" width="28" height="28" rx="4" fill="#f0f0f0" />
                             <rect x="20" y="100" width="60" height="8" rx="3" fill="#e0e0e0" />
@@ -313,7 +313,7 @@ export default function AboutUs() {
                             <div key={i} style={{ background: c.dark ? '#111' : '#f0ece8', borderRadius: 20, padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 12 }}>
                                 <div style={{ fontWeight: 800, fontSize: '1rem', color: c.dark ? '#fff' : '#111' }}>{c.title}</div>
                                 <div style={{ fontSize: '13px', color: c.dark ? '#aaa' : '#555', lineHeight: 1.7, flex: 1 }}>{c.desc}</div>
-                                <button style={{ marginTop: 16, background: c.dark ? 'transparent' : '#111', color: c.dark ? '#fff' : '#fff', border: c.dark ? '1.5px solid #fff' : 'none', borderRadius: 10, padding: '12px 0', fontWeight: 700, fontSize: '14px', cursor: 'pointer', width: '100%' }}>
+                                <button style={{ marginTop: 16, background: '#A5732F', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 0', fontWeight: 700, fontSize: '14px', cursor: 'pointer', width: '100%' }}>
                                     {c.btn}
                                 </button>
                             </div>

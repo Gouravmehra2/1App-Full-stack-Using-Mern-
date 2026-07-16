@@ -24,7 +24,7 @@ const API = axios.create({
 // Interceptor to add Authorization JWT token
 API.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('vmarc_token');
+        const token = localStorage.getItem('1App_token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -40,7 +40,7 @@ API.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            localStorage.removeItem('vmarc_token');
+            localStorage.removeItem('1App_token');
             // optionally redirect or handle logout
         }
         return Promise.reject(error);

@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
     const [error, setError] = useState(null);
 
     const checkAuth = async () => {
-        const token = localStorage.getItem('vmarc_token');
+        const token = localStorage.getItem('1App_token');
         if (!token) {
             setUser(null);
             setLoading(false);
@@ -21,12 +21,12 @@ export const AuthProvider = ({ children }) => {
             if (res.success) {
                 setUser(res.data.user);
             } else {
-                localStorage.removeItem('vmarc_token');
+                localStorage.removeItem('1App_token');
                 setUser(null);
             }
         } catch (err) {
             console.error('Auth verification failed', err);
-            localStorage.removeItem('vmarc_token');
+            localStorage.removeItem('1App_token');
             setUser(null);
         } finally {
             setLoading(false);
@@ -66,6 +66,38 @@ export const AuthProvider = ({ children }) => {
             }
         } catch (err) {
             const errMsg = err.response?.data?.message || 'Registration failed.';
+            setError(errMsg);
+            throw new Error(errMsg);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const startRegister = async (userData) => {
+        setLoading(true);
+        setError(null);
+        try {
+            return await authService.startRegister(userData);
+        } catch (err) {
+            const errMsg = err.response?.data?.message || 'Failed to send registration OTP.';
+            setError(errMsg);
+            throw new Error(errMsg);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const verifyRegister = async (phone, code) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await authService.verifyRegister(phone, code);
+            if (res.success) {
+                setUser(res.data.user);
+                return res.data.user;
+            }
+        } catch (err) {
+            const errMsg = err.response?.data?.message || 'Registration verification failed.';
             setError(errMsg);
             throw new Error(errMsg);
         } finally {
@@ -118,6 +150,8 @@ export const AuthProvider = ({ children }) => {
             error,
             login,
             register,
+            startRegister,
+            verifyRegister,
             logout,
             sendOTP,
             verifyOTP,

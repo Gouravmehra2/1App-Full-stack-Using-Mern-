@@ -72,7 +72,7 @@ const styles = {
         marginBottom: 20,
     },
     exploreLink: {
-        color: '#2e7d32',
+        color: '#A5732F',
         fontWeight: 700,
         fontSize: 15,
         textDecoration: 'none',

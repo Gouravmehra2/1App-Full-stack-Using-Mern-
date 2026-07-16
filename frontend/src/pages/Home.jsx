@@ -41,7 +41,7 @@ const Home = () => {
 
     useEffect(() => {
         // Check authentication
-        const token = localStorage.getItem('vmarc_token');
+        const token = localStorage.getItem('1App_token');
         setIsAuthenticated(!!token);
         fetchHomeData();
     }, []);
@@ -106,7 +106,7 @@ const Home = () => {
     // Handle book now - check auth then navigate to service detail
     const handleBookNow = (serviceId, e) => {
         e.stopPropagation(); // Prevent triggering the parent card click
-        const token = localStorage.getItem('vmarc_token');
+        const token = localStorage.getItem('1App_token');
         if (!token) {
             toast.warning('Please login to book services');
             navigate('/login');
@@ -170,92 +170,213 @@ const Home = () => {
                 />
             )}
 
-            {/* Hero Section */}
-            <div className="hero-section bg-white py-5">
-                <div className="container py-3">
-                    <div className="row align-items-center g-5">
-                        {/* Left: Title + Category Grid */}
-                        <div className="col-lg-6">
-                            <h1 className="display-4 fw-bold mb-4" style={{ color: '#111', lineHeight: 1.2 }}>
-                                At your Ease, At your Doorsteps!
-                            </h1>
-                            <div className="hero-category-box border rounded-4 p-4">
-                                <div className="row g-3">
-                                    {categories.map((cat, idx) => (
-                                        <div key={idx} className="col-3">
-                                            <div
-                                                className="hero-cat-item text-center p-2 rounded-3"
-                                                onClick={() => handleCategoryClick(cat.name)}
-                                                style={{ cursor: 'pointer' }}
-                                            >
-                                                <div className="hero-cat-icon mb-2 d-flex align-items-center justify-content-center mx-auto"
-                                                    style={{ width: 54, height: 54, background: '#f5f5f5', borderRadius: 12, overflow: 'hidden' }}>
-                                                    {cat.image ? (
-                                                        <img src={resolveCategoryImage(cat.image)} alt={cat.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                                    ) : (
-                                                        <FaTag size={24} className="text-muted" />
-                                                    )}
-                                                </div>
-                                                <div className="hero-cat-label" style={{ fontSize: '11px', color: '#333', lineHeight: 1.3 }}>
-                                                    {cat.name}
-                                                </div>
-                                            </div>
+            {/* Hero Section - Dark */}
+            <div style={{ padding: '12px' }}>
+                <div style={{
+                    position: 'relative',
+                    overflow: 'hidden',
+                    borderRadius: '32px',
+                    background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1208 60%, #0d0d0d 100%)',
+                    padding: '48px 48px 32px',
+                }}>
+                    {/* Background hero image (full) */}
+                    <img src={tryHeroImg('new_header_image.png')} alt="Hero" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.88, borderRadius: '32px', zIndex: 0 }} onError={(e) => { e.target.style.display = 'none'; }} />
+                    {/* Dark overlay so text stays readable */}
+                    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'linear-gradient(to right, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.55) 55%, rgba(10,10,10,0.2) 100%)', borderRadius: '32px', zIndex: 1 }} />
+
+                    {/* Content */}
+                    <div style={{ position: 'relative', zIndex: 3, maxWidth: '560px' }}>
+                        <h1 style={{ fontSize: 'clamp(36px, 4.5vw, 50px)', lineHeight: 1.1, color: '#fff', fontWeight: 800, marginBottom: '14px' }}>
+                            At your ease,<br />
+                            at your <span style={{ color: '#A5732F' }}>Doorsteps!</span>
+                        </h1>
+                        <p style={{ color: 'white', fontSize: '18px', lineHeight: 1.6, marginBottom: '20px' }}>
+                            All the services you need,right where you need them.
+                        </p>
+
+                        {/* Category Grid - dynamic from API (excludes Accounting/Finance, Education, Events & Media) */}
+                        <div
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(4, 1fr)',
+                                gap: '20px',
+                            }}
+                        >
+                            {categoriesWithSubs
+                                .filter(cat => {
+                                    const n = cat.name.toLowerCase().replace(/\s+/g, '');
+                                    return (
+                                        !n.includes('account') &&
+                                        !n.includes('financ') &&
+                                        !n.includes('educat') &&
+                                        !n.includes('event') &&
+                                        !n.includes('media')
+                                    );
+                                })
+                                .slice(0, 8)
+                                .map((cat, idx) => (
+                                <div
+                                    key={cat.id || cat._id || idx}
+                                    onClick={() => handleCategoryClick(cat.name)}
+                                    style={{
+                                        background:
+                                            'linear-gradient(180deg, #D99330 0%, #A5732F 50%, #D99330 100%)',
+                                        borderRadius: '22px',
+                                        padding: '1.5px',
+                                        cursor: 'pointer',
+                                        position: 'relative',
+                                        overflow: 'visible',
+                                        marginBottom: '10px',
+                                    }}
+                                >
+                                    {/* Inner Card */}
+                                    <div
+                                        style={{
+                                            background: '#12100a',
+                                            borderRadius: '20px',
+                                            padding: '18px 8px 24px',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            textAlign: 'center',
+                                            position: 'relative',
+                                            overflow: 'hidden',
+                                        }}
+                                    >
+                                        {/* Top-left blur */}
+                                        <div
+                                            style={{
+                                                position: 'absolute',
+                                                top: '-20px',
+                                                left: '-20px',
+                                                width: '80px',
+                                                height: '80px',
+                                                background: '#332F23',
+                                                borderRadius: '50%',
+                                                filter: 'blur(28px)',
+                                                opacity: 0.9,
+                                                pointerEvents: 'none',
+                                            }}
+                                        />
+
+                                        {/* Category Image from API */}
+                                        <div
+                                            style={{
+                                                width: '55px',
+                                                height: '55px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                position: 'relative',
+                                                zIndex: 1,
+                                            }}
+                                        >
+                                            {cat.image ? (
+                                                <img
+                                                    src={resolveCategoryImage(cat.image)}
+                                                    alt={cat.name}
+                                                    style={{
+                                                        width: '44px',
+                                                        height: '44px',
+                                                        objectFit: 'contain',
+                                                        display: 'block',
+                                                    }}
+                                                    onError={(e) => { e.target.style.display = 'none'; }}
+                                                />
+                                            ) : (
+                                                <FaTools size={28} style={{ color: '#A5732F' }} />
+                                            )}
                                         </div>
-                                    ))}
+
+                                        {/* Category Name from API */}
+                                        <span
+                                            style={{
+                                                color: '#fff',
+                                                fontSize: '12px',
+                                                fontWeight: 700,
+                                                lineHeight: 1.35,
+                                                textAlign: 'center',
+                                                position: 'relative',
+                                                zIndex: 1,
+                                                wordBreak: 'break-word',
+                                                whiteSpace: 'normal',
+                                                maxWidth: '90%',
+                                                marginTop: '6px',
+                                            }}
+                                        >
+                                            {cat.name.includes(' ') ? (
+                                                <>
+                                                    {cat.name
+                                                        .split(' ')
+                                                        .slice(0, Math.ceil(cat.name.split(' ').length / 2))
+                                                        .join(' ')}
+                                                    <br />
+                                                    {cat.name
+                                                        .split(' ')
+                                                        .slice(Math.ceil(cat.name.split(' ').length / 2))
+                                                        .join(' ')}
+                                                </>
+                                            ) : (
+                                                cat.name
+                                            )}
+                                        </span>
+                                    </div>
+
+                                    {/* Bottom Arrow */}
+                                    <div
+                                        style={{
+                                            position: 'absolute',
+                                            bottom: '-16px',
+                                            left: '50%',
+                                            transform: 'translateX(-50%)',
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '50%',
+                                            background:
+                                                'linear-gradient(180deg, #D99330 0%, #3B2300 100%)',
+                                            border: '1.5px solid #A5732F',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            zIndex: 3,
+                                        }}
+                                    >
+                                        <FaArrowRight size={11} style={{ color: '#fff' }} />
+                                    </div>
                                 </div>
-                            </div>
+                            ))}
                         </div>
 
-                        {/* Right: 2x2 Image Grid - img1&4 taller, img2&3 shorter */}
-                        <div className="col-lg-6">
-                            <div className="d-flex gap-3" style={{ height: '460px' }}>
-                                {/* Left column: img1 tall (62%), img3 short (38%) */}
-                                <div className="d-flex flex-column gap-3" style={{ flex: '0 0 57%' }}>
-                                    <div style={{ flex: '0 0 62%', borderRadius: '16px', overflow: 'hidden' }}>
-                                        <img src={tryHeroImg('hero1.png')} alt="IT Support" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
-                                        <div style={{ width: '100%', height: '100%', display: 'none', background: '#f0f0f0', alignItems: 'center', justifyContent: 'center' }}><FaLaptop size={48} className="text-muted" /></div>
-                                    </div>
-                                    <div style={{ flex: '0 0 34%', borderRadius: '16px', overflow: 'hidden' }}>
-                                        <img src={tryHeroImg('hero3.png')} alt="Cleaning" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
-                                        <div style={{ width: '100%', height: '100%', display: 'none', background: '#f0f0f0', alignItems: 'center', justifyContent: 'center' }}><FaSnowflake size={36} className="text-muted" /></div>
-                                    </div>
+                        {/* Trust badges */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginTop: '32px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <div style={{ width: 28, height: 28, border: '1.5px solid #A5732F', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <FaStar size={13} style={{ color: '#A5732F' }} />
                                 </div>
-                                {/* Right column: img2 short (38%), img4 tall (62%) */}
-                                <div className="d-flex flex-column gap-3" style={{ flex: '0 0 40%' }}>
-                                    <div style={{ flex: '0 0 34%', borderRadius: '16px', overflow: 'hidden' }}>
-                                        <img src={tryHeroImg('hero2.png')} alt="Taxi" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
-                                        <div style={{ width: '100%', height: '100%', display: 'none', background: '#f0f0f0', alignItems: 'center', justifyContent: 'center' }}><FaCar size={36} className="text-muted" /></div>
-                                    </div>
-                                    <div style={{ flex: '0 0 62%', borderRadius: '16px', overflow: 'hidden' }}>
-                                        <img src={tryHeroImg('hero4.png')} alt="Health" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
-                                        <div style={{ width: '100%', height: '100%', display: 'none', background: '#f0f0f0', alignItems: 'center', justifyContent: 'center' }}><FaGraduationCap size={36} className="text-muted" /></div>
-                                    </div>
-                                </div>
+                                <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px' }}>Verified Professionals</span>
                             </div>
-                        </div>
-                    </div>
-
-                    {/* Stats Row */}
-                    <div className="row mt-5 pt-3 border-top">
-                        <div className="col-auto d-flex align-items-center gap-3">
-                            <FaStar size={28} className="text-dark" />
-                            <span className="fw-bold fs-3">4.8</span>
-                            <span className="text-muted fs-5">Service Rating*</span>
-                        </div>
-                        <div className="col-auto d-flex align-items-center gap-3 ms-5">
-                            <span className="fw-bold fs-3">12M+</span>
-                            <span className="text-muted fs-5">Customers Globally*</span>
+                            <div style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.15)' }} />
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <FaClock size={15} style={{ color: '#A5732F' }} />
+                                <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px' }}>On-time Service</span>
+                            </div>
+                            <div style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.15)' }} />
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <FaTag size={14} style={{ color: '#A5732F' }} />
+                                <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px' }}>Upfront Pricing</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Offers & Discounts Section */}
+            {/*
             <section className="py-5 bg-white">
                 <div className="container">
                     <h2 className="fw-bold mb-4">Offers &amp; discounts</h2>
                     <div className="row g-4">
-                        {/* Card 1 - Wall Panels */}
                         <div className="col-md-4">
                             <div className="rounded-4 overflow-hidden d-flex" style={{ background: '#f5f0eb', minHeight: '180px' }}>
                                 <div className="p-4 d-flex flex-column justify-content-between" style={{ flex: 1 }}>
@@ -264,7 +385,7 @@ const Home = () => {
                                         <h5 className="fw-bold mb-2">Wall panels</h5>
                                         <p className="text-muted small">Transform your home in a day</p>
                                     </div>
-                                    <button className="btn btn-outline-dark btn-sm rounded-pill px-3" style={{ width: 'fit-content' }}>Explore</button>
+                                    <button className="btn btn-sm rounded-pill px-3" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }}>Explore</button>
                                 </div>
                                 <div style={{ width: '120px', flexShrink: 0, background: 'linear-gradient(135deg, #c8c8b8 0%, #a8a898 100%)' }} className="d-flex align-items-center justify-content-center">
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '3px', padding: '10px' }}>
@@ -275,8 +396,6 @@ const Home = () => {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Card 2 - AC Service */}
                         <div className="col-md-4">
                             <div className="rounded-4 overflow-hidden d-flex" style={{ background: '#f0f4ff', minHeight: '180px' }}>
                                 <div className="p-4 d-flex flex-column justify-content-between" style={{ flex: 1 }}>
@@ -284,7 +403,7 @@ const Home = () => {
                                         <h5 className="fw-bold mb-1">Deep clean with foam-jet AC service</h5>
                                         <p className="text-muted small">AC service &amp; repair</p>
                                     </div>
-                                    <button className="btn btn-dark btn-sm rounded-pill px-3" style={{ width: 'fit-content' }}>Book now</button>
+                                    <button className="btn btn-sm rounded-pill px-3" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }}>Book now</button>
                                 </div>
                                 <div style={{ width: '120px', flexShrink: 0, background: 'linear-gradient(160deg, #1a2a4a 0%, #2a4a6a 100%)' }} className="d-flex align-items-center justify-content-center">
                                     <div className="text-center text-white">
@@ -295,13 +414,11 @@ const Home = () => {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Card 3 - Kitchen Cleaning */}
                         <div className="col-md-4">
                             <div className="rounded-4 overflow-hidden d-flex" style={{ background: '#0d5c4a', minHeight: '180px' }}>
                                 <div className="p-4 d-flex flex-column justify-content-between" style={{ flex: 1 }}>
-                                    <h5 className="fw-bold text-white">Kitchen cleaning starting at ₹399 only</h5>
-                                    <button className="btn btn-outline-light btn-sm rounded-pill px-3" style={{ width: 'fit-content' }}>Book now</button>
+                                    <h5 className="fw-bold text-white">Kitchen cleaning starting at $399 only</h5>
+                                    <button className="btn btn-sm rounded-pill px-3" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }}>Book now</button>
                                 </div>
                                 <div style={{ width: '80px', flexShrink: 0, background: 'linear-gradient(180deg, #0a9e7a 0%, #07856a 100%)', borderRadius: '0 16px 16px 0' }} />
                             </div>
@@ -309,6 +426,7 @@ const Home = () => {
                     </div>
                 </div>
             </section>
+            */}
 
             {/* New & Noteworthy Section */}
             <section className="py-5 bg-white">
@@ -331,8 +449,8 @@ const Home = () => {
                                     className="rounded-4 overflow-hidden mb-3"
                                     style={{ height: '200px', background: '#f0f0f0' }}
                                 >
-                                    {service.subcategory.image ? (
-                                        <img src={resolveImageUrl(service.subcategory.image)} alt={service.subcategory || service.name} className="w-100 h-100" style={{ objectFit: 'cover' }} />
+                                    {service.featuredImage ? (
+                                        <img src={resolveImageUrl(service.featuredImage)} alt={service.name} className="w-100 h-100" style={{ objectFit: 'cover' }} />
                                     ) : (
                                         <div className="w-100 h-100 d-flex align-items-center justify-content-center">
                                             <FaTools size={40} className="text-muted" />
@@ -340,7 +458,7 @@ const Home = () => {
                                     )}
                                 </div>
                                 <div className="d-flex align-items-center justify-content-between">
-                                    <span className="fw-semibold text-dark" style={{ fontSize: '15px' }}>{service.subcategory?.name || service.name}</span>
+                                    <span className="fw-semibold text-dark" style={{ fontSize: '15px' }}>{service.name || service.name}</span>
                                     {idx === featuredServices.slice(0, 5).length - 1 && (
                                         <span className="text-success fw-semibold small ms-2" style={{ whiteSpace: 'nowrap' }}>● In 45 mins</span>
                                     )}
@@ -378,9 +496,9 @@ const Home = () => {
                                     <span className="text-muted small">· Instant</span>
                                 </div>
                                 <div className="d-flex align-items-center gap-2">
-                                    <span className="fw-bold">₹{service.price}</span>
+                                    <span className="fw-bold">${service.price}</span>
                                     {service.originalPrice && (
-                                        <span className="text-muted small text-decoration-line-through">₹{service.originalPrice}</span>
+                                        <span className="text-muted small text-decoration-line-through">${service.originalPrice}</span>
                                     )}
                                 </div>
                             </div>
@@ -389,77 +507,34 @@ const Home = () => {
                 </div>
             </section>
 
-
-            {/* Wall Panels + Smart Locks Banner */}
-            <section className="py-5 bg-white">
-                <div className="container">
-
-                    {/* Card 1 - Wall Panels */}
-                    <div className="rounded-4 overflow-hidden d-flex mb-4" style={{ background: '#f7f0ea', minHeight: '220px' }}>
-                        <div className="p-5 d-flex flex-column justify-content-center" style={{ flex: '0 0 45%' }}>
-                            <h2 className="fw-bold mb-2" style={{ color: '#1a1a1a', fontSize: '2rem' }}>Wall Panels</h2>
-                            <p className="text-muted mb-4">Level up your walls</p>
-                            <button className="btn btn-dark rounded-3 px-4 py-2" style={{ width: 'fit-content' }}>Know more</button>
-                        </div>
-                        <div style={{ flex: '0 0 55%', minHeight: '220px', overflow: 'hidden' }}>
-                            <img
-                                src={tryHeroImg('wallpanel.png')}
-                                alt="Wall Panels"
-                                className="w-100 h-100"
-                                style={{ objectFit: 'cover' }}
-                                onError={(e) => {
-                                    e.target.style.display = 'none';
-                                    e.target.nextSibling.style.display = 'flex';
-                                }}
-                            />
-                            <div className="w-100 h-100 align-items-center justify-content-center bg-secondary" style={{ display: 'none', minHeight: '220px' }}>
-                                <FaHome size={60} className="text-white" />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Card 2 - Smart Locks */}
-                    <div className="rounded-4 overflow-hidden position-relative" style={{ minHeight: '280px', background: '#2a2018' }}>
-                        <img
-                            src={tryHeroImg('smartlock.png')}
-                            alt="Smart Locks"
-                            className="position-absolute w-100 h-100"
-                            style={{ objectFit: 'cover', top: 0, left: 0, opacity: 0.7 }}
-                            onError={(e) => { e.target.style.display = 'none'; }}
-                        />
-                        <div className="position-relative p-5 d-flex flex-column justify-content-center" style={{ minHeight: '280px', maxWidth: '340px' }}>
-                            <span
-                                className="fw-semibold text-white px-3 py-1 rounded-pill mb-4"
-                                style={{ background: '#2e7d32', fontSize: '11px', width: 'fit-content', letterSpacing: '0.5px' }}
-                            >
-                                UP TO ₹1,700 OFF
-                            </span>
-                            <p className="text-white mb-1" style={{ fontSize: '13px', opacity: 0.8 }}>ONE-APP</p>
-                            <h2 className="fw-bold text-white mb-3" style={{ fontSize: '2.5rem' }}>Smart locks</h2>
-                            <p className="text-white mb-4" style={{ opacity: 0.85, lineHeight: 1.8 }}>
-                                Camera.<br />Doorbell.<br />All-in one.
-                            </p>
-                            <button className="btn btn-light rounded-3 px-4 py-2 fw-semibold" style={{ width: 'fit-content' }}>Buy now</button>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
-            {/* Cleaning Essentials */}
+            {/* Home Services */}
             {(() => {
-                const cat = getCategoryByName('HomeServices'); if (!cat) return null; return (
+                const cat = getCategoryByName('HomeServices');
+                if (!cat) return null;
+                
+                // Define the specific subcategories we want to show
+                const targetSubcategories = ['Smart Home', 'Diagnostic', 'Home Theater', 'TV Mounting'];
+                
+                // Filter and sort subcategories to match the target order
+                const sortedSubcategories = targetSubcategories
+                    .map(name => cat.subcategories.find(sub => 
+                        sub.name.toLowerCase().includes(name.toLowerCase()) ||
+                        name.toLowerCase().includes(sub.name.toLowerCase())
+                    ))
+                    .filter(sub => sub); // Remove any undefined entries
+                
+                return (
                     <section className="py-5 bg-white">
                         <div className="container">
                             <div className="d-flex justify-content-between align-items-start mb-4">
                                 <div>
                                     <h2 className="fw-bold mb-1">{cat.name}</h2>
-                                    <p className="text-muted small mb-0">Monthly cleaning essential services</p>
+                                    <p className="text-muted small mb-0">Professional home technology and installation services</p>
                                 </div>
                                 <button onClick={() => navigate(`/services?category=${cat.id}`)} className="btn btn-link text-dark fw-semibold text-decoration-none p-0">See all</button>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
-                                {cat.subcategories.slice(0, 4).map((sub, idx) => (
+                                {sortedSubcategories.slice(0, 4).map((sub, idx) => (
                                     <div key={idx} onClick={() => navigate(`/services?subcategory=${sub._id}`)} style={{ cursor: 'pointer', minWidth: 0 }}>
                                         <div className="rounded-4 overflow-hidden mb-3" style={{ height: '220px', background: '#f0f0f0' }}>
                                             {sub.image ? (
@@ -470,7 +545,7 @@ const Home = () => {
                                         </div>
                                         <div className="fw-semibold text-dark mb-1" style={{ fontSize: '15px' }}>{sub.name}</div>
                                         <div className="d-flex align-items-center gap-2">
-                                            <span className="fw-bold">₹{sub.startingFromPrice}</span>
+                                            <span className="fw-bold">${sub.startingFromPrice}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -480,7 +555,8 @@ const Home = () => {
                 );
             })()}
 
-            {/* It Services */}
+            {/* IT Services */}
+            {/*
             {(() => {
                 const cat = getCategoryByName('IT '); if (!cat) return null; return (
                     <section className="py-5 bg-white">
@@ -504,7 +580,7 @@ const Home = () => {
                                         </div>
                                         <div className="fw-semibold text-dark mb-1" style={{ fontSize: '15px' }}>{sub.name}</div>
                                         <div className="d-flex align-items-center gap-2">
-                                            <span className="fw-bold">₹{sub.startingFromPrice}</span>
+                                            <span className="fw-bold">${sub.startingFromPrice}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -513,6 +589,7 @@ const Home = () => {
                     </section>
                 );
             })()}
+            */}
 
             {/* Home Painting Banner */}
             <section className="py-5 bg-white">
@@ -521,7 +598,7 @@ const Home = () => {
                         <div className="p-5 d-flex flex-column justify-content-center" style={{ flex: '0 0 45%' }}>
                             <h2 className="fw-bold mb-2" style={{ color: '#1a1a1a', fontSize: '1.6rem', lineHeight: 1.3 }}>Give your space the glow-up it deserves</h2>
                             <p className="text-muted mb-4">Home painting</p>
-                            <button className="btn btn-dark rounded-3 px-4 py-2" style={{ width: 'fit-content' }}>Buy now</button>
+                            <button className="btn rounded-3 px-4 py-2" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }}>Buy now</button>
                         </div>
                         <div style={{ flex: '0 0 55%', overflow: 'hidden' }}>
                             <img
@@ -539,7 +616,8 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* BusinessServices */}
+            {/* Business Services */}
+            {/*
             {(() => {
                 const cat = getCategoryByName('BusinessServices'); if (!cat) return null; return (
                     <section className="py-5 bg-white">
@@ -563,7 +641,7 @@ const Home = () => {
                                         </div>
                                         <div className="fw-semibold text-dark mb-1" style={{ fontSize: '15px' }}>{sub.name}</div>
                                         <div className="d-flex align-items-center gap-2">
-                                            <span className="fw-bold">₹{sub.startingFromPrice}</span>
+                                            <span className="fw-bold">${sub.startingFromPrice}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -572,6 +650,7 @@ const Home = () => {
                     </section>
                 );
             })()}
+            */}
 
             {/* Home Repair & Installation */}
             {(() => {
@@ -597,7 +676,7 @@ const Home = () => {
                                         </div>
                                         <div className="fw-semibold text-dark mb-1" style={{ fontSize: '15px' }}>{sub.name}</div>
                                         <div className="d-flex align-items-center gap-2">
-                                            <span className="fw-bold">₹{sub.startingFromPrice}</span>
+                                            <span className="fw-bold">${sub.startingFromPrice}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -608,6 +687,7 @@ const Home = () => {
             })()}
 
             {/* Beauty & Personal Care */}
+            {/*
             {(() => {
                 const cat = getCategoryByName('Beauty'); if (!cat) return null; return (
                     <section className="py-5 bg-white">
@@ -631,7 +711,7 @@ const Home = () => {
                                         </div>
                                         <div className="fw-semibold text-dark mb-1" style={{ fontSize: '15px' }}>{sub.name}</div>
                                         <div className="d-flex align-items-center gap-2">
-                                            <span className="fw-bold">₹{sub.startingFromPrice}</span>
+                                            <span className="fw-bold">${sub.startingFromPrice}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -640,17 +720,18 @@ const Home = () => {
                     </section>
                 );
             })()}
+            */}
 
             {/* RO Water Purifier Banner */}
-            <section className="py-5 bg-white">
+            {/* <section className="py-5 bg-white">
                 <div className="container">
                     <div className="rounded-4 overflow-hidden d-flex" style={{ background: '#d6d9e0', minHeight: '220px' }}>
                         <div className="p-5 d-flex flex-column justify-content-center" style={{ flex: '0 0 45%' }}>
-                            <span className="fw-semibold text-white px-3 py-1 rounded-2 mb-3" style={{ background: '#2e7d32', fontSize: '11px', width: 'fit-content' }}>UP TO ₹3,100 OFF</span>
+                            <span className="fw-semibold text-white px-3 py-1 rounded-2 mb-3" style={{ background: '#A5732F', fontSize: '11px', width: 'fit-content' }}>UP TO $3,100 OFF</span>
                             <p className="mb-1" style={{ fontSize: '12px', color: '#444', letterSpacing: '0.5px' }}>ONE-APP</p>
                             <h2 className="fw-bold mb-2" style={{ color: '#1a1a1a', fontSize: '2rem', lineHeight: 1.2 }}>RO water purifier</h2>
                             <p className="text-muted mb-4">Needs no service for 2 years</p>
-                            <button className="btn btn-light border rounded-3 px-4 py-2 fw-semibold" style={{ width: 'fit-content' }}>Buy now</button>
+                            <button className="btn rounded-3 px-4 py-2 fw-semibold" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }}>Buy now</button>
                         </div>
                         <div style={{ flex: '0 0 55%', overflow: 'hidden' }}>
                             <img
@@ -666,7 +747,7 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* Personal Care for Men */}
             {(() => {
@@ -692,7 +773,7 @@ const Home = () => {
                                         </div>
                                         <div className="fw-semibold text-dark mb-1" style={{ fontSize: '15px' }}>{sub.name}</div>
                                         <div className="d-flex align-items-center gap-2">
-                                            <span className="fw-bold">₹{sub.startingFromPrice}</span>
+                                            <span className="fw-bold">${sub.startingFromPrice}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -702,7 +783,8 @@ const Home = () => {
                 );
             })()}
 
-            {/* Transportation */}
+            {/* Transportation Services */}
+            {/*
             {(() => {
                 const cat = getCategoryByName('Transportation'); if (!cat) return null; return (
                     <section className="py-5 bg-white">
@@ -726,7 +808,7 @@ const Home = () => {
                                         </div>
                                         <div className="fw-semibold text-dark mb-1" style={{ fontSize: '15px' }}>{sub.name}</div>
                                         <div className="d-flex align-items-center gap-2">
-                                            <span className="fw-bold">₹{sub.startingFromPrice}</span>
+                                            <span className="fw-bold">${sub.startingFromPrice}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -735,10 +817,13 @@ const Home = () => {
                     </section>
                 );
             })()}
+            */}
 
 
 
             {/* All Home Services Banner */}
+            {/* 
+            
             <section className="py-5 bg-white">
                 <div className="container">
                     <div className="rounded-4 overflow-hidden position-relative" style={{ background: '#111', minHeight: '380px' }}>
@@ -749,14 +834,14 @@ const Home = () => {
                             style={{ objectFit: 'cover', top: 0, right: 0, width: '55%', opacity: 0.9 }}
                             onError={(e) => { e.target.style.display = 'none'; }}
                         />
-                        {/* Dark gradient overlay on left */}
+                  
                         <div className="position-absolute h-100" style={{ top: 0, left: 0, width: '60%', background: 'linear-gradient(to right, #111 60%, transparent 100%)' }} />
                         <div className="position-relative p-5 d-flex flex-column justify-content-center" style={{ minHeight: '380px', maxWidth: '520px' }}>
-                            <span className="fw-bold text-white px-3 py-1 rounded-2 mb-3" style={{ background: '#2e7d32', fontSize: '11px', width: 'fit-content', letterSpacing: '0.5px' }}>ONE APP. ALL SERVICES.</span>
+                            <span className="fw-bold text-white px-3 py-1 rounded-2 mb-3" style={{ background: '#A5732F', fontSize: '11px', width: 'fit-content', letterSpacing: '0.5px' }}>ONE APP. ALL SERVICES.</span>
                             <p className="text-white mb-1" style={{ fontSize: '12px', opacity: 0.7, letterSpacing: '1px' }}>ONE-APP</p>
                             <h2 className="fw-bold text-white mb-2" style={{ fontSize: '2.4rem', lineHeight: 1.2 }}>All Home Services<br />in One App</h2>
                             <p className="mb-4" style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', lineHeight: 1.6 }}>Everything your home needs,<br />delivered by trusted experts.</p>
-                            {/* Service Icons Grid */}
+                            
                             <div className="d-flex flex-wrap gap-0 mb-4" style={{ maxWidth: '420px' }}>
                                 {[
                                     { icon: <FaTools />, label: 'Cleaning' },
@@ -777,11 +862,11 @@ const Home = () => {
                                     </div>
                                 ))}
                             </div>
-                            {/* Bottom Row */}
+                           
                             <div className="d-flex align-items-center gap-4 flex-wrap">
-                                <button className="btn btn-light fw-semibold rounded-3 px-4 py-2" onClick={() => navigate('/services')}>Book Now</button>
+                                <button className="btn fw-semibold rounded-3 px-4 py-2" style={{ background: '#A5732F', color: '#fff', border: 'none' }} onClick={() => navigate('/services')}>Book Now</button>
                                 <div className="d-flex align-items-center gap-2" style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px' }}>
-                                    <FaShieldAlt style={{ color: '#4caf50' }} />
+                                    <FaShieldAlt style={{ color: '#A5732F' }} />
                                     <span>Verified Professionals</span>
                                     <span>·</span>
                                     <span>On-time Service</span>
@@ -792,7 +877,12 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> 
+            
+            
+            */}
+
+
 
             {/* Exclusive Home Services Offers */}
             <section className="py-5 bg-white">
@@ -806,10 +896,10 @@ const Home = () => {
                             style={{ overflowX: 'auto', scrollbarWidth: 'none', scrollBehavior: 'smooth' }}
                         >
                             {[
-                                { badge: 'UP TO ₹500 OFF', title: 'Home Cleaning', desc: 'Deep Cleaning. Sofa Cleaning. Spotless Spaces.', img: 'cleaning_image.png', category: 'Cleaning' },
+                                { badge: 'UP TO $500 OFF', title: 'Home Cleaning', desc: 'Deep Cleaning. Sofa Cleaning. Spotless Spaces.', img: 'cleaning_image.png', category: 'Cleaning' },
                                 { badge: 'SAME DAY SERVICE', title: 'Plumbing', desc: 'Leak Repairs. Pipe Installation. Water Solutions.', img: 'plumbing_image.png', category: 'Plumbing' },
                                 { badge: 'CERTIFIED EXPERTS', title: 'Electrical', desc: 'Switches. Wiring. Safe Installations.', img: 'electrician.png', category: 'Electrical' },
-                                { badge: 'UP TO ₹300 OFF', title: 'Handyman', desc: 'Repairs. Installations. Fix Anything.', img: 'handy_man.png', category: 'Handyman' },
+                                { badge: 'UP TO $300 OFF', title: 'Handyman', desc: 'Repairs. Installations. Fix Anything.', img: 'handy_man.png', category: 'Handyman' },
                                 { badge: 'SAME DAY SERVICE', title: 'AC & Appliance', desc: 'AC Service. Appliance Repair. Quick Fix.', img: 'ac_repair.png', category: 'AC & Appliance' },
                             ].map((item, idx) => (
                                 <div
@@ -827,14 +917,14 @@ const Home = () => {
                                     />
                                     <div className="position-relative p-4 d-flex flex-column justify-content-between" style={{ minHeight: '260px' }}>
                                         <div>
-                                            <span className="fw-bold text-white px-2 py-1 rounded-2 mb-2 d-inline-block" style={{ background: '#2e7d32', fontSize: '10px', letterSpacing: '0.5px' }}>{item.badge}</span>
+                                            <span className="fw-bold text-white px-2 py-1 rounded-2 mb-2 d-inline-block" style={{ background: '#A5732F', fontSize: '10px', letterSpacing: '0.5px' }}>{item.badge}</span>
                                             <p className="text-white mb-1" style={{ fontSize: '11px', opacity: 0.7, letterSpacing: '1px' }}>ONE-APP</p>
                                             <h4 className="fw-bold text-white mb-2">{item.title}</h4>
                                             <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '13px', lineHeight: 1.6 }}>{item.desc}</p>
                                         </div>
                                         <button
-                                            className="btn btn-light fw-semibold rounded-3 px-4 py-2"
-                                            style={{ width: 'fit-content' }}
+                                            className="btn fw-semibold rounded-3 px-4 py-2"
+                                            style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }}
                                             onClick={(e) => { e.stopPropagation(); handleCategoryClick(item.category); }}
                                         >
                                             Book Now
@@ -878,7 +968,7 @@ const Home = () => {
                                     <span className="fw-bold text-white px-2 py-1 rounded-2 mb-3 d-inline-block" style={{ background: '#7c3aed', fontSize: '10px', width: 'fit-content' }}>Top Rated</span>
                                     <h4 className="fw-bold text-white mb-2">Custom Software &amp; App Development</h4>
                                     <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '13px' }}>Build your dream product with our expert development teams.</p>
-                                    <button className="btn btn-light fw-semibold rounded-3 px-4 py-2 mt-2" style={{ width: 'fit-content' }} onClick={(e) => { e.stopPropagation(); handleCategoryClick('IT & Technology'); }}>Get a Quote</button>
+                                    <button className="btn fw-semibold rounded-3 px-4 py-2 mt-2" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={(e) => { e.stopPropagation(); handleCategoryClick('IT & Technology'); }}>Get a Quote</button>
                                 </div>
                             </div>
                         </div>
@@ -886,7 +976,7 @@ const Home = () => {
                             {[{ icon: <FaLaptop size={20} />, title: 'Web Design', desc: 'Stunning UI/UX for your brand.' }, { icon: <FaUserMd size={20} />, title: 'IT Support', desc: '24/7 technical assistance.' }].map((item, idx) => (
                                 <div key={idx} className="rounded-4 border p-4 d-flex flex-column justify-content-between flex-grow-1" style={{ cursor: 'pointer' }} onClick={() => handleCategoryClick('IT & Technology')}>
                                     <div className="mb-3"><div className="mb-3 text-dark">{item.icon}</div><div className="fw-bold mb-1" style={{ fontSize: '15px' }}>{item.title}</div><div className="text-muted small">{item.desc}</div></div>
-                                    <button className="btn btn-dark btn-sm rounded-3 px-3" style={{ width: 'fit-content' }} onClick={(e) => { e.stopPropagation(); handleCategoryClick('IT & Technology'); }}>Contact now</button>
+                                    <button className="btn btn-sm rounded-3 px-3" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={(e) => { e.stopPropagation(); handleCategoryClick('IT & Technology'); }}>Contact now</button>
                                 </div>
                             ))}
                         </div>
@@ -907,7 +997,7 @@ const Home = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button className="btn btn-dark rounded-3 px-4 py-2 mt-4" style={{ width: 'fit-content' }} onClick={() => handleCategoryClick('IT & Technology')}>Know more</button>
+                            <button className="btn rounded-3 px-4 py-2 mt-4" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={() => handleCategoryClick('IT & Technology')}>Know more</button>
                         </div>
                         <div style={{ flex: '0 0 45%', position: 'relative', minHeight: '320px' }}>
                             <img src={tryHeroImg('it-marketing.png')} alt="IT & Marketing" className="position-absolute w-100 h-100" style={{ objectFit: 'cover', top: 0, left: 0 }} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
@@ -947,7 +1037,7 @@ const Home = () => {
                                             <div className="d-flex align-items-center justify-content-between mt-3 pt-3 border-top">
                                                 <div>
                                                     <div className="text-muted" style={{ fontSize: '11px' }}>Standard Package</div>
-                                                    <div style={{ fontSize: '13px' }}>Starts From <span className="fw-bold">₹{sub.startingFromPrice}</span></div>
+                                                    <div style={{ fontSize: '13px' }}>Starts From <span className="fw-bold">${sub.startingFromPrice}</span></div>
                                                 </div>
                                                 <button className="btn p-2 rounded-2" style={{ background: '#f5f5f5', border: 'none' }}>
                                                     <FaPhone size={14} className="text-dark" />
@@ -965,20 +1055,20 @@ const Home = () => {
 
 
             {/* Elevate Lifestyle Section */}
-            <section className="py-5 bg-white">
+            {/* <section className="py-5 bg-white">
                 <div className="container">
                     <div className="row g-3">
-                        {/* Left dark card */}
+                       
                         <div className="col-lg-4">
                             <div className="rounded-4 p-4 h-100 d-flex flex-column justify-content-between" style={{ background: '#1a1a1a', minHeight: '220px' }}>
                                 <div>
                                     <h2 className="fw-bold text-white mb-3" style={{ fontSize: '1.8rem', lineHeight: 1.2 }}>Elevate your lifestyle.</h2>
                                     <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '13px', lineHeight: 1.6 }}>Certified professionals at your doorstep. We prioritize quality, safety, and your peace of mind.</p>
                                 </div>
-                                <button className="btn btn-light rounded-pill px-4 py-2 fw-semibold" style={{ width: 'fit-content', fontSize: '13px' }}>Join Plus Membership</button>
+                                <button className="btn rounded-pill px-4 py-2 fw-semibold" style={{ width: 'fit-content', fontSize: '13px', background: '#A5732F', color: '#fff', border: 'none' }}>Join Plus Membership</button>
                             </div>
                         </div>
-                        {/* Right 2x2 feature grid */}
+                        
                         <div className="col-lg-8">
                             <div className="row g-3 h-100">
                                 {[
@@ -989,7 +1079,7 @@ const Home = () => {
                                 ].map((item, idx) => (
                                     <div key={idx} className="col-6">
                                         <div className="rounded-4 p-4 h-100 d-flex flex-column align-items-start justify-content-center" style={{ background: '#f5f5f5', minHeight: '100px' }}>
-                                            <span style={{ color: '#2e7d32', marginBottom: '10px' }}>{item.icon}</span>
+                                            <span style={{ color: '#A5732F', marginBottom: '10px' }}>{item.icon}</span>
                                             <span className="fw-semibold" style={{ fontSize: '14px' }}>{item.label}</span>
                                         </div>
                                     </div>
@@ -998,9 +1088,10 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* Health & Wellness */}
+            {/*
             {(() => {
                 const cat = getCategoryByName('Health'); if (!cat) return null; return (
                     <section className="py-5 bg-white">
@@ -1023,7 +1114,7 @@ const Home = () => {
                                             )}
                                         </div>
                                         <div className="fw-bold mb-1" style={{ fontSize: '15px' }}>{sub.name}</div>
-                                        <div className="text-muted small">Starts at ₹{sub.startingFromPrice}</div>
+                                        <div className="text-muted small">Starts at ${sub.startingFromPrice}</div>
                                     </div>
                                 ))}
                             </div>
@@ -1031,9 +1122,11 @@ const Home = () => {
                     </section>
                 );
             })()}
+            */}
 
             {/* Accounting & Finance Banner */}
-            <section className="py-5 bg-white">
+            
+            {/* <section className="py-5 bg-white">
                 <div className="container">
                     <div className="rounded-4 overflow-hidden position-relative" style={{ minHeight: '300px', background: '#1a1a1a' }}>
                         <img
@@ -1043,23 +1136,22 @@ const Home = () => {
                             style={{ objectFit: 'cover', top: 0, left: 0, opacity: 0.55 }}
                             onError={(e) => { e.target.style.display = 'none'; }}
                         />
-                        {/* left-to-right dark fade */}
                         <div className="position-absolute w-100 h-100" style={{ top: 0, left: 0, background: 'linear-gradient(to right, rgba(15,15,15,0.95) 40%, transparent 100%)' }} />
                         <div className="position-relative p-5 d-flex flex-column justify-content-center" style={{ minHeight: '300px', maxWidth: '420px' }}>
-                            <span className="fw-bold text-white px-2 py-1 rounded-2 mb-3 d-inline-block" style={{ background: '#2e7d32', fontSize: '10px', width: 'fit-content', letterSpacing: '0.5px' }}>UP TO ₹1,700 OFF</span>
+                            <span className="fw-bold text-white px-2 py-1 rounded-2 mb-3 d-inline-block" style={{ background: '#A5732F', fontSize: '10px', width: 'fit-content', letterSpacing: '0.5px' }}>UP TO $1,700 OFF</span>
                             <p className="text-white mb-1" style={{ fontSize: '11px', opacity: 0.7, letterSpacing: '1.5px' }}>ONE-APP</p>
                             <h2 className="fw-bold text-white mb-3" style={{ fontSize: '2.2rem', lineHeight: 1.2 }}>Accounting<br />&amp; Finance</h2>
                             <p className="text-white mb-4" style={{ opacity: 0.8, lineHeight: 2, fontSize: '14px' }}>
                                 Accounting.<br />Bookkeeping.<br />Tax Services.<br />Financial Consulting.
                             </p>
-                            <button className="btn btn-light fw-semibold rounded-3 px-4 py-2" style={{ width: 'fit-content' }} onClick={() => handleCategoryClick('Accounting & Finance')}>Buy now</button>
+                            <button className="btn fw-semibold rounded-3 px-4 py-2" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={() => handleCategoryClick('Accounting & Finance')}>Buy now</button>
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* Accounting and Finance Services */}
-            {(() => {
+            {/* {(() => {
                 const cat = getCategoryByName('Accounting'); if (!cat) return null; return (
                     <section className="py-5 bg-white">
                         <div className="container">
@@ -1081,18 +1173,18 @@ const Home = () => {
                                             )}
                                         </div>
                                         <div className="fw-bold mb-1" style={{ fontSize: '15px' }}>{sub.name}</div>
-                                        <div className="text-muted small">Starts at ₹{sub.startingFromPrice}</div>
+                                        <div className="text-muted small">Starts at ${sub.startingFromPrice}</div>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </section>
                 );
-            })()}
+            })()} */}
 
 
             {/* Education Section */}
-            <section className="py-5 bg-white">
+            {/* <section className="py-5 bg-white">
                 <div className="container">
                     <div className="rounded-4 overflow-hidden position-relative" style={{ background: 'linear-gradient(135deg, #fdf6e3 0%, #fce8d5 50%, #e8f4f8 100%)', minHeight: '510px' }}>
                         <img
@@ -1105,12 +1197,11 @@ const Home = () => {
 
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* Education Services Section */}
-            <section className="py-5 bg-white">
+            {/* <section className="py-5 bg-white">
                 <div className="container">
-                    {/* Header */}
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <div>
                             <h2 className="fw-bold mb-0">Education Services</h2>
@@ -1119,13 +1210,12 @@ const Home = () => {
                         <button onClick={() => handleViewAllServices('Education')} className="btn btn-link text-dark fw-semibold text-decoration-none p-0">See All &rarr;</button>
                     </div>
 
-                    {/* 2x2 Dark Cards Grid */}
                     <div className="row g-3 mb-3">
                         {[
-                            { badge: 'UP TO ₹400 OFF', badgeBg: '#2e7d32', title: 'Tutoring', desc: 'Academic Excellence.\nExpert.\nYour Sound.', img: 'tutoring.png' },
-                            { badge: 'FREE DEMO', badgeBg: '#2e7d32', title: 'Language Training', desc: 'Master New Languages.\nFluency Guaranteed.', img: 'language.png' },
+                            { badge: 'UP TO $400 OFF', badgeBg: '#A5732F', title: 'Tutoring', desc: 'Academic Excellence.\nExpert.\nYour Sound.', img: 'tutoring.png' },
+                            { badge: 'FREE DEMO', badgeBg: '#A5732F', title: 'Language Training', desc: 'Master New Languages.\nFluency Guaranteed.', img: 'language.png' },
                             { badge: 'EXPERT COACHES', badgeBg: '#7c3aed', title: 'Music Lessons', desc: 'Learn Instruments.\nDiscover.\nYour Sound.', img: 'music.png' },
-                            { badge: 'BEST SELLER', badgeBg: '#2e7d32', title: 'Skill Development', desc: 'Master New Crafts.\nCareer Ready.', img: 'skill.png' },
+                            { badge: 'BEST SELLER', badgeBg: '#A5732F', title: 'Skill Development', desc: 'Master New Crafts.\nCareer Ready.', img: 'skill.png' },
                         ].map((item, idx) => (
                             <div key={idx} className="col-6">
                                 <div className="rounded-4 overflow-hidden position-relative" style={{ minHeight: '215px', background: '#222', cursor: 'pointer' }} onClick={() => handleCategoryClick('Education')}>
@@ -1139,22 +1229,21 @@ const Home = () => {
                                                 {item.desc.split('\n').map((l, i) => <span key={i}>{l}<br /></span>)}
                                             </p>
                                         </div>
-                                        <button className="btn btn-light btn-sm fw-semibold rounded-3 px-3" style={{ width: 'fit-content' }} onClick={(e) => { e.stopPropagation(); handleCategoryClick('Education'); }}>Book Now</button>
+                                        <button className="btn btn-sm fw-semibold rounded-3 px-3" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={(e) => { e.stopPropagation(); handleCategoryClick('Education'); }}>Book Now</button>
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </div>
 
-                    {/* Trust + Learning Lab Row */}
                     <div className="row g-3 mb-3">
                         <div className="col-lg-8">
                             <div className="rounded-4 border p-4" style={{ background: '#fff' }}>
                                 <h6 className="fw-bold mb-2">Certified Professionals only.</h6>
                                 <p className="text-muted small mb-5">Every educator on Oneapp Services or Partner Platform undergoes a rigorous 5-step background verification and skill assessment process before joining our elite network.</p>
                                 <div className="d-flex gap-3">
-                                    <span className="d-flex align-items-center gap-1" style={{ fontSize: '12px', color: '#2e7d32' }}><FaShieldAlt size={12} /> Identity Verified</span>
-                                    <span className="d-flex align-items-center gap-1" style={{ fontSize: '12px', color: '#2e7d32' }}><FaGraduationCap size={12} /> Degree Verified</span>
+                                    <span className="d-flex align-items-center gap-1" style={{ fontSize: '12px', color: '#A5732F' }}><FaShieldAlt size={12} /> Identity Verified</span>
+                                    <span className="d-flex align-items-center gap-1" style={{ fontSize: '12px', color: '#A5732F' }}><FaGraduationCap size={12} /> Degree Verified</span>
                                 </div>
                             </div>
                         </div>
@@ -1170,12 +1259,12 @@ const Home = () => {
                         </div>
                     </div>
 
-                    {/* Events & Media Banner */}
+                   
                     <div className="rounded-4 overflow-hidden position-relative" style={{ minHeight: '280px', background: '#111' }}>
                         <img src={tryHeroImg('events.png')} alt="Events & Media" className="position-absolute w-100 h-100" style={{ objectFit: 'cover', top: 0, left: 0, opacity: 0.55 }} onError={(e) => { e.target.style.display = 'none'; }} />
                         <div className="position-absolute w-100 h-100" style={{ top: 0, left: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.85) 45%, transparent 100%)' }} />
                         <div className="position-relative p-5 d-flex flex-column justify-content-center" style={{ minHeight: '280px', maxWidth: '420px' }}>
-                            <span className="fw-bold text-white px-2 py-1 rounded-2 mb-3 d-inline-block" style={{ background: '#7c3aed', fontSize: '10px', width: 'fit-content' }}>UP TO ₹3,100 OFF</span>
+                            <span className="fw-bold text-white px-2 py-1 rounded-2 mb-3 d-inline-block" style={{ background: '#7c3aed', fontSize: '10px', width: 'fit-content' }}>UP TO $3,100 OFF</span>
                             <p className="text-white mb-1" style={{ fontSize: '10px', opacity: 0.7, letterSpacing: '1px' }}>ONE-APP</p>
                             <h3 className="fw-bold text-white mb-2">Events &amp; Media</h3>
                             <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '13px', lineHeight: 1.7 }}>Professional solutions for every occasion. From intimate gatherings to grand celebrations, we bring your vision to life.</p>
@@ -1184,16 +1273,17 @@ const Home = () => {
                                     <span key={i} className="px-3 py-1 rounded-pill" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: '11px' }}>{tag}</span>
                                 ))}
                             </div>
-                            <button className="btn btn-light fw-semibold rounded-3 px-4 py-2" style={{ width: 'fit-content' }} onClick={() => handleCategoryClick('Events & Media')}>Book Now &rarr;</button>
+                            <button className="btn fw-semibold rounded-3 px-4 py-2" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={() => handleCategoryClick('Events & Media')}>Book Now &rarr;</button>
                         </div>
                         <div className="position-absolute" style={{ bottom: '20px', right: '30px' }}>
                             <span className="fw-bold text-white" style={{ fontSize: '11px', opacity: 0.4, letterSpacing: '3px' }}>EVENTS &amp; MEDIA SERVICES</span>
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* Our Expertise Services */}
+            {/*
             {(() => {
                 const cat = getCategoryByName('Event'); if (!cat) return null; return (
                     <section className="py-5 bg-white">
@@ -1210,13 +1300,13 @@ const Home = () => {
                                     <div key={idx} onClick={() => navigate(`/services?subcategory=${sub._id}`)} className="col-lg-3 col-md-6" style={{ cursor: 'pointer' }}>
                                         <div className="rounded-4 overflow-hidden mb-3" style={{ height: '220px', background: '#f0f0f0' }}>
                                             {sub.image ? (
-                                                <img src={resolveCategoryImage(sub.image)} alt={sub.name} className="w-100 h-100" style={{ objectFit: 'contain' }} />
+                                                <img src={resolveCategoryImage(sub.image)} alt={sub.name} className="w-100 h-100" style={{ objectFit: 'COVER' }} />
                                             ) : (
                                                 <div className="w-100 h-100 d-flex align-items-center justify-content-center"><FaCamera size={40} className="text-muted" /></div>
                                             )}
                                         </div>
                                         <div className="fw-bold mb-1" style={{ fontSize: '15px' }}>{sub.name}</div>
-                                        <div className="text-muted small">Starts at ₹{sub.startingFromPrice}</div>
+                                        <div className="text-muted small">Starts at ${sub.startingFromPrice}</div>
                                     </div>
                                 ))}
                             </div>
@@ -1224,6 +1314,7 @@ const Home = () => {
                     </section>
                 );
             })()}
+            */}
 
 
 
@@ -1246,7 +1337,7 @@ const Home = () => {
                             <p className="text-muted mb-5" style={{ fontSize: '16px', lineHeight: 1.8 }}>
                                 We believe deeply in driving social and economic progress across the region. We use our app to connect customers to the communities that need the most support.
                             </p>
-                            <button className="btn fw-bold px-4 py-2 rounded-3" style={{ background: '#2e7d32', color: '#fff', fontSize: '15px' }}>
+                            <button className="btn fw-bold px-4 py-2 rounded-3" style={{ background: '#A5732F', color: '#fff', fontSize: '15px', border: 'none' }}>
                                 Read more
                             </button>
                         </div>

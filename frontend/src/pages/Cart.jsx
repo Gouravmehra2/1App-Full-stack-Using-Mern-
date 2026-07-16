@@ -9,8 +9,8 @@ import SlotModal from '../components/SlotModal';
 
 const getStoredBookingSelection = () => {
     if (typeof window === 'undefined') return null;
-    const bookingDate = sessionStorage.getItem('vmarc_booking_date');
-    const bookingSlot = sessionStorage.getItem('vmarc_booking_slot');
+    const bookingDate = sessionStorage.getItem('1App_booking_date');
+    const bookingSlot = sessionStorage.getItem('1App_booking_slot');
     if (!bookingDate || !bookingSlot) return null;
 
     if (bookingSlot.startsWith('Instant')) {
@@ -24,17 +24,17 @@ const persistBookingSelection = (slot) => {
     if (typeof window === 'undefined') return;
 
     if (!slot) {
-        sessionStorage.removeItem('vmarc_booking_date');
-        sessionStorage.removeItem('vmarc_booking_slot');
+        sessionStorage.removeItem('1App_booking_date');
+        sessionStorage.removeItem('1App_booking_slot');
         return;
     }
 
     if (slot.type === 'instant') {
-        sessionStorage.setItem('vmarc_booking_date', new Date().toISOString());
-        sessionStorage.setItem('vmarc_booking_slot', `Instant • In ${slot.etaMinutes || 50} mins`);
+        sessionStorage.setItem('1App_booking_date', new Date().toISOString());
+        sessionStorage.setItem('1App_booking_slot', `Instant • In ${slot.etaMinutes || 50} mins`);
     } else if (slot.type === 'scheduled') {
-        sessionStorage.setItem('vmarc_booking_date', slot.date);
-        sessionStorage.setItem('vmarc_booking_slot', slot.time);
+        sessionStorage.setItem('1App_booking_date', slot.date);
+        sessionStorage.setItem('1App_booking_slot', slot.time);
     }
 };
 
@@ -50,7 +50,7 @@ const QtyControl = ({ quantity, onDec, onInc }) => (
     <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #e0e0e0', borderRadius: 8, overflow: 'hidden' }}>
         <button onClick={onDec} style={{ border: 'none', background: 'none', width: 32, height: 32, cursor: 'pointer', fontSize: 16, color: '#555', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
         <span style={{ minWidth: 28, textAlign: 'center', fontWeight: 700, fontSize: 14 }}>{quantity}</span>
-        <button onClick={onInc} style={{ border: 'none', background: 'none', width: 32, height: 32, cursor: 'pointer', fontSize: 16, color: '#2e7d32', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+        <button onClick={onInc} style={{ border: 'none', background: 'none', width: 32, height: 32, cursor: 'pointer', fontSize: 16, color: '#A5732F', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
     </div>
 );
 
@@ -119,9 +119,9 @@ const Cart = () => {
                 <Link
                     to="/services"
                     style={{
-                        background: '#a8d5a2',
-                        color: '#2d7a27',
-                        border: '2px solid #7bbf74',
+                        background: '#A5732F',
+                        color: '#fff',
+                        border: 'none',
                         borderRadius: 12,
                         padding: '10px 40px',
                         fontWeight: 700,
@@ -158,11 +158,11 @@ const Cart = () => {
 
                         {/* Saving banner */}
                         <div style={{ background: '#fff', borderRadius: 14, padding: '12px 18px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 10 }}>
-                            <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#e8f5e9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                                <FaTag size={13} color="#2e7d32" />
+                            <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#f5ede0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                <FaTag size={13} color="#A5732F" />
                             </div>
                             <span style={{ fontSize: 14, color: '#333' }}>
-                                Saving <strong>₹0</strong> on this order
+                                Saving <strong>$0</strong> on this order
                             </span>
                         </div>
 
@@ -171,7 +171,7 @@ const Cart = () => {
                             <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 6, color: '#111' }}>Account</div>
                             {isAuthenticated ? (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                    <FaCheckCircle color="#2e7d32" size={15} />
+                                    <FaCheckCircle color="#A5732F" size={15} />
                                     <span style={{ fontSize: 14, color: '#555' }}>
                                         Logged in as <strong>{user?.name || user?.email}</strong>
                                     </span>
@@ -181,7 +181,7 @@ const Cart = () => {
                                     <p style={{ fontSize: 14, color: '#888', margin: '0 0 14px' }}>To book the service, please login or sign up</p>
                                     <button
                                         onClick={() => navigate('/login')}
-                                        style={{ width: '100%', background: '#2e7d32', color: '#fff', border: 'none', borderRadius: 10, padding: '13px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}
+                                        style={{ width: '100%', background: '#A5732F', color: '#fff', border: 'none', borderRadius: 10, padding: '13px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}
                                     >
                                         Login
                                     </button>
@@ -198,7 +198,7 @@ const Cart = () => {
                                     <button onClick={() => setSlotModalOpen(true)} style={{ border: '1px solid #e6e6e6', background: '#fff', padding: '8px 10px', borderRadius: 8, cursor: 'pointer' }}>Edit</button>
                                 </div>
                             ) : (
-                                <button onClick={() => setSlotModalOpen(true)} style={{ width: '100%', background: '#6c47ff', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>Select time & date</button>
+                                <button onClick={() => setSlotModalOpen(true)} style={{ width: '100%', background: '#A5732F', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>Select time & date</button>
                             )}
                         </div>
                     </div>
@@ -234,7 +234,7 @@ const Cart = () => {
                                                         onInc={() => updateQuantity(item.service._id, item.quantity + 1)}
                                                     />
                                                     <span style={{ fontWeight: 700, fontSize: 14, minWidth: 64, textAlign: 'right', color: '#111' }}>
-                                                        ₹{(item.service.price * item.quantity).toLocaleString('en-IN')}
+                                                        ${(item.service.price * item.quantity).toLocaleString('en-US')}
                                                     </span>
                                                 </div>
                                             </div>
@@ -248,15 +248,15 @@ const Cart = () => {
                             {/* Avoid calling checkbox */}
                             <hr style={{ border: 'none', borderTop: '1.5px dashed #e0e0e0', margin: '8px 0 14px' }} />
                             <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
-                                <input type="checkbox" defaultChecked style={{ width: 17, height: 17, accentColor: '#2e7d32', cursor: 'pointer' }} />
+                                <input type="checkbox" defaultChecked style={{ width: 17, height: 17, accentColor: '#A5732F', cursor: 'pointer' }} />
                                 <span style={{ fontSize: 13, color: '#666' }}>Avoid calling before reaching the location</span>
                             </label>
                         </div>
 
                         {/* Coupons */}
                         <div style={{ background: '#fff', borderRadius: 14, padding: '16px 22px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14 }}>
-                            <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#e8f5e9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                                <FaPercent size={14} color="#2e7d32" />
+                            <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#f5ede0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                <FaPercent size={14} color="#A5732F" />
                             </div>
                             <div>
                                 <div style={{ fontWeight: 700, fontSize: 14, color: '#111' }}>Coupons and offers</div>
@@ -272,22 +272,22 @@ const Cart = () => {
 
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, fontSize: 14, color: '#555' }}>
                                 <span>Item total</span>
-                                <span>₹{total.toLocaleString('en-IN')}</span>
+                                <span>${total.toLocaleString('en-US')}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, fontSize: 14 }}>
-                                <span style={{ color: '#2e7d32', fontWeight: 600 }}>Free service offer</span>
-                                <span style={{ color: '#2e7d32', fontWeight: 600 }}>-₹0</span>
+                                <span style={{ color: '#A5732F', fontWeight: 600 }}>Free service offer</span>
+                                <span style={{ color: '#A5732F', fontWeight: 600 }}>-$0</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontSize: 14, color: '#555' }}>
                                 <span>Total amount</span>
-                                <span>₹{total.toLocaleString('en-IN')}</span>
+                                <span>${total.toLocaleString('en-US')}</span>
                             </div>
 
                             <hr style={{ border: 'none', borderTop: '1px solid #f0f0f0', margin: '0 0 14px' }} />
 
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                                 <span style={{ fontWeight: 700, fontSize: 15, color: '#111' }}>Amount to pay</span>
-                                <span style={{ fontWeight: 800, fontSize: '1.3rem', color: '#111' }}>₹{total.toLocaleString('en-IN')}</span>
+                                <span style={{ fontWeight: 800, fontSize: '1.3rem', color: '#111' }}>${total.toLocaleString('en-US')}</span>
                             </div>
                             <div style={{ textAlign: 'right', marginBottom: 20 }}>
                                 <span style={{ fontSize: 13, fontWeight: 600, textDecoration: 'underline', cursor: 'pointer', color: '#333' }}>View breakup</span>
@@ -295,7 +295,7 @@ const Cart = () => {
 
                             <button
                                 onClick={handleCheckout}
-                                style={{ width: '100%', background: '#2e7d32', color: '#fff', border: 'none', borderRadius: 12, padding: '15px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}
+                                style={{ width: '100%', background: '#A5732F', color: '#fff', border: 'none', borderRadius: 12, padding: '15px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}
                             >
                                 Proceed to Pay
                             </button>

@@ -52,7 +52,7 @@ const Dashboard = () => {
                             <span className="text-muted small fw-bold text-uppercase">Total Revenue</span>
                             <div className="bg-success-subtle text-success rounded p-2"><FaRupeeSign /></div>
                         </div>
-                        <h3 className="fw-bold text-dark font-monospace mb-1">₹{totalRevenue.toFixed(2)}</h3>
+                        <h3 className="fw-bold text-dark font-monospace mb-1">${totalRevenue.toFixed(2)}</h3>
                         <span className="text-muted small">Cleared paid receipts</span>
                     </div>
                 </div>
@@ -110,7 +110,7 @@ const Dashboard = () => {
                                     <XAxis dataKey="date" tickLine={false} />
                                     <YAxis tickLine={false} />
                                     <Tooltip />
-                                    <Area type="monotone" dataKey="revenue" stroke="#ffc107" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" name="Revenue (₹)" />
+                                    <Area type="monotone" dataKey="revenue" stroke="#ffc107" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" name="Revenue ($)" />
                                 </AreaChart>
                             </ResponsiveContainer>
                         </div>

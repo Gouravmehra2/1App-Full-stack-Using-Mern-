@@ -112,7 +112,7 @@ const CategoryManagement = () => {
                     <p className="text-muted">Add subcategories of selected categories</p>
                 </div>
                 {!showForm && (
-                    <button onClick={handleOpenCreate} className="btn btn-dark fw-bold d-flex align-items-center gap-2 px-4 shadow-sm">
+                    <button onClick={handleOpenCreate} className="btn btn-brand fw-bold d-flex align-items-center gap-2 px-4 shadow-sm">
                         <FaPlus /><span>Add Sub-Category</span>
                     </button>
                 )}
@@ -169,8 +169,8 @@ const CategoryManagement = () => {
                         )}
 
                         <div className="d-flex gap-2 justify-content-end">
-                            <button type="button" onClick={() => setShowForm(false)} className="btn btn-outline-secondary px-4 py-2">Cancel</button>
-                            <button type="submit" disabled={submitting} className="btn btn-dark fw-bold px-4 py-2 shadow-sm">
+                            <button type="button" onClick={() => setShowForm(false)} className="btn btn-outline-brand px-4 py-2">Cancel</button>
+                            <button type="submit" disabled={submitting} className="btn btn-brand fw-bold px-4 py-2 shadow-sm">
                                 {submitting ? 'Saving...' : 'Save Sub-Category'}
                             </button>
                         </div>
