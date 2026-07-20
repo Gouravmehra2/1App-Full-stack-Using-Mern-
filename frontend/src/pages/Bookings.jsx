@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import bookingService from '../services/bookingService';
 import BookingCard from '../components/BookingCard';
+import { BookingsShimmer } from '../components/Shimmer';
 
 const Bookings = () => {
     const [bookings, setBookings] = useState([]);
@@ -19,7 +20,7 @@ const Bookings = () => {
         loadBookings();
     }, []);
 
-    if (loading) return null;
+    if (loading) return <BookingsShimmer />;
 
     if (bookings.length === 0) {
         return (

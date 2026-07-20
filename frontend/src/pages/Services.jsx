@@ -4,6 +4,7 @@ import { FaStar, FaTag, FaShoppingCart, FaCheckCircle, FaShieldAlt, FaCalendarAl
 import serviceService from '../services/serviceService';
 import { resolveImageUrl } from '../services/api';
 import { CartContext } from '../context/CartContext';
+import { ServicesShimmer } from '../components/Shimmer';
 
 const UPLOAD_IMAGE_URL = process.env.REACT_APP_IMAGE_URL || '';
 
@@ -36,6 +37,7 @@ export default function Services() {
 
     const categoryId = searchParams.get('category');
     const subcategoryId = searchParams.get('subcategory');
+    const searchQuery = searchParams.get('search');
 
     const [subcategories, setSubcategories] = useState([]);
     const [services, setServices] = useState([]);
@@ -44,9 +46,30 @@ export default function Services() {
     const [slide, setSlide] = useState(0);
     const [loading, setLoading] = useState(true);
 
+    // Keep activeSubId in sync when URL subcategory param changes (e.g. from search navigation)
+    useEffect(() => {
+        if (subcategoryId) setActiveSubId(subcategoryId);
+    }, [subcategoryId]);
+
+    // Handle free-text search: fetch matching services directly
+    useEffect(() => {
+        if (!searchQuery) return;
+        setLoading(true);
+        setSubcategories([]);
+        setCategoryName(`Results for "${searchQuery}"`);
+        serviceService.getAllServices({ search: searchQuery })
+            .then(res => {
+                const svcs = res.data?.services || res.data || [];
+                setServices(Array.isArray(svcs) ? svcs : []);
+            })
+            .catch(() => setServices([]))
+            .finally(() => setLoading(false));
+    }, [searchQuery]);
+
     // Fetch subcategories for the left sidebar
     useEffect(() => {
         if (!categoryId) return;
+        setSubcategories([]); // clear stale subcategories while loading
         serviceService.getSubcategoriesByCategoryId(categoryId).then(res => {
             if (res.success) {
                 setSubcategories(res.data.subcategories);
@@ -68,6 +91,7 @@ export default function Services() {
     }, []);
 
     useEffect(() => {
+        if (searchQuery) return; // handled above
         if (activeSubId) {
             fetchServices(activeSubId);
         } else if (subcategoryId) {
@@ -75,7 +99,7 @@ export default function Services() {
         } else {
             setLoading(false);
         }
-    }, [activeSubId, subcategoryId, fetchServices]);
+    }, [activeSubId, subcategoryId, searchQuery, fetchServices]);
 
     // Auto-select first subcategory if none selected
     useEffect(() => {
@@ -128,32 +152,75 @@ export default function Services() {
                         <span style={{ color: '#888', fontSize: 18 }}>›</span>
                     </div>
 
-                    <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 12, color: '#333' }}>Select a service</div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
-                        {subcategories.map((sub) => (
-                            <div
-                                key={sub._id}
-                                onClick={() => handleSubClick(sub)}
-                                style={{
-                                    cursor: 'pointer',
-                                    textAlign: 'center',
-                                    padding: '10px 4px',
-                                    borderRadius: 10,
-                                    background: activeSubId === sub._id ? '#fdf5ea' : '#fafafa',
-                                    border: activeSubId === sub._id ? '1.5px solid #A5732F' : '1.5px solid transparent',
-                                    transition: 'all 0.15s',
-                                }}
-                            >
-                                <div style={{ width: 48, height: 48, borderRadius: 10, background: '#f0f0f0', margin: '0 auto 6px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    {sub.icon
-                                        ? <img src={resolveSubImg(sub.icon)} alt={sub.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                        : <FaTag size={18} color="#aaa" />}
-                                </div>
-                                <div style={{ fontSize: 11, color: '#333', fontWeight: 500, lineHeight: 1.3, wordBreak: 'break-word' }}>{sub.name}</div>
+                    {searchQuery ? (
+                        <div style={{ fontSize: 13, color: '#888', textAlign: 'center', padding: '12px 0' }}>
+                            Showing results for<br />
+                            <strong style={{ color: '#333' }}>"{searchQuery}"</strong>
+                        </div>
+                    ) : (
+                        <>
+                            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 12, color: '#333' }}>Select a service</div>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+                                {subcategories.map((sub) => {
+                                    const isActive = activeSubId === sub._id;
+                                    return (
+                                        <div
+                                            key={sub._id}
+                                            onClick={() => handleSubClick(sub)}
+                                            style={{
+                                                cursor: 'pointer',
+                                                background: isActive ? '#FDF5E0' : '#FEFCF7',
+                                                border: `1.5px solid #B8863B`,
+                                                borderRadius: '18px',
+                                                padding: '14px 8px 12px',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                textAlign: 'center',
+                                                minHeight: '110px',
+                                                boxShadow: isActive
+                                                    ? '0 0 0 3px rgba(184,134,59,0.25), 0 4px 16px rgba(184,134,59,0.30)'
+                                                    : '0 0 0 2px rgba(184,134,59,0.12), 0 2px 10px rgba(184,134,59,0.15)',
+                                                transition: 'all 0.2s ease',
+                                            }}
+                                        >
+                                            {/* Icon area */}
+                                            <div style={{
+                                                width: 54,
+                                                height: 54,
+                                                marginBottom: 8,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                            }}>
+                                                {sub.icon
+                                                    ? <img
+                                                        src={resolveSubImg(sub.icon)}
+                                                        alt={sub.name}
+                                                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                                    />
+                                                    : <FaTag size={22} color="#B8863B" />
+                                                }
+                                            </div>
+                                            {/* Label */}
+                                            <div style={{
+                                                fontSize: 11,
+                                                color: '#1a1a1a',
+                                                fontWeight: 600,
+                                                lineHeight: 1.35,
+                                                wordBreak: 'break-word',
+                                                textAlign: 'center',
+                                                maxWidth: '90%',
+                                            }}>
+                                                {sub.name}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
-                        ))}
-                    </div>
+                        </>
+                    )}
                 </div>
 
                 {/* ── CENTER: Banner + Services ── */}
@@ -177,11 +244,30 @@ export default function Services() {
 
                     {/* Services List */}
                     <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: 16 }}>
-                        {activeSubName ? `Popular ${activeSubName} Services` : 'Popular Home Services'}
+                        {searchQuery
+                            ? `Search results for "${searchQuery}" (${services.length} found)`
+                            : activeSubName ? `Popular ${activeSubName} Services` : 'Popular Home Services'
+                        }
                     </div>
 
                     {loading ? (
-                        <div style={{ textAlign: 'center', padding: 40, color: '#888' }}>Loading services...</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                            {Array(3).fill(0).map((_, i) => (
+                                <div key={i} style={{ background: '#fff', borderRadius: 16, padding: 20, display: 'flex', gap: 16 }}>
+                                    <div className="shimmer" style={{ width: 110, height: 110, borderRadius: 12, flexShrink: 0 }} />
+                                    <div style={{ flex: 1 }}>
+                                        <div className="shimmer" style={{ height: 18, width: '70%', borderRadius: 8, marginBottom: 10 }} />
+                                        <div className="shimmer" style={{ height: 12, width: '35%', borderRadius: 6, marginBottom: 10 }} />
+                                        <div className="shimmer" style={{ height: 12, width: '90%', borderRadius: 6, marginBottom: 6 }} />
+                                        <div className="shimmer" style={{ height: 12, width: '80%', borderRadius: 6, marginBottom: 18 }} />
+                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <div className="shimmer" style={{ height: 14, width: '20%', borderRadius: 6 }} />
+                                            <div className="shimmer" style={{ height: 32, width: 80, borderRadius: 20 }} />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     ) : services.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: 40, color: '#888' }}>No services found.</div>
                     ) : (
@@ -290,7 +376,7 @@ export default function Services() {
                                                 <button onClick={() => updateQuantity(svc._id, quantity + 1)} style={{ border: 'none', background: 'none', fontWeight: 700, cursor: 'pointer', fontSize: 14 }}>+</button>
                                             </div>
                                         </div>
-                                        <div style={{ textAlign: 'right', fontWeight: 700, fontSize: 14 }}>${svc.price * quantity}</div>
+                                        {/* <div style={{ textAlign: 'right', fontWeight: 700, fontSize: 14 }}>${svc.price * quantity}</div> */}
                                     </div>
                                 ))}
                                 <button

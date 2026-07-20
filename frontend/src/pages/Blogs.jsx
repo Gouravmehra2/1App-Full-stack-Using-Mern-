@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { resolveImageUrl } from '../services/api';
 import serviceService from '../services/serviceService';
+import { BlogsShimmer } from '../components/Shimmer';
 
 export default function Blogs() {
     const [blogs, setBlogs] = useState([]);
@@ -121,12 +122,7 @@ export default function Blogs() {
         );
     };
 
-    if (loading) return (
-        <div style={{ textAlign: 'center', padding: 80, color: '#888' }}>
-            <div style={{ fontSize: 32, marginBottom: 12 }}>⏳</div>
-            Loading blogs...
-        </div>
-    );
+    if (loading) return <BlogsShimmer />;
 
     return (
         <div style={{ maxWidth: 960, margin: '0 auto', padding: '32px 20px' }}>

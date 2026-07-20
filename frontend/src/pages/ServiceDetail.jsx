@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import serviceService from '../services/serviceService';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { ServiceDetailShimmer } from '../components/Shimmer';
 import { CartContext } from '../context/CartContext';
 import { toast } from 'react-toastify';
 import { resolveImageUrl } from '../services/api';
@@ -144,12 +145,30 @@ const ServiceDetail = () => {
         const cartService = selectedVariant
             ? { ...service, price: selectedVariant.offerPrice || selectedVariant.price, name: `${service.name} - ${selectedVariant.name}` }
             : service;
-        addToCart(cartService, 1);
-        selectedAddons.forEach(addon => addToCart({ ...addon, _id: addon._id, price: addon.price }, 1));
-        toast.success(`${service.subcategory?.name || service.name} added to cart!`);
+
+        const added = addToCart(cartService, 1);
+        if (!added) {
+            toast.info(`${service.subcategory?.name || service.name} is already in your cart!`);
+            return;
+        }
+
+        // Only add addons if the service was freshly added; skip duplicates silently
+        const newAddons = [];
+        const skippedAddons = [];
+        selectedAddons.forEach(addon => {
+            const addonAdded = addToCart({ ...addon, _id: addon._id, price: addon.price }, 1);
+            if (addonAdded) newAddons.push(addon.name);
+            else skippedAddons.push(addon.name);
+        });
+
+        if (skippedAddons.length > 0) {
+            toast.success(`Service added. ${skippedAddons.length} add-on(s) already in cart were skipped.`);
+        } else {
+            toast.success(`${service.subcategory?.name || service.name} added to cart!`);
+        }
     };
 
-    if (loading) return <LoadingSpinner message="Fetching service details..." />;
+    if (loading) return <ServiceDetailShimmer />;
 
     if (!service) {
         return (
@@ -165,7 +184,7 @@ const ServiceDetail = () => {
     const discountPct = service.discountPercentage || 0;
 
     return (
-        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 16px 80px' }}>
+        <div style={{ maxWidth: '900px', margin: '20px auto', padding: '0 16px 80px' }}>
 
             {/* Gallery Carousel */}
             <div style={{ position: 'relative', marginBottom: '16px' }}>
@@ -208,15 +227,15 @@ const ServiceDetail = () => {
                     <a href="#reviews" style={{ color: '#888', fontSize: '13px', textDecoration: 'underline' }}>({service.ratingsQuantity > 0 ? `${service.ratingsQuantity}` : '6.1M'} reviews)</a>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: discountPct > 0 ? '4px' : 0 }}>
-                    <span style={{ fontSize: '16px', fontWeight: '700', color: '#1a1a2e' }}>${Math.round(service.offerPrice || service.price).toLocaleString('en-US')}</span>
+                    <span style={{ fontSize: '16px', fontWeight: '700', color: '#1a1a2e' }}>${(service.offerPrice || service.price || 0).toFixed(2)}</span>
                     {discountPct > 0 && (
-                        <span style={{ fontSize: '14px', color: '#999', textDecoration: 'line-through' }}>${Math.round(service.actualPrice).toLocaleString('en-US')}</span>
+                        <span style={{ fontSize: '14px', color: '#999', textDecoration: 'line-through' }}>${(service.actualPrice || 0).toFixed(2)}</span>
                     )}
                     <span style={{ color: '#555', fontSize: '14px' }}>• {service.duration} hrs</span>
                 </div>
                 {service.hasVariants && service.variants?.length > 0 && (() => {
                     const cheapest = service.variants.reduce((min, v) => (v.offerPrice || v.price) < (min.offerPrice || min.price) ? v : min, service.variants[0]);
-                    const perUnit = cheapest.quantity > 1 ? Math.round((cheapest.offerPrice || cheapest.price) / cheapest.quantity) : null;
+                    const perUnit = cheapest.quantity > 1 ? ((cheapest.offerPrice || cheapest.price) / cheapest.quantity).toFixed(2) : null;
                     return perUnit ? (
                         <div style={{ color: '#A5732F', fontSize: '14px', fontWeight: '600' }}>♦ ${perUnit} per bathroom</div>
                     ) : null;
@@ -239,7 +258,7 @@ const ServiceDetail = () => {
                             const vDiscount = v.discountPercentage || 0;
                             const vOffer = v.offerPrice || v.price;
                             const vActual = v.actualPrice || v.price;
-                            const perUnit = v.quantity > 1 ? Math.round(vOffer / v.quantity) : null;
+                            const perUnit = v.quantity > 1 ? (vOffer / v.quantity).toFixed(2) : null;
                             return (
                                 <div key={v._id} onClick={() => setSelectedVariant(v)}
                                     style={{ ...variantCard, border: isSelected ? '2px solid #A5732F' : '1.5px solid #ddd', position: 'relative', overflow: 'hidden' }}>
@@ -249,9 +268,9 @@ const ServiceDetail = () => {
                                         </div>
                                     )}
                                     <div style={{ fontWeight: '700', fontSize: '15px', marginBottom: '6px', paddingRight: vDiscount > 0 ? '40px' : 0 }}>{v.name}</div>
-                                    <div style={{ fontWeight: '800', fontSize: '18px', color: '#1a1a2e' }}>${Math.round(vOffer).toLocaleString('en-US')}</div>
+                                    <div style={{ fontWeight: '800', fontSize: '18px', color: '#1a1a2e' }}>${vOffer.toFixed(2)}</div>
                                     {vDiscount > 0 && (
-                                        <div style={{ color: '#999', fontSize: '12px', textDecoration: 'line-through', marginTop: '2px' }}>${Math.round(vActual).toLocaleString('en-US')}</div>
+                                        <div style={{ color: '#999', fontSize: '12px', textDecoration: 'line-through', marginTop: '2px' }}>${vActual.toFixed(2)}</div>
                                     )}
                                     {perUnit && <div style={{ color: '#666', fontSize: '12px', marginTop: '2px' }}>(${perUnit}/bathroom)</div>}
                                 </div>
@@ -275,7 +294,7 @@ const ServiceDetail = () => {
                                 return (
                                     <div key={addon._id} style={{ minWidth: '180px', border: '1.5px solid #ddd', borderRadius: '12px', padding: '14px', flexShrink: 0 }}>
                                         <div style={{ fontWeight: '600', fontSize: '14px', marginBottom: '6px' }}>{addon.name} (additional)</div>
-                                        <div style={{ color: '#A5732F', fontWeight: '600', fontSize: '14px', marginBottom: '12px' }}>+ ${addon.price}</div>
+                                        <div style={{ color: '#A5732F', fontWeight: '600', fontSize: '14px', marginBottom: '12px' }}>+ ${(addon.price || 0).toFixed(2)}</div>
                                         <button onClick={() => toggleAddon(addon)}
                                             style={{ width: '100%', padding: '8px', border: '1.5px solid #A5732F', borderRadius: '8px', background: '#fff', color: '#A5732F', fontWeight: '600', cursor: 'pointer', fontSize: '14px' }}>
                                             {added ? 'Added ✓' : 'Add'}
@@ -548,10 +567,10 @@ const ServiceDetail = () => {
 
             {/* FAQs */}
             {service.faqs?.length > 0 && (
-                <Section>
+                <div>
                     <h2 style={sectionTitle}>Frequently asked questions</h2>
                     {service.faqs.map((faq, i) => (
-                        <div key={faq._id} style={{ borderBottom: '1px solid #eee' }}>
+                        <div key={faq._id} style={{ borderBottom: '1px solid #eee'}}>
                             <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
                                 style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '16px 0', fontSize: '15px', color: '#222', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
@@ -598,7 +617,8 @@ const ServiceDetail = () => {
                             )}
                         </div>
                     ))}
-                </Section>
+                    <br></br>
+                </div>
             )}
 
             {/* Ratings & Reviews */}
@@ -703,13 +723,13 @@ const ServiceDetail = () => {
             <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#fff', borderTop: '1px solid #eee', padding: '12px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 100 }}>
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '20px', fontWeight: '800', color: '#1a1a2e' }}>${Math.round(getTotalPrice()).toLocaleString('en-US')}</span>
+                        <span style={{ fontSize: '20px', fontWeight: '800', color: '#1a1a2e' }}>${getTotalPrice().toFixed(2)}</span>
                         {discountPct > 0 && !selectedVariant && (
                             <span style={{ background: '#fdf5ea', color: '#A5732F', fontSize: '12px', fontWeight: '700', padding: '2px 8px', borderRadius: '20px' }}>{discountPct}% OFF</span>
                         )}
                     </div>
                     {discountPct > 0 && !selectedVariant && (
-                        <div style={{ fontSize: '12px', color: '#999', textDecoration: 'line-through' }}>${Math.round(service.actualPrice || service.price).toLocaleString('en-US')}</div>
+                        <div style={{ fontSize: '12px', color: '#999', textDecoration: 'line-through' }}>${(service.actualPrice || service.price || 0).toFixed(2)}</div>
                     )}
                 </div>
                 <button onClick={handleAddToCart}

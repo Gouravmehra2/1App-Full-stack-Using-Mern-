@@ -9,6 +9,7 @@ import { CartProvider } from './context/CartContext';
 import NavigationBar from './components/Navbar';
 import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
+import ScrollManager from './components/ScrollManager';
 
 import Home from './pages/Home';
 import Services from './pages/Services';
@@ -41,6 +42,7 @@ const AppShell = () => {
 
   return (
     <div className="d-flex flex-column min-vh-100 bg-light">
+      <ScrollManager />
       {!isAuth && <NavigationBar />}
       <main className="flex-grow-1">
         <Routes>

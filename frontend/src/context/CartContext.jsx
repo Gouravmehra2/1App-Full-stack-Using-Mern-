@@ -23,15 +23,17 @@ export const CartProvider = ({ children }) => {
     }, [cartItems]);
 
     const addToCart = (service, quantity = 1) => {
+        let isDuplicate = false;
         setCartItems((prevItems) => {
             const existingIndex = prevItems.findIndex(item => item.service._id === service._id);
             if (existingIndex > -1) {
-                const newItems = [...prevItems];
-                newItems[existingIndex].quantity += quantity;
-                return newItems;
+                // Already in cart — do NOT increase quantity, just flag it
+                isDuplicate = true;
+                return prevItems;
             }
             return [...prevItems, { service, quantity }];
         });
+        return !isDuplicate; // true = added, false = duplicate
     };
 
     const removeFromCart = (serviceId) => {

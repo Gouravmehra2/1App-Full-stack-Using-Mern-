@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { ProfileShimmer } from '../components/Shimmer';
 import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaCheckCircle, FaExclamationTriangle, FaCheckDouble, FaUpload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
@@ -73,7 +74,7 @@ const Profile = () => {
     };
 
     if (loading) {
-        return <LoadingSpinner message="Loading profile..." />;
+        return <ProfileShimmer />;
     }
 
     return (

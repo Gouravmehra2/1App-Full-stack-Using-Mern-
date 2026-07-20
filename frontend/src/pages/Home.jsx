@@ -15,6 +15,7 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { HomeShimmer } from '../components/Shimmer';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -154,7 +155,7 @@ const Home = () => {
     };
 
     if (loading) {
-        return <LoadingSpinner message="Loading your services..." />;
+        return <HomeShimmer />;
     }
 
     return (
@@ -974,9 +975,9 @@ const Home = () => {
                         </div>
                         <div className="col-lg-5 d-flex flex-column gap-3">
                             {[{ icon: <FaLaptop size={20} />, title: 'Web Design', desc: 'Stunning UI/UX for your brand.' }, { icon: <FaUserMd size={20} />, title: 'IT Support', desc: '24/7 technical assistance.' }].map((item, idx) => (
-                                <div key={idx} className="rounded-4 border p-4 d-flex flex-column justify-content-between flex-grow-1" style={{ cursor: 'pointer' }} onClick={() => handleCategoryClick('IT & Technology')}>
+                                <div key={idx} className="rounded-4 border p-4 d-flex flex-column justify-content-between flex-grow-1" style={{ cursor: 'pointer' }} >
                                     <div className="mb-3"><div className="mb-3 text-dark">{item.icon}</div><div className="fw-bold mb-1" style={{ fontSize: '15px' }}>{item.title}</div><div className="text-muted small">{item.desc}</div></div>
-                                    <button className="btn btn-sm rounded-3 px-3" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={(e) => { e.stopPropagation(); handleCategoryClick('IT & Technology'); }}>Contact now</button>
+                                    <button className="btn btn-sm rounded-3 px-3" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={(e) => { navigate('/contact'); }}>Contact now</button>
                                 </div>
                             ))}
                         </div>
@@ -989,15 +990,37 @@ const Home = () => {
                                 <div className="row g-2">
                                     <div className="col-6">
                                         <div className="fw-semibold small mb-2">IT &amp; Technology</div>
-                                        {['IT Support', 'Web Design', 'Website Development', 'App Development', 'Software Development'].map((s, i) => (<div key={i} className="d-flex align-items-center gap-2 mb-1" style={{ fontSize: '13px', color: '#444', cursor: 'pointer' }} onClick={() => handleCategoryClick('IT & Technology')}><FaLaptop size={10} className="text-muted" />{s}</div>))}
+                                        {['IT Support', 'Web Design', 'Website Development', 'App Development', 'Software Development'].map((s, i) => {
+                                            const itCat = getCategoryByName('IT');
+                                            const sub = itCat?.subcategories?.find(sc => sc.name.toLowerCase().includes(s.toLowerCase()) || s.toLowerCase().includes(sc.name.toLowerCase()));
+                                            return (
+                                                <div key={i} className="d-flex align-items-center gap-2 mb-1" style={{ fontSize: '13px', color: '#444', cursor: 'pointer' }}
+                                                    onClick={() => sub ? navigate(`/services?subcategory=${sub._id}`) : (itCat ? navigate(`/services?category=${itCat.id}`) : handleCategoryClick('IT & Technology'))}>
+                                                    <FaLaptop size={10} className="text-muted" />{s}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                     <div className="col-6">
                                         <div className="fw-semibold small mb-2">Marketing</div>
-                                        {['Digital Marketing', 'Social Media Marketing', 'SEO', 'Content Marketing', 'Branding'].map((s, i) => (<div key={i} className="d-flex align-items-center gap-2 mb-1" style={{ fontSize: '13px', color: '#444', cursor: 'pointer' }} onClick={() => handleCategoryClick('Marketing & Branding')}><FaBullhorn size={10} className="text-muted" />{s}</div>))}
+                                        {['Digital Marketing', 'Social Media Marketing', 'SEO', 'Content Marketing', 'Branding'].map((s, i) => {
+                                            const mktCat = getCategoryByName('Marketing');
+                                            const sub = mktCat?.subcategories?.find(sc => sc.name.toLowerCase().includes(s.toLowerCase()) || s.toLowerCase().includes(sc.name.toLowerCase()));
+                                            return (
+                                                <div key={i} className="d-flex align-items-center gap-2 mb-1" style={{ fontSize: '13px', color: '#444', cursor: 'pointer' }}
+                                                    onClick={() => sub ? navigate(`/services?subcategory=${sub._id}`) : (mktCat ? navigate(`/services?category=${mktCat.id}`) : handleCategoryClick('Marketing & Branding'))}>
+                                                    <FaBullhorn size={10} className="text-muted" />{s}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             </div>
-                            <button className="btn rounded-3 px-4 py-2 mt-4" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={() => handleCategoryClick('IT & Technology')}>Know more</button>
+                            <button className="btn rounded-3 px-4 py-2 mt-4" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={() => {
+                                const cat = getCategoryByName('IT');
+                                if (cat) navigate(`/services?category=${cat.id}`);
+                                else handleCategoryClick('IT & Technology');
+                            }}>Know more</button>
                         </div>
                         <div style={{ flex: '0 0 45%', position: 'relative', minHeight: '320px' }}>
                             <img src={tryHeroImg('it-marketing.png')} alt="IT & Marketing" className="position-absolute w-100 h-100" style={{ objectFit: 'cover', top: 0, left: 0 }} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />

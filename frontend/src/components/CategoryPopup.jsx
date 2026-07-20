@@ -89,58 +89,84 @@ const CategoryPopup = ({ category, categoryId, subcategories, onClose }) => {
                         No subcategories available yet.
                     </p>
                 ) : (
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-                        gap: '16px',
-                    }}>
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+                            gap: "18px",
+                            marginTop: "20px",
+                        }}
+                    >
                         {subcategories.map((sub, idx) => (
                             <div
                                 key={sub._id || idx}
                                 onClick={() => handleSubcategoryClick(sub)}
                                 style={{
                                     cursor: 'pointer',
+                                    background: '#FEFCF7',
+                                    border: '1.5px solid #B8863B',
+                                    borderRadius: '18px',
+                                    padding: '14px 8px 12px',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
                                     textAlign: 'center',
-                                    padding: '16px 8px',
-                                    borderRadius: '14px',
-                                    background: tileBgColors[idx % tileBgColors.length],
-                                    transition: 'transform 0.15s, box-shadow 0.15s',
+                                    minHeight: '110px',
+                                    boxShadow: '0 0 0 2px rgba(184,134,59,0.12), 0 2px 10px rgba(184,134,59,0.15)',
+                                    transition: 'all 0.2s ease',
                                 }}
                                 onMouseEnter={(e) => {
+                                    e.currentTarget.style.background = '#FDF5E0';
+                                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(184,134,59,0.25), 0 4px 16px rgba(184,134,59,0.30)';
                                     e.currentTarget.style.transform = 'translateY(-3px)';
-                                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.1)';
                                 }}
                                 onMouseLeave={(e) => {
+                                    e.currentTarget.style.background = '#FEFCF7';
+                                    e.currentTarget.style.boxShadow = '0 0 0 2px rgba(184,134,59,0.12), 0 2px 10px rgba(184,134,59,0.15)';
                                     e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = 'none';
                                 }}
                             >
-                                <div style={{
-                                    width: '60px', height: '60px',
-                                    borderRadius: '12px',
-                                    background: '#fff',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    margin: '0 auto 10px',
-                                    overflow: 'hidden',
-                                    boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-                                }}>
-                                    {sub.image ? (
+                                {/* Icon */}
+                                <div
+                                    style={{
+                                        width: '54px',
+                                        height: '54px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        marginBottom: '8px',
+                                        flexShrink: 0,
+                                    }}
+                                >
+                                    {sub.icon ? (
                                         <img
                                             src={resolveSubcategoryImage(sub.icon)}
                                             alt={sub.name}
-                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'contain',
+                                                display: 'block',
+                                            }}
                                         />
                                     ) : (
-                                        <FaTag size={24} color="#aaa" />
+                                        <FaTag size={24} color="#B8863B" />
                                     )}
                                 </div>
-                                <div style={{
-                                    fontSize: '12px',
-                                    color: '#1a73e8',
-                                    fontWeight: 500,
-                                    lineHeight: 1.4,
-                                    wordBreak: 'break-word',
-                                }}>
+
+                                {/* Label */}
+                                <div
+                                    style={{
+                                        color: '#1a1a1a',
+                                        fontSize: '11px',
+                                        fontWeight: '600',
+                                        textAlign: 'center',
+                                        lineHeight: '1.35',
+                                        wordBreak: 'break-word',
+                                        maxWidth: '90%',
+                                    }}
+                                >
                                     {sub.name}
                                 </div>
                             </div>

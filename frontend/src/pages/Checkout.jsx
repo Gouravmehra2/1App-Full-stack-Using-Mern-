@@ -6,6 +6,7 @@ import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
 import bookingService from '../services/bookingService';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { CheckoutShimmer } from '../components/Shimmer';
 import { FaMapMarkerAlt, FaPhone, FaCalendarAlt, FaClock, FaLock, FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
@@ -86,7 +87,11 @@ const StripePaymentForm = ({ bookingDetails, paymentOrder, amount, onSuccess, on
             </div>
 
             {processing ? (
-                <LoadingSpinner message="Processing your Stripe payment..." />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '8px 0' }}>
+                    <div className="shimmer" style={{ height: 48, borderRadius: 12 }} />
+                    <div className="shimmer" style={{ height: 48, borderRadius: 12 }} />
+                    <div className="shimmer" style={{ height: 14, width: '50%', margin: '0 auto', borderRadius: 6 }} />
+                </div>
             ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     <button
@@ -233,7 +238,7 @@ const Checkout = () => {
                 </div>
 
                 {submitting ? (
-                    <LoadingSpinner message="Creating Stripe payment..." />
+                    <CheckoutShimmer />
                 ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 20, alignItems: 'start' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -313,20 +318,20 @@ const Checkout = () => {
                                 {cartItems.map((item, idx) => (
                                     <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, fontSize: 14, color: '#555' }}>
                                         <span>{item.service.name} x{item.quantity}</span>
-                                        <span>${(item.service.price * item.quantity).toLocaleString('en-US')}</span>
+                                        <span>${(item.service.price * item.quantity).toFixed(2)}</span>
                                     </div>
                                 ))}
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, fontSize: 14 }}>
                                     <span style={{ color: '#A5732F', fontWeight: 600 }}>Free service offer</span>
-                                    <span style={{ color: '#A5732F', fontWeight: 600 }}>-$0</span>
+                                    <span style={{ color: '#A5732F', fontWeight: 600 }}>-$0.00</span>
                                 </div>
 
                                 <hr style={{ border: 'none', borderTop: '1px solid #f0f0f0', margin: '10px 0 14px' }} />
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontWeight: 700, fontSize: 15, color: '#111' }}>Amount to pay</span>
-                                    <span style={{ fontWeight: 800, fontSize: '1.3rem', color: '#111' }}>${total.toLocaleString('en-US')}</span>
+                                    <span style={{ fontWeight: 800, fontSize: '1.3rem', color: '#111' }}>${total.toFixed(2)}</span>
                                 </div>
                             </div>
                         </div>

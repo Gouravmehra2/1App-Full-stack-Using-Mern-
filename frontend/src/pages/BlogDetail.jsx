@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { resolveImageUrl } from '../services/api';
+import { BlogDetailShimmer } from '../components/Shimmer';
 
 export default function BlogDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [blog, setBlog] = useState(null);
+    const [blogLoading, setBlogLoading] = useState(true);
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URL}/blogs`)
@@ -16,7 +18,8 @@ export default function BlogDetail() {
                     setBlog(found || null);
                 }
             })
-            .catch(() => {});
+            .catch(() => {})
+            .finally(() => setBlogLoading(false));
     }, [id]);
 
     const resolveImg = (img) => {
@@ -25,7 +28,8 @@ export default function BlogDetail() {
         return resolveImageUrl(img);
     };
 
-    if (!blog) return <div style={{ textAlign: 'center', padding: 80, color: '#888' }}>Loading...</div>;
+    if (blogLoading) return <BlogDetailShimmer />;
+    if (!blog) return <div style={{ textAlign: 'center', padding: 80, color: '#888' }}>Blog not found.</div>;
 
     const blocks = blog.contentBlocks || [];
 

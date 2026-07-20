@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { FaSearch } from 'react-icons/fa';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { FaSearch, FaTag } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import serviceService from '../services/serviceService';
 
@@ -38,12 +38,22 @@ const ServiceSearchAutocomplete = ({ placeholder = "Search services...", wrapper
         debounceRef.current = setTimeout(() => fetchSuggestions(val), 350);
     };
 
+    // Navigate directly to the category/subcategory page for the selected service
     const handleSelect = (service) => {
         setQuery(service.name);
         setOpen(false);
-        navigate(`/services?search=${encodeURIComponent(service.name)}`);
+        const categoryId = service.category?._id || service.category;
+        const subcategoryId = service.subcategory?._id || service.subcategory;
+        if (categoryId && subcategoryId) {
+            navigate(`/services?category=${categoryId}&subcategory=${subcategoryId}`);
+        } else if (categoryId) {
+            navigate(`/services?category=${categoryId}`);
+        } else {
+            navigate(`/services?search=${encodeURIComponent(service.name)}`);
+        }
     };
 
+    // Free-text submit — pass search term; Services.jsx will handle it
     const handleSubmit = (e) => {
         e.preventDefault();
         setOpen(false);
@@ -74,9 +84,9 @@ const ServiceSearchAutocomplete = ({ placeholder = "Search services...", wrapper
                 />
                 {loading && (
                     <span className="d-flex gap-1">
-                        <span className="animate-pulse" style={{ animation: 'pulse 1s infinite' }}>•</span>
-                        <span className="animate-pulse" style={{ animation: 'pulse 1s infinite 0.2s' }}>•</span>
-                        <span className="animate-pulse" style={{ animation: 'pulse 1s infinite 0.4s' }}>•</span>
+                        <span style={{ animation: 'pulse 1s infinite' }}>•</span>
+                        <span style={{ animation: 'pulse 1s infinite 0.2s' }}>•</span>
+                        <span style={{ animation: 'pulse 1s infinite 0.4s' }}>•</span>
                     </span>
                 )}
             </form>
@@ -84,7 +94,7 @@ const ServiceSearchAutocomplete = ({ placeholder = "Search services...", wrapper
             {open && (
                 <ul
                     className="list-unstyled mb-0 shadow-sm border rounded-3 bg-white"
-                    style={{ position: 'absolute', top: 'calc(100% + 6px)', left: 0, right: 0, zIndex: 2000, overflow: 'hidden', maxHeight: '300px', overflowY: 'auto' }}
+                    style={{ position: 'absolute', top: 'calc(100% + 6px)', left: 0, right: 0, zIndex: 2000, overflow: 'hidden', maxHeight: '320px', overflowY: 'auto' }}
                 >
                     {suggestions.map((service) => (
                         <li
@@ -96,7 +106,17 @@ const ServiceSearchAutocomplete = ({ placeholder = "Search services...", wrapper
                             onMouseLeave={e => e.currentTarget.style.background = '#fff'}
                         >
                             <FaSearch size={12} className="text-muted flex-shrink-0" />
-                            <span className="text-truncate">{service.name}</span>
+                            <div style={{ flex: 1, overflow: 'hidden' }}>
+                                <div className="text-truncate" style={{ fontWeight: 500 }}>{service.name}</div>
+                                {(service.category?.name || service.subcategory?.name) && (
+                                    <div className="d-flex align-items-center gap-1" style={{ fontSize: 11, color: '#888', marginTop: 1 }}>
+                                        <FaTag size={9} />
+                                        <span className="text-truncate">
+                                            {[service.category?.name, service.subcategory?.name].filter(Boolean).join(' › ')}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
                         </li>
                     ))}
                 </ul>
