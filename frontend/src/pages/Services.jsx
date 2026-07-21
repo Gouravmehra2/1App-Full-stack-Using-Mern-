@@ -178,7 +178,9 @@ export default function Services() {
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
                                                 textAlign: 'center',
-                                                minHeight: '110px',
+                                        
+                                                height:'100px',
+                                                // minHeight: '110px',
                                                 boxShadow: isActive
                                                     ? '0 0 0 3px rgba(184,134,59,0.25), 0 4px 16px rgba(184,134,59,0.30)'
                                                     : '0 0 0 2px rgba(184,134,59,0.12), 0 2px 10px rgba(184,134,59,0.15)',
@@ -187,8 +189,8 @@ export default function Services() {
                                         >
                                             {/* Icon area */}
                                             <div style={{
-                                                width: 54,
-                                                height: 54,
+                                                width: 40,
+                                                height: 40,
                                                 marginBottom: 8,
                                                 display: 'flex',
                                                 alignItems: 'center',
@@ -208,10 +210,10 @@ export default function Services() {
                                                 fontSize: 11,
                                                 color: '#1a1a1a',
                                                 fontWeight: 600,
-                                                lineHeight: 1.35,
+                                                // lineHeight: 1.35,
                                                 wordBreak: 'break-word',
                                                 textAlign: 'center',
-                                                maxWidth: '90%',
+                                                // maxWidth: '90%',
                                             }}>
                                                 {sub.name}
                                             </div>
