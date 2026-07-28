@@ -2,6 +2,7 @@ const Booking = require('../models/Booking');
 const User = require('../models/User');
 const Admin = require('../models/Admin');
 const jwt = require('jsonwebtoken');
+const { sendBookingStatusUpdated } = require('../utils/emailService');
 
 const signToken = (id, role) => {
     return jwt.sign(
@@ -218,6 +219,11 @@ exports.updateBookingStatus = async (req, res, next) => {
         const updatedBooking = await Booking.findById(req.params.id)
             .populate('user')
             .populate('services.service');
+
+        // Send status update email to user (non-blocking)
+        sendBookingStatusUpdated(updatedBooking).catch(err =>
+            console.error('Booking status update email failed:', err.message)
+        );
 
         res.status(200).json({
             success: true,

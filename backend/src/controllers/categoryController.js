@@ -1,5 +1,12 @@
 const Category = require('../models/Category');
 const SubCategory = require('../models/SubCategory');
+const { uploadFile, deleteFile } = require("../utils/s3Upload");
+const { getIO } = require('../utils/socketInstance');
+
+// Helper — broadcast category change to all connected clients
+const emitCategoryEvent = (event, payload) => {
+    try { getIO().emit(event, payload); } catch (_) { /* io not ready yet */ }
+};
 
 // ─── CATEGORY ────────────────────────────────────────────────────────────────
 
@@ -10,23 +17,80 @@ exports.getAllCategories = async (req, res, next) => {
     } catch (err) { next(err); }
 };
 
+exports.getCategoriesWithRecentSubCategories = async (req, res, next) => {
+    try {
+        const categories = await Category.find({ isActive: true }).sort({ name: 1 });
+
+        const result = await Promise.all(
+            categories.map(async (category) => {
+                const subcategories = await SubCategory.find({
+                    category: category._id,
+                    isActive: true
+                })
+                .select('name image startingFromPrice icon')
+                .sort({ createdAt: -1 }) // Latest first
+                .limit(4);
+
+                return {
+                    id: category._id,
+                    name: category.name,
+                    image: category.image,
+                    icon: category.icon,
+                    subcategories
+                };
+            })
+        );
+
+        res.status(200).json({
+            success: true,
+            count: result.length,
+            data: {
+                categories: result
+            }
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 exports.createCategory = async (req, res, next) => {
     try {
         if (!req.body?.name) return res.status(400).json({ success: false, message: 'Category name is required' });
         const data = { name: req.body.name };
-        if (req.file) data.image = req.file.filename;
+        if (req.file) {
+            const uploaded = await uploadFile(req.file, "categories");
+            data.image = uploaded.key;
+        }
         const category = await Category.create(data);
+        emitCategoryEvent('category:created', { category });
         res.status(201).json({ success: true, data: { category } });
     } catch (err) { next(err); }
 };
 
 exports.updateCategory = async (req, res, next) => {
     try {
+        const existing = await Category.findById(req.params.id);
+        if (!existing) return res.status(404).json({ success: false, message: 'Category not found' });
+
         const update = {};
         if (req.body.name) update.name = req.body.name;
-        if (req.file) update.image = req.file.filename;
-        const category = await Category.findByIdAndUpdate(req.params.id, update, { returnDocument: 'after', runValidators: true });
-        if (!category) return res.status(404).json({ success: false, message: 'Category not found' });
+
+        if (req.file) {
+            // Delete old image from S3 before uploading the new one
+            if (existing.image) {
+                await deleteFile(existing.image);
+            }
+
+            const uploaded = await uploadFile(req.file, "categories");
+            update.image = uploaded.key;
+        }
+
+        const category = await Category.findByIdAndUpdate(
+            req.params.id,
+            update,
+            { returnDocument: 'after', runValidators: true }
+        );
+        emitCategoryEvent('category:updated', { category });
         res.status(200).json({ success: true, data: { category } });
     } catch (err) { next(err); }
 };
@@ -35,8 +99,12 @@ exports.deleteCategory = async (req, res, next) => {
     try {
         const category = await Category.findById(req.params.id);
         if (!category) return res.status(404).json({ success: false, message: 'Category not found' });
+        if (category.image) {
+            await deleteFile(category.image);
+        }
         category.isActive = false;
         await category.save();
+        emitCategoryEvent('category:deleted', { categoryId: req.params.id });
         res.status(200).json({ success: true, message: 'Category deactivated successfully' });
     } catch (err) { next(err); }
 };
@@ -54,8 +122,25 @@ exports.getAllSubCategories = async (req, res, next) => {
 
 exports.createSubCategory = async (req, res, next) => {
     try {
-        const created = await SubCategory.create({ name: req.body.name, category: req.body.categoryId });
+        const data = { name: req.body.name, category: req.body.categoryId };
+        if (req.files?.image?.[0]) {
+            const uploadedImage = await uploadFile(
+            req.files.image[0],
+            "subcategories"
+            );
+            data.image = uploadedImage.key;
+        }
+        if (req.files?.icon?.[0]) {
+            const uploadedIcon = await uploadFile(
+            req.files.icon[0],
+            "subcategories/icons"
+            );
+            data.icon = uploadedIcon.key;
+        };
+        if (req.body.startingFromPrice) data.startingFromPrice = parseFloat(req.body.startingFromPrice);
+        const created = await SubCategory.create(data);
         const subcategory = await SubCategory.findById(created._id).populate('category', 'name');
+        emitCategoryEvent('subcategory:created', { subcategory });
         res.status(201).json({ success: true, data: { subcategory } });
     } catch (err) { next(err); }
 };
@@ -65,9 +150,25 @@ exports.updateSubCategory = async (req, res, next) => {
         const update = {};
         if (req.body.name) update.name = req.body.name;
         if (req.body.categoryId) update.category = req.body.categoryId;
-        if (req.file) update.image = req.file.filename;
+        if (req.files?.image?.[0]) {
+            const uploaded = await uploadFile(
+            req.files.image[0],
+            "subcategories"
+        );
+
+        update.image = uploaded.key;
+        }
+        if (req.files?.icon?.[0]) {
+            const uploaded = await uploadFile(
+            req.files.icon[0],
+            "subcategories/icons"
+            );
+            update.icon = uploaded.key;
+        }
+        if (req.body.startingFromPrice !== undefined) update.startingFromPrice = parseFloat(req.body.startingFromPrice) || 0;
         const subcategory = await SubCategory.findByIdAndUpdate(req.params.id, update, { returnDocument: 'after', runValidators: true }).populate('category', 'name');
         if (!subcategory) return res.status(404).json({ success: false, message: 'SubCategory not found' });
+        emitCategoryEvent('subcategory:updated', { subcategory });
         res.status(200).json({ success: true, data: { subcategory } });
     } catch (err) { next(err); }
 };
@@ -91,10 +192,22 @@ exports.getServicesBySubCategory = async (req, res, next) => {
 
 exports.deleteSubCategory = async (req, res, next) => {
     try {
+        const subcategory = await SubCategory.findByIdAndDelete(req.params.id);
+        if (subcategory?.icon) await deleteFile(subcategory.icon);
+        if (subcategory?.image) await deleteFile(subcategory.image);
+        if (!subcategory) return res.status(404).json({ success: false, message: 'SubCategory not found' });
+        emitCategoryEvent('subcategory:deleted', { subcategoryId: req.params.id });
+        res.status(200).json({ success: true, message: 'SubCategory deleted successfully' });
+    } catch (err) { next(err); }
+};
+
+exports.toggleSubCategoryStatus = async (req, res, next) => {
+    try {
         const subcategory = await SubCategory.findById(req.params.id);
         if (!subcategory) return res.status(404).json({ success: false, message: 'SubCategory not found' });
-        subcategory.isActive = false;
+        subcategory.isActive = req.body.isActive;
         await subcategory.save();
-        res.status(200).json({ success: true, message: 'SubCategory deactivated successfully' });
+        emitCategoryEvent('subcategory:updated', { subcategory });
+        res.status(200).json({ success: true, data: { subcategory } });
     } catch (err) { next(err); }
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import adminApi from '../services/adminApi';
-import LoadingSpinner from '../components/LoadingSpinner';
+import { ShimmerCategoryTable } from '../components/Shimmer';
 import { FaPlus, FaEdit, FaTrash, FaCheckCircle, FaTimesCircle, FaFolder } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
@@ -11,6 +11,8 @@ const ServiceManagement = () => {
     const [editingId, setEditingId] = useState(null);
     const [categoryName, setCategoryName] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortOrder, setSortOrder] = useState('asc');
 
     const fetchCategories = async () => {
         setLoading(true);
@@ -68,6 +70,19 @@ const ServiceManagement = () => {
         }
     };
 
+    const filteredCategories = [...categories]
+    .filter((cat) =>
+        cat.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+        const first = a.name.toLowerCase();
+        const second = b.name.toLowerCase();
+
+        return sortOrder === 'asc'
+            ? first.localeCompare(second)
+            : second.localeCompare(first);
+    });
+
     return (
         <div>
             <div className="d-flex justify-content-between align-items-center mb-4">
@@ -102,7 +117,7 @@ const ServiceManagement = () => {
                             </div>
                         </div>
                         <div className="d-flex gap-2 justify-content-end">
-                            <button type="button" onClick={() => setShowForm(false)} className="btn btn-outline-brand px-4 py-2">Cancel</button>
+                            <button type="button" onClick={() => setShowForm(false)} className="btn btn-outline-secondary px-4 py-2">Cancel</button>
                             <button type="submit" disabled={submitting} className="btn btn-brand fw-bold px-4 py-2 shadow-sm">
                                 {submitting ? 'Saving...' : 'Save Category'}
                             </button>
@@ -112,7 +127,30 @@ const ServiceManagement = () => {
             )}
 
             <div className="card border-0 shadow-sm rounded-3 bg-white p-4">
-                {loading ? <LoadingSpinner message="Loading categories..." /> : (
+
+    <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+
+        <input
+            type="text"
+            className="form-control"
+            placeholder="Search category..."
+            style={{ maxWidth: "350px" }}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
+        <select
+            className="form-select"
+            style={{ width: "200px" }}
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+        >
+            <option value="asc">Ascending (A-Z)</option>
+            <option value="desc">Descending (Z-A)</option>
+        </select>
+
+    </div>
+                {loading ? <ShimmerCategoryTable rows={6} /> : (
                     <div className="table-responsive">
                         <table className="table table-hover align-middle">
                             <thead className="table-light border-0">
@@ -124,10 +162,10 @@ const ServiceManagement = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {categories.map((cat) => (
+                                {filteredCategories.map((cat) => (
                                     <tr key={cat._id}>
                                         <td className="fw-bold text-dark">
-                                            <FaFolder className="text-primary me-2" />{cat.name}
+                                            <FaFolder style={{ color: "#A5732F" }} className="me-2" />{cat.name}
                                         </td>
                                         <td>
                                             {cat.isActive ? (
@@ -139,13 +177,13 @@ const ServiceManagement = () => {
                                         <td className="text-muted small">{new Date(cat.createdAt).toLocaleDateString()}</td>
                                         <td>
                                             <div className="d-flex gap-1">
-                                                <button onClick={() => handleOpenEdit(cat)} className="btn btn-sm btn-light border text-primary" title="Edit"><FaEdit /></button>
+                                                <button onClick={() => handleOpenEdit(cat)} className="btn btn-sm btn-light border" style={{ color: "#A5732F" }} title="Edit"><FaEdit /></button>
                                                 <button onClick={() => handleDelete(cat._id)} className="btn btn-sm btn-light border text-danger" title="Delete"><FaTrash /></button>
                                             </div>
                                         </td>
                                     </tr>
                                 ))}
-                                {categories.length === 0 && (
+                                {filteredCategories.length === 0 && (
                                     <tr><td colSpan="4" className="text-center py-5 text-muted">No categories found. Create your first category!</td></tr>
                                 )}
                             </tbody>

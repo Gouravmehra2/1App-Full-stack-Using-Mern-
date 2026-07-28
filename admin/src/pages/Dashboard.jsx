@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import adminApi from '../services/adminApi';
-import LoadingSpinner from '../components/LoadingSpinner';
-import { FaRupeeSign, FaUsers, FaTasks, FaCheckCircle, FaHourglassHalf, FaSpinner } from 'react-icons/fa';
+import { ShimmerStatCards, ShimmerDashboardCharts } from '../components/Shimmer';
+import { FaDollarSign, FaUsers, FaTasks, FaCheckCircle, FaHourglassHalf, FaSpinner } from 'react-icons/fa';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 const Dashboard = () => {
@@ -27,7 +27,16 @@ const Dashboard = () => {
     }, []);
 
     if (loading) {
-        return <LoadingSpinner message="Aggregating dashboard reports..." />;
+        return (
+            <div>
+                <div className="mb-4">
+                    <div style={{ width: 280, height: 28, borderRadius: 6, background: 'linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 37%,#f0f0f0 63%)', backgroundSize: '800px 100%', animation: 'shimmer 1.4s ease-in-out infinite' }} className="mb-2" />
+                    <div style={{ width: 420, height: 16, borderRadius: 6, background: 'linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 37%,#f0f0f0 63%)', backgroundSize: '800px 100%', animation: 'shimmer 1.4s ease-in-out infinite' }} />
+                </div>
+                <ShimmerStatCards />
+                <ShimmerDashboardCharts />
+            </div>
+        );
     }
 
     const { totalUsers, totalBookings, totalRevenue, statusCounts } = stats || {
@@ -50,7 +59,7 @@ const Dashboard = () => {
                     <div className="card border-0 shadow-sm rounded-3 p-4 bg-white">
                         <div className="d-flex align-items-center justify-content-between mb-3">
                             <span className="text-muted small fw-bold text-uppercase">Total Revenue</span>
-                            <div className="bg-success-subtle text-success rounded p-2"><FaRupeeSign /></div>
+                            <div className="rounded p-2" style={{ background: "#fdf5ea", color: "#A5732F" }}><FaDollarSign /></div>
                         </div>
                         <h3 className="fw-bold text-dark font-monospace mb-1">${totalRevenue.toFixed(2)}</h3>
                         <span className="text-muted small">Cleared paid receipts</span>
@@ -61,7 +70,7 @@ const Dashboard = () => {
                     <div className="card border-0 shadow-sm rounded-3 p-4 bg-white">
                         <div className="d-flex align-items-center justify-content-between mb-3">
                             <span className="text-muted small fw-bold text-uppercase">Total Bookings</span>
-                            <div className="bg-primary-subtle text-primary rounded p-2"><FaTasks /></div>
+                            <div className="rounded p-2" style={{ background: "#fdf5ea", color: "#A5732F" }}><FaTasks /></div>
                         </div>
                         <h3 className="fw-bold text-dark font-monospace mb-1">{totalBookings}</h3>
                         <span className="text-muted small">Orders placed across platform</span>
@@ -72,7 +81,7 @@ const Dashboard = () => {
                     <div className="card border-0 shadow-sm rounded-3 p-4 bg-white">
                         <div className="d-flex align-items-center justify-content-between mb-3">
                             <span className="text-muted small fw-bold text-uppercase">Active Customers</span>
-                            <div className="bg-info-subtle text-info rounded p-2"><FaUsers /></div>
+                            <div className="rounded p-2" style={{ background: "#fdf5ea", color: "#A5732F" }}><FaUsers /></div>
                         </div>
                         <h3 className="fw-bold text-dark font-monospace mb-1">{totalUsers}</h3>
                         <span className="text-muted small">Registered user accounts</span>
@@ -83,7 +92,7 @@ const Dashboard = () => {
                     <div className="card border-0 shadow-sm rounded-3 p-4 bg-white">
                         <div className="d-flex align-items-center justify-content-between mb-3">
                             <span className="text-muted small fw-bold text-uppercase">Pending Jobs</span>
-                            <div className="bg-dark-subtle text-dark rounded p-2"><FaHourglassHalf /></div>
+                            <div className="rounded p-2" style={{ background: "#fdf5ea", color: "#A5732F" }}><FaHourglassHalf /></div>
                         </div>
                         <h3 className="fw-bold text-dark font-monospace mb-1">{statusCounts.Pending}</h3>
                         <span className="text-muted small">Awaiting technician assignment</span>
@@ -96,21 +105,21 @@ const Dashboard = () => {
                 {/* Recharts Area Chart */}
                 <div className="col-lg-8">
                     <div className="card border-0 shadow-sm rounded-3 p-4 bg-white h-100">
-                        <h5 className="fw-bold text-dark mb-4">Weekly Revenue Trend (INR)</h5>
+                        <h5 className="fw-bold text-dark mb-4">Weekly Revenue Trend (USD)</h5>
                         <div style={{ width: '100%', height: '300px' }}>
                             <ResponsiveContainer>
-                                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                                     <defs>
                                         <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#ffc107" stopOpacity={0.4}/>
-                                            <stop offset="95%" stopColor="#ffc107" stopOpacity={0}/>
+                                            <stop offset="5%" stopColor="#A5732F" stopOpacity={0.35}/>
+                                            <stop offset="95%" stopColor="#A5732F" stopOpacity={0}/>
                                         </linearGradient>
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                    <XAxis dataKey="date" tickLine={false} />
+                                    <XAxis dataKey="date" tickMargin={12} />
                                     <YAxis tickLine={false} />
                                     <Tooltip />
-                                    <Area type="monotone" dataKey="revenue" stroke="#ffc107" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" name="Revenue ($)" />
+                                    <Area type="monotone" dataKey="revenue" stroke="#A5732F" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" name="Revenue ($)" />
                                 </AreaChart>
                             </ResponsiveContainer>
                         </div>
@@ -124,10 +133,10 @@ const Dashboard = () => {
                         <div className="d-flex flex-column gap-3">
                             <div className="d-flex justify-content-between align-items-center">
                                 <span className="text-muted d-flex align-items-center gap-2">
-                                    <span className="dot bg-dark" style={{ width: '10px', height: '10px', borderRadius: '50%' }}></span>
+                                    <span className="dot" style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#A5732F' }}></span>
                                     <span>Pending Order Queue</span>
                                 </span>
-                                <span className="badge bg-dark text-dark fw-bold font-monospace">{statusCounts.Pending}</span>
+                                <span className="badge fw-bold font-monospace" style={{ background: "#fdf5ea", color: "#A5732F" }}>{statusCounts.Pending}</span>
                             </div>
                             <div className="d-flex justify-content-between align-items-center">
                                 <span className="text-muted d-flex align-items-center gap-2">

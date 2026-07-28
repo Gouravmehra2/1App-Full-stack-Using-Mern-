@@ -5,6 +5,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { SocketProvider } from './context/SocketContext';
 
 import NavigationBar from './components/Navbar';
 import Footer from './components/Footer';
@@ -78,11 +79,13 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <BrowserRouter>
-        <AuthProvider>
-          <CartProvider>
-            <AppShell />
-          </CartProvider>
-        </AuthProvider>
+        <SocketProvider>
+          <AuthProvider>
+            <CartProvider>
+              <AppShell />
+            </CartProvider>
+          </AuthProvider>
+        </SocketProvider>
       </BrowserRouter>
     </GoogleOAuthProvider>
   );

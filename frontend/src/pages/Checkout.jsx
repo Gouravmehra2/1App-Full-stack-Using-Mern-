@@ -7,7 +7,7 @@ import { AuthContext } from '../context/AuthContext';
 import bookingService from '../services/bookingService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { CheckoutShimmer } from '../components/Shimmer';
-import { FaMapMarkerAlt, FaPhone, FaCalendarAlt, FaClock, FaLock, FaArrowLeft } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaPhone, FaPhoneAlt,FaCalendarAlt, FaClock, FaLock, FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 const inputStyle = {
@@ -262,7 +262,7 @@ const Checkout = () => {
 
                                     <div>
                                         <label style={labelStyle}>
-                                            <FaPhone color="#A5732F" /> Contact Phone Number
+                                            <FaPhoneAlt color="#A5732F" /> Contact Phone Number
                                         </label>
                                         <input
                                             type="tel"

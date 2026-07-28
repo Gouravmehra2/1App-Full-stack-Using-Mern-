@@ -52,7 +52,7 @@ export default function AntiDiscrimination() {
                     <h2 style={{ fontWeight: 700, fontSize: '15px', marginBottom: 16 }}>Anti-Discrimination Policy</h2>
 
                     <p style={{ fontSize: '13px', color: '#444', lineHeight: 1.8, marginBottom: 16, fontStyle: 'italic' }}>
-                        Urban Company seeks to empower millions of service professionals across the world to deliver safe, reliable and high quality services at home. Urban Company therefore does not tolerate, and prohibits discrimination against customers or service providers based on religion, caste, race, national origin, disability, sexual orientation, sex, marital status, gender identity, age or any other characteristic that may be protected under applicable laws.
+                        1App Company seeks to empower millions of service professionals across the world to deliver safe, reliable and high quality services at home. 1App Company therefore does not tolerate, and prohibits discrimination against customers or service providers based on religion, caste, race, national origin, disability, sexual orientation, sex, marital status, gender identity, age or any other characteristic that may be protected under applicable laws.
                     </p>
 
                     <p style={{ fontSize: '13px', color: '#444', lineHeight: 1.8, marginBottom: 16, fontStyle: 'italic' }}>
@@ -60,7 +60,7 @@ export default function AntiDiscrimination() {
                     </p>
 
                     <p style={{ fontSize: '13px', color: '#444', lineHeight: 1.8, fontStyle: 'italic' }}>
-                        Any customer or service partner found to have violated this prohibition will lose access to the Urban Company platform.
+                        Any customer or service partner found to have violated this prohibition will lose access to the 1App Company platform.
                     </p>
                 </div>
             </div>

@@ -8,7 +8,7 @@ import {
     FaLaptop, FaBullhorn, FaChartLine, FaUserMd, FaHeartbeat,
     FaGraduationCap, FaCalendarAlt, FaPalette, FaCar, FaShieldAlt,
     FaTools, FaWrench, FaPaintRoller, FaBolt, FaSnowflake,
-    FaTint, FaUser, FaClock, FaArrowRight, FaPhone, FaMapMarkerAlt,
+    FaTint, FaUser, FaClock, FaArrowRight, FaPhone,FaPhoneAlt, FaMapMarkerAlt,
     FaEnvelope, FaFacebook, FaTwitter, FaInstagram, FaYoutube,
     FaWhatsapp, FaAppStore, FaGooglePlay, FaCamera, FaShoppingBag,
     FaUserCircle, FaChartBar, FaBus
@@ -201,6 +201,7 @@ const Home = () => {
                                 display: 'grid',
                                 gridTemplateColumns: 'repeat(4, 1fr)',
                                 gap: '20px',
+                                
                             }}
                         >
                             {categoriesWithSubs
@@ -216,137 +217,137 @@ const Home = () => {
                                 })
                                 .slice(0, 8)
                                 .map((cat, idx) => (
-                                <div
-                                    key={cat.id || cat._id || idx}
-                                    onClick={() => handleCategoryClick(cat.name)}
-                                    style={{
-                                        background:
-                                            'linear-gradient(180deg, #D99330 0%, #A5732F 50%, #D99330 100%)',
-                                        borderRadius: '22px',
-                                        padding: '1.5px',
-                                        cursor: 'pointer',
-                                        position: 'relative',
-                                        overflow: 'visible',
-                                        marginBottom: '10px',
-                                    }}
-                                >
-                                    {/* Inner Card */}
                                     <div
+                                        key={cat.id || cat._id || idx}
+                                        onClick={() => handleCategoryClick(cat.name)}
                                         style={{
-                                            background: '#12100a',
-                                            borderRadius: '20px',
-                                            padding: '18px 8px 24px',
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            textAlign: 'center',
+                                            background:
+                                                'linear-gradient(180deg, #D99330 0%, #A5732F 50%, #D99330 100%)',
+                                            borderRadius: '22px',
+                                            padding: '1.5px',
+                                            cursor: 'pointer',
                                             position: 'relative',
-                                            overflow: 'hidden',
+                                            overflow: 'visible',
+                                            marginBottom: '10px',
                                         }}
                                     >
-                                        {/* Top-left blur */}
+                                        {/* Inner Card */}
+                                        <div
+                                            style={{
+                                                background: '#12100a',
+                                                borderRadius: '20px',
+                                                padding: '18px 8px 24px',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                textAlign: 'center',
+                                                position: 'relative',
+                                                overflow: 'hidden',
+                                            }}
+                                        >
+                                            {/* Top-left blur */}
+                                            <div
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: '-20px',
+                                                    left: '-20px',
+                                                    width: '80px',
+                                                    height: '80px',
+                                                    background: '#332F23',
+                                                    borderRadius: '50%',
+                                                    filter: 'blur(28px)',
+                                                    opacity: 0.9,
+                                                    pointerEvents: 'none',
+                                                }}
+                                            />
+
+                                            {/* Category Image from API */}
+                                            <div
+                                                style={{
+                                                    width: '55px',
+                                                    height: '55px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    position: 'relative',
+                                                    zIndex: 1,
+                                                }}
+                                            >
+                                                {cat.image ? (
+                                                    <img
+                                                        src={resolveCategoryImage(cat.image)}
+                                                        alt={cat.name}
+                                                        style={{
+                                                            width: '44px',
+                                                            height: '44px',
+                                                            objectFit: 'contain',
+                                                            display: 'block',
+                                                        }}
+                                                        onError={(e) => { e.target.style.display = 'none'; }}
+                                                    />
+                                                ) : (
+                                                    <FaTools size={28} style={{ color: '#A5732F' }} />
+                                                )}
+                                            </div>
+
+                                            {/* Category Name from API */}
+                                            <span
+                                                style={{
+                                                    color: '#fff',
+                                                    fontSize: '12px',
+                                                    fontWeight: 700,
+                                                    lineHeight: 1.35,
+                                                    textAlign: 'center',
+                                                    position: 'relative',
+                                                    zIndex: 1,
+                                                    wordBreak: 'break-word',
+                                                    whiteSpace: 'normal',
+                                                    maxWidth: '90%',
+                                                    marginTop: '6px',
+                                                }}
+                                            >
+                                                {cat.name.includes(' ') ? (
+                                                    <>
+                                                        {cat.name
+                                                            .split(' ')
+                                                            .slice(0, Math.ceil(cat.name.split(' ').length / 2))
+                                                            .join(' ')}
+                                                        <br />
+                                                        {cat.name
+                                                            .split(' ')
+                                                            .slice(Math.ceil(cat.name.split(' ').length / 2))
+                                                            .join(' ')}
+                                                    </>
+                                                ) : (
+                                                    cat.name
+                                                )}
+                                            </span>
+                                        </div>
+
+                                        {/* Bottom Arrow */}
                                         <div
                                             style={{
                                                 position: 'absolute',
-                                                top: '-20px',
-                                                left: '-20px',
-                                                width: '80px',
-                                                height: '80px',
-                                                background: '#332F23',
+                                                bottom: '-16px',
+                                                left: '50%',
+                                                transform: 'translateX(-50%)',
+                                                width: '32px',
+                                                height: '32px',
                                                 borderRadius: '50%',
-                                                filter: 'blur(28px)',
-                                                opacity: 0.9,
-                                                pointerEvents: 'none',
-                                            }}
-                                        />
-
-                                        {/* Category Image from API */}
-                                        <div
-                                            style={{
-                                                width: '55px',
-                                                height: '55px',
+                                                background:
+                                                    'linear-gradient(180deg, #D99330 0%, #3B2300 100%)',
+                                                border: '1.5px solid #A5732F',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
-                                                position: 'relative',
-                                                zIndex: 1,
+                                                zIndex: 3,
                                             }}
                                         >
-                                            {cat.image ? (
-                                                <img
-                                                    src={resolveCategoryImage(cat.image)}
-                                                    alt={cat.name}
-                                                    style={{
-                                                        width: '44px',
-                                                        height: '44px',
-                                                        objectFit: 'contain',
-                                                        display: 'block',
-                                                    }}
-                                                    onError={(e) => { e.target.style.display = 'none'; }}
-                                                />
-                                            ) : (
-                                                <FaTools size={28} style={{ color: '#A5732F' }} />
-                                            )}
+                                            <FaArrowRight size={11} style={{ color: '#fff' }} />
                                         </div>
-
-                                        {/* Category Name from API */}
-                                        <span
-                                            style={{
-                                                color: '#fff',
-                                                fontSize: '12px',
-                                                fontWeight: 700,
-                                                lineHeight: 1.35,
-                                                textAlign: 'center',
-                                                position: 'relative',
-                                                zIndex: 1,
-                                                wordBreak: 'break-word',
-                                                whiteSpace: 'normal',
-                                                maxWidth: '90%',
-                                                marginTop: '6px',
-                                            }}
-                                        >
-                                            {cat.name.includes(' ') ? (
-                                                <>
-                                                    {cat.name
-                                                        .split(' ')
-                                                        .slice(0, Math.ceil(cat.name.split(' ').length / 2))
-                                                        .join(' ')}
-                                                    <br />
-                                                    {cat.name
-                                                        .split(' ')
-                                                        .slice(Math.ceil(cat.name.split(' ').length / 2))
-                                                        .join(' ')}
-                                                </>
-                                            ) : (
-                                                cat.name
-                                            )}
-                                        </span>
                                     </div>
-
-                                    {/* Bottom Arrow */}
-                                    <div
-                                        style={{
-                                            position: 'absolute',
-                                            bottom: '-16px',
-                                            left: '50%',
-                                            transform: 'translateX(-50%)',
-                                            width: '32px',
-                                            height: '32px',
-                                            borderRadius: '50%',
-                                            background:
-                                                'linear-gradient(180deg, #D99330 0%, #3B2300 100%)',
-                                            border: '1.5px solid #A5732F',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            zIndex: 3,
-                                        }}
-                                    >
-                                        <FaArrowRight size={11} style={{ color: '#fff' }} />
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
                         </div>
 
                         {/* Trust badges */}
@@ -512,18 +513,18 @@ const Home = () => {
             {(() => {
                 const cat = getCategoryByName('HomeServices');
                 if (!cat) return null;
-                
+
                 // Define the specific subcategories we want to show
-                const targetSubcategories = ['Smart Home', 'Diagnostic', 'Home Theater', 'TV Mounting'];
-                
+                const targetSubcategories = ['Smart Home', 'Diagnostic', 'Home Theater', 'TV Mounting','Cleaning','AC & Appliance'];
+
                 // Filter and sort subcategories to match the target order
                 const sortedSubcategories = targetSubcategories
-                    .map(name => cat.subcategories.find(sub => 
+                    .map(name => cat.subcategories.find(sub =>
                         sub.name.toLowerCase().includes(name.toLowerCase()) ||
                         name.toLowerCase().includes(sub.name.toLowerCase())
                     ))
                     .filter(sub => sub); // Remove any undefined entries
-                
+
                 return (
                     <section className="py-5 bg-white">
                         <div className="container">
@@ -599,7 +600,7 @@ const Home = () => {
                         <div className="p-5 d-flex flex-column justify-content-center" style={{ flex: '0 0 45%' }}>
                             <h2 className="fw-bold mb-2" style={{ color: '#1a1a1a', fontSize: '1.6rem', lineHeight: 1.3 }}>Give your space the glow-up it deserves</h2>
                             <p className="text-muted mb-4">Home painting</p>
-                            <button className="btn rounded-3 px-4 py-2" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }}>Buy now</button>
+                            {/* <button className="btn rounded-3 px-4 py-2" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }}>Buy now</button> */}
                         </div>
                         <div style={{ flex: '0 0 55%', overflow: 'hidden' }}>
                             <img
@@ -1063,7 +1064,7 @@ const Home = () => {
                                                     <div style={{ fontSize: '13px' }}>Starts From <span className="fw-bold">${sub.startingFromPrice}</span></div>
                                                 </div>
                                                 <button className="btn p-2 rounded-2" style={{ background: '#f5f5f5', border: 'none' }}>
-                                                    <FaPhone size={14} className="text-dark" />
+                                                    <FaPhoneAlt size={14} className="text-dark" />
                                                 </button>
                                             </div>
                                         </div>
@@ -1148,7 +1149,7 @@ const Home = () => {
             */}
 
             {/* Accounting & Finance Banner */}
-            
+
             {/* <section className="py-5 bg-white">
                 <div className="container">
                     <div className="rounded-4 overflow-hidden position-relative" style={{ minHeight: '300px', background: '#1a1a1a' }}>

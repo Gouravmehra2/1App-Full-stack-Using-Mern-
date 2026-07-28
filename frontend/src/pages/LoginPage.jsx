@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { FaPhone, FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaPhone, FaEnvelope, FaLock, FaEye, FaEyeSlash ,FaPhoneAlt} from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useGoogleLogin } from '@react-oauth/google';
 import AuthPanel from './AuthPanel';
@@ -82,7 +82,7 @@ const LoginPage = () => {
                                 {useEmail ? 'Email Address' : 'Phone Number'}
                             </label>
                             <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #ccc', borderRadius: 8, padding: '10px 14px', gap: 10 }}>
-                                {useEmail ? <FaEnvelope color="#888" size={14} /> : <FaPhone color="#888" size={14} />}
+                                {useEmail ? <FaEnvelope color="#888" size={14} /> : <FaPhoneAlt color="#888" size={14} />}
                                 <input
                                     type={useEmail ? 'email' : 'tel'}
                                     required

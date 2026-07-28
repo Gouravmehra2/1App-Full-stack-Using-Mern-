@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaEnvelope, FaPhone, FaArrowLeft } from 'react-icons/fa';
+import { FaEnvelope, FaPhone,FaPhoneAlt, FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { ResetAuthPanel } from './AuthPanel';
@@ -20,7 +20,7 @@ const ForgotPassword = () => {
             if (res.data.success) {
                 toast.success(res.data.message);
                 navigate('/verify-otp', {
-                    state: { phone: res.data.phone, identifier },
+                    state: { phone: res.data.phone, identifier, devOtp: res.data.devOtp || null },
                 });
             }
         } catch (err) {
@@ -57,7 +57,7 @@ const ForgotPassword = () => {
                                 {useEmail ? 'Email Address' : 'Phone Number'}
                             </label>
                             <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #ddd', borderRadius: 8, padding: '10px 14px', gap: 10 }}>
-                                {useEmail ? <FaEnvelope color="#888" size={14} /> : <FaPhone color="#888" size={14} />}
+                                {useEmail ? <FaEnvelope color="#888" size={14} /> : <FaPhoneAlt color="#888" size={14} />}
                                 <input
                                     type={useEmail ? 'email' : 'tel'}
                                     required

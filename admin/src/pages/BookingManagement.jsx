@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import adminApi from '../services/adminApi';
-import LoadingSpinner from '../components/LoadingSpinner';
-import { FaSearch, FaEye, FaUser, FaPhone, FaMapMarkerAlt, FaRupeeSign, FaCalendarAlt, FaClock } from 'react-icons/fa';
+import { ShimmerBookingTable } from '../components/Shimmer';
+import { FaSearch, FaEye, FaUser, FaPhone, FaMapMarkerAlt, FaDollarSign, FaCalendarAlt, FaClock } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 const BookingManagement = () => {
@@ -14,6 +14,7 @@ const BookingManagement = () => {
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [newStatus, setNewStatus] = useState('');
     const [newPaymentStatus, setNewPaymentStatus] = useState('');
+    const [newPaymentDetails, setNewPaymentDetails] = useState('');
     const [techName, setTechName] = useState('');
     const [techPhone, setTechPhone] = useState('');
     const [updating, setUpdating] = useState(false);
@@ -48,6 +49,7 @@ const BookingManagement = () => {
         setSelectedBooking(booking);
         setNewStatus(booking.status);
         setNewPaymentStatus(booking.paymentStatus);
+        setNewPaymentDetails(booking.paymentDetails);
         setTechName(booking.assignedTechnician?.name || '');
         setTechPhone(booking.assignedTechnician?.phone || '');
     };
@@ -59,6 +61,7 @@ const BookingManagement = () => {
             const payload = {
                 status: newStatus,
                 paymentStatus: newPaymentStatus,
+                paymentDetails: newPaymentDetails,
                 technicianName: techName,
                 technicianPhone: techPhone
             };
@@ -79,13 +82,18 @@ const BookingManagement = () => {
 
     const getStatusBadge = (status) => {
         switch (status) {
-            case 'Pending': return 'bg-dark text-dark';
+            case 'Pending': return 'text-white';
             case 'Confirmed': return 'bg-info text-dark';
             case 'In Progress': return 'bg-primary text-light';
             case 'Completed': return 'bg-success text-light';
             case 'Cancelled': return 'bg-danger text-light';
             default: return 'bg-secondary text-light';
         }
+    };
+
+    const getStatusStyle = (status) => {
+        if (status === 'Pending') return { background: '#A5732F', color: '#fff' };
+        return {};
     };
 
     return (
@@ -139,7 +147,7 @@ const BookingManagement = () => {
                 <div className={selectedBooking ? 'col-lg-7' : 'col-12'}>
                     <div className="card border-0 shadow-sm rounded-3 bg-white p-4">
                         {loading ? (
-                            <LoadingSpinner message="Searching booking database..." />
+                            <ShimmerBookingTable rows={7} />
                         ) : (
                             <div className="table-responsive">
                                 <table className="table table-hover align-middle">
@@ -163,9 +171,9 @@ const BookingManagement = () => {
                                                     <small className="d-block text-dark fw-semibold">{new Date(booking.serviceDate).toLocaleDateString()}</small>
                                                     <span className="badge bg-light text-muted border text-uppercase" style={{ fontSize: '0.7rem' }}>{booking.timeSlot}</span>
                                                 </td>
-                                                <td className="font-monospace fw-bold text-primary">${booking.totalAmount}</td>
+                                                <td className="font-monospace fw-bold" style={{ color: "#A5732F" }}>${booking.totalAmount}</td>
                                                 <td>
-                                                    <span className={`badge ${getStatusBadge(booking.status)} px-2.5 py-1 text-uppercase`} style={{ fontSize: '0.7rem' }}>
+                                                    <span className={`badge ${getStatusBadge(booking.status)} px-2.5 py-1 text-uppercase`} style={{ fontSize: '0.7rem', ...getStatusStyle(booking.status) }}>
                                                         {booking.status}
                                                     </span>
                                                 </td>
@@ -204,7 +212,7 @@ const BookingManagement = () => {
                             {/* Customer profile block */}
                             <div className="mb-4 bg-light rounded-3 p-3">
                                 <div className="d-flex align-items-center gap-2 mb-2 text-muted">
-                                    <FaUser className="text-primary" />
+                                    <FaUser style={{ color: "#A5732F" }} />
                                     <span className="fw-bold text-dark">{selectedBooking.user?.name || 'Customer'}</span>
                                     <small className="font-monospace">({selectedBooking.user?.email})</small>
                                 </div>
@@ -221,20 +229,82 @@ const BookingManagement = () => {
                             {/* Appointment summary */}
                             <div className="row g-3 mb-4 border-bottom pb-4">
                                 <div className="col-6 d-flex align-items-center gap-2">
-                                    <FaCalendarAlt className="text-primary" />
+                                    <FaCalendarAlt style={{ color: "#A5732F" }} />
                                     <div>
                                         <small className="text-muted d-block">Scheduled</small>
                                         <span className="fw-bold text-dark small">{new Date(selectedBooking.serviceDate).toLocaleDateString()}</span>
                                     </div>
                                 </div>
                                 <div className="col-6 d-flex align-items-center gap-2">
-                                    <FaClock className="text-primary" />
+                                    <FaClock style={{ color: "#A5732F" }} />
                                     <div>
                                         <small className="text-muted d-block">Slot</small>
                                         <span className="fw-bold text-dark small">{selectedBooking.timeSlot}</span>
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Payment Information */}
+<div className="card border-0 bg-light mb-4">
+    <div className="card-body">
+        <h6 className="fw-bold mb-3">
+            <FaDollarSign className="me-2 text-success" />
+            Payment Details
+        </h6>
+
+        <div className="row g-3">
+            <div className="col-md-6">
+                <small className="text-muted d-block">Amount</small>
+                <div className="fw-bold fs-5" style={{ color: "#A5732F" }}>
+                    ${selectedBooking.totalAmount}
+                </div>
+            </div>
+
+            <div className="col-md-6">
+                <small className="text-muted d-block">Payment Status</small>
+                <span
+                    className={`badge ${
+                        selectedBooking.paymentStatus === "Paid"
+                            ? "bg-success"
+                            : selectedBooking.paymentStatus === "Pending"
+                            ? "bg-warning text-dark"
+                            : "bg-danger"
+                    }`}
+                >
+                    {selectedBooking.paymentStatus}
+                </span>
+            </div>
+
+            <div className="col-12">
+                <small className="text-muted">Provider</small>
+                <div className="fw-semibold text-capitalize">
+                    {selectedBooking.paymentDetails?.provider || "-"}
+                </div>
+            </div>
+
+            <div className="col-12">
+                <small className="text-muted">Order ID</small>
+                <div className="font-monospace small text-break">
+                    {selectedBooking.paymentDetails?.orderId || "-"}
+                </div>
+            </div>
+
+            <div className="col-12">
+                <small className="text-muted">Payment ID</small>
+                <div className="font-monospace small text-break">
+                    {selectedBooking.paymentDetails?.paymentId || "-"}
+                </div>
+            </div>
+
+            <div className="col-12">
+                <small className="text-muted">Transaction ID</small>
+                <div className="font-monospace small text-break">
+                    {selectedBooking.paymentDetails?.transactionId || "-"}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
                             {/* Status updates Form */}
                             <form onSubmit={handleUpdateBooking}>

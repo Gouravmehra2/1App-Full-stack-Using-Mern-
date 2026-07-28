@@ -14,10 +14,11 @@ import CategoryManagement from './pages/CategoryManagement';
 import SubcategoryManagement from './pages/SubcategoryManagement';
 import UserManagement from './pages/UserManagement';
 import OfferManagement from './pages/OfferManagement';
+import BlogManagement from './pages/BlogManagement';
 
 // Private Route Wrapper
 const AdminPrivateRoute = ({ children }) => {
-  const token = localStorage.getItem('vmarc_admin_token');
+  const token = localStorage.getItem('1app_admin_token');
   if (!token) {
     return <Navigate to="/login" replace />;
   }
@@ -47,6 +48,7 @@ function App() {
           <Route path="subcategories" element={<CategoryManagement />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="offers" element={<OfferManagement />} />
+          <Route path="blogs" element={<BlogManagement />} />
         </Route>
       </Routes>
       <ToastContainer position="bottom-right" autoClose={3000} />

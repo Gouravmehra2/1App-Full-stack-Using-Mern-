@@ -7,6 +7,11 @@ import { BsStack } from 'react-icons/bs';
 import SearchAutocomplete from './SearchAutocomplete';
 import ServiceSearchAutocomplete from './ServiceSearchAutocomplete';
 
+const tryHeroImg = (filename) => {
+        try { return require(`../assets/hero/${filename}`); }
+        catch { return ''; }
+    };
+
 const NavigationBar = () => {
     const { isAuthenticated, logout, user } = useContext(AuthContext);
     const { getCartItemsCount } = useContext(CartContext);
@@ -23,8 +28,7 @@ const NavigationBar = () => {
 
                     {/* Logo */}
                     <Link to="/" className="d-flex align-items-center gap-2 text-decoration-none flex-shrink-0">
-                        <BsStack size={22} color="#111" />
-                        <span className="fw-bold text-dark" style={{ fontSize: '18px', letterSpacing: '-0.5px' }}>1 APP</span>
+                    <img src={tryHeroImg('1app_logo.png') } alt="Hero" style={{width: '40px', height: 'auto'}}/>
                     </Link>
 
                     {/* Nav Links */}

@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import adminApi from '../services/adminApi';
-import LoadingSpinner from '../components/LoadingSpinner';
-import { FaPlus, FaEdit, FaTrash, FaFolder, FaImage, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { ShimmerSubcategoryTable } from '../components/Shimmer';
+import AdminImage from '../components/AdminImage';
+import { FaPlus, FaEdit, FaTrash, FaFolder, FaImage } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import { getImageUrl } from '../utils/helpers';
 
 const CategoryManagement = () => {
     const [subcategories, setSubcategories] = useState([]);
@@ -14,7 +16,14 @@ const CategoryManagement = () => {
     const [subcategoryName, setSubcategoryName] = useState('');
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
+    const [iconFile, setIconFile] = useState(null);
+    const [iconPreview, setIconPreview] = useState(null);
+    const [startingFromPrice, setStartingFromPrice] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortOrder, setSortOrder] = useState('asc');
+    const formRef = useRef(null);
+    const tableRef = useRef(null);
 
     const fetchData = async () => {
         setLoading(true);
@@ -40,6 +49,9 @@ const CategoryManagement = () => {
         setSubcategoryName('');
         setImageFile(null);
         setImagePreview(null);
+        setIconFile(null);
+        setIconPreview(null);
+        setStartingFromPrice('');
         setShowForm(true);
     };
 
@@ -48,8 +60,12 @@ const CategoryManagement = () => {
         setSelectedCategoryId(sub.category?._id || '');
         setSubcategoryName(sub.name);
         setImageFile(null);
-        setImagePreview(sub.image ? `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${sub.image}` : null);
+        setImagePreview(sub.image ? getImageUrl(sub.image) : null);
+        setIconFile(null);
+        setIconPreview(sub.icon ? getImageUrl(sub.icon) : null);
+        setStartingFromPrice(sub.startingFromPrice?.toString() || '');
         setShowForm(true);
+        setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
     };
 
     const handleImageChange = (e) => {
@@ -57,19 +73,37 @@ const CategoryManagement = () => {
         if (file) {
             setImageFile(file);
             const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
-            };
+            reader.onloadend = () => setImagePreview(reader.result);
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleIconChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setIconFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => setIconPreview(reader.result);
             reader.readAsDataURL(file);
         }
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Delete this subcategory?')) return;
+        if (!window.confirm('Are you sure you want to permanently delete this subcategory?')) return;
         try {
             const res = await adminApi.deleteSubCategory(id);
             if (res.success) { toast.success('SubCategory deleted!'); fetchData(); }
         } catch { toast.error('Deletion failed'); }
+    };
+
+    const handleToggleStatus = async (id, isActive) => {
+        try {
+            const res = await adminApi.toggleSubCategoryStatus(id, isActive);
+            if (res.success) {
+                toast.success(`SubCategory marked ${isActive ? 'Active' : 'Inactive'}`);
+                setSubcategories(prev => prev.map(s => s._id === id ? { ...s, isActive } : s));
+            }
+        } catch { toast.error('Status update failed'); }
     };
 
     const handleSubmit = async (e) => {
@@ -83,9 +117,9 @@ const CategoryManagement = () => {
             const formData = new FormData();
             formData.append('name', subcategoryName);
             formData.append('categoryId', selectedCategoryId);
-            if (imageFile) {
-                formData.append('image', imageFile);
-            }
+            if (startingFromPrice) formData.append('startingFromPrice', startingFromPrice);
+            if (imageFile) formData.append('image', imageFile);
+            if (iconFile) formData.append('icon', iconFile);
 
             let res;
             if (editingId) {
@@ -97,12 +131,27 @@ const CategoryManagement = () => {
             }
             setShowForm(false);
             fetchData();
+            setTimeout(() => tableRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
         } catch (err) {
             toast.error(err.response?.data?.message || 'Failed to save subcategory');
         } finally {
             setSubmitting(false);
         }
     };
+
+    const filteredSubcategories = [...subcategories]
+    .filter((sub) =>
+        sub.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        sub.category?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+        const first = a.name.toLowerCase();
+        const second = b.name.toLowerCase();
+
+        return sortOrder === 'asc'
+            ? first.localeCompare(second)
+            : second.localeCompare(first);
+    });
 
     return (
         <div>
@@ -119,7 +168,7 @@ const CategoryManagement = () => {
             </div>
 
             {showForm && (
-                <div className="card border-0 shadow-sm rounded-3 bg-white p-4 mb-4">
+                <div ref={formRef} className="card border-0 shadow-sm rounded-3 bg-white p-4 mb-4">
                     <h5 className="fw-bold mb-4 border-bottom pb-2">
                         {editingId ? 'Edit Sub-Category' : 'Create New Sub-Category'}
                     </h5>
@@ -150,7 +199,18 @@ const CategoryManagement = () => {
                                     onChange={(e) => setSubcategoryName(e.target.value)}
                                 />
                             </div>
-                            <div className="col-md-12">
+                            <div className="col-md-6">
+                                <label className="form-label text-muted small fw-bold">Starting From Price ($)</label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    className="form-control bg-light border-0"
+                                    placeholder="e.g., 299"
+                                    value={startingFromPrice}
+                                    onChange={(e) => setStartingFromPrice(e.target.value)}
+                                />
+                            </div>
+                            <div className="col-md-6">
                                 <label className="form-label text-muted small fw-bold">Upload Image</label>
                                 <input
                                     type="file"
@@ -159,17 +219,34 @@ const CategoryManagement = () => {
                                     onChange={handleImageChange}
                                 />
                             </div>
+                            <div className="col-md-6">
+                                <label className="form-label text-muted small fw-bold">Upload Icon</label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="form-control bg-light border-0"
+                                    onChange={handleIconChange}
+                                />
+                            </div>
                         </div>
 
-                        {imagePreview && (
-                            <div className="mb-4">
-                                <label className="text-muted small fw-bold d-block mb-2">Image Preview:</label>
-                                <img src={imagePreview} alt="Preview" className="img-thumbnail" style={{ maxWidth: '150px' }} />
-                            </div>
-                        )}
+                        <div className="d-flex gap-4 mb-4">
+                            {imagePreview && (
+                                <div>
+                                    <label className="text-muted small fw-bold d-block mb-2">Image Preview:</label>
+                                    <img src={imagePreview} alt="Preview" className="img-thumbnail" style={{ maxWidth: '150px' }} />
+                                </div>
+                            )}
+                            {iconPreview && (
+                                <div>
+                                    <label className="text-muted small fw-bold d-block mb-2">Icon Preview:</label>
+                                    <img src={iconPreview} alt="Icon Preview" className="img-thumbnail" style={{ maxWidth: '60px' }} />
+                                </div>
+                            )}
+                        </div>
 
                         <div className="d-flex gap-2 justify-content-end">
-                            <button type="button" onClick={() => setShowForm(false)} className="btn btn-outline-brand px-4 py-2">Cancel</button>
+                            <button type="button" onClick={() => setShowForm(false)} className="btn btn-outline-secondary px-4 py-2">Cancel</button>
                             <button type="submit" disabled={submitting} className="btn btn-brand fw-bold px-4 py-2 shadow-sm">
                                 {submitting ? 'Saving...' : 'Save Sub-Category'}
                             </button>
@@ -178,58 +255,115 @@ const CategoryManagement = () => {
                 </div>
             )}
 
-            <div className="card border-0 shadow-sm rounded-3 bg-white p-4">
-                {loading ? <LoadingSpinner message="Loading sub-categories..." /> : (
+            <div ref={tableRef} className="card border-0 shadow-sm rounded-3 bg-white p-4">
+
+    <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+
+        <input
+            type="text"
+            className="form-control"
+            placeholder="Search category or sub-category..."
+            style={{ maxWidth: "350px" }}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
+        <select
+            className="form-select"
+            style={{ width: "180px" }}
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+        >
+            <option value="asc">
+                Ascending (A-Z)
+            </option>
+
+            <option value="desc">
+                Descending (Z-A)
+            </option>
+        </select>
+
+    </div>
+                {loading ? <ShimmerSubcategoryTable rows={7} /> : (
                     <div className="table-responsive">
                         <table className="table table-hover align-middle">
                             <thead className="table-light border-0">
                                 <tr>
                                     <th>Image</th>
+                                    <th>Icon</th>
                                     <th>Category</th>
                                     <th>Sub-Category</th>
+                                    <th>Starting Price</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {subcategories.map((sub) => (
+                                {filteredSubcategories.map((sub) => (
                                     <tr key={sub._id}>
                                         <td>
                                             {sub.image ? (
-                                                <img 
-                                                    src={`${process.env.REACT_IMAGE_URL || 'http://localhost:5000'}/uploads/${sub.image}`} 
-                                                    alt={sub.name} 
-                                                    className="img-thumbnail" 
-                                                    style={{ maxWidth: '50px' }}
-                                                    onError={(e) => { e.target.src = 'https://via.placeholder.com/50'; }}
+                                                <AdminImage
+                                                    src={getImageUrl(sub.image)}
+                                                    alt={sub.name}
+                                                    width={50}
+                                                    height={50}
+                                                    radius={6}
+                                                    imgClassName="img-thumbnail"
+                                                    imgStyle={{ border: 'none', padding: 0 }}
                                                 />
                                             ) : (
-                                                <div className="bg-light text-muted d-flex align-items-center justify-content-center" style={{ width: '50px', height: '50px' }}>
+                                                <div className="bg-light text-muted d-flex align-items-center justify-content-center" style={{ width: '50px', height: '50px', borderRadius: 6 }}>
                                                     <FaImage size={16} />
                                                 </div>
                                             )}
                                         </td>
+                                        <td>
+                                            {sub.icon ? (
+                                                <AdminImage
+                                                    src={getImageUrl(sub.icon)}
+                                                    alt={`${sub.name} icon`}
+                                                    width={35}
+                                                    height={35}
+                                                    radius={4}
+                                                    objectFit="contain"
+                                                    imgClassName="img-thumbnail"
+                                                    imgStyle={{ border: 'none', padding: 0 }}
+                                                />
+                                            ) : (
+                                                <div className="bg-light text-muted d-flex align-items-center justify-content-center" style={{ width: '35px', height: '35px', borderRadius: 4 }}>
+                                                    <FaImage size={12} />
+                                                </div>
+                                            )}
+                                        </td>
                                         <td className="fw-bold text-dark">
-                                            <FaFolder className="text-primary me-2" />{sub.category?.name || '—'}
+                                            <FaFolder style={{ color: "#A5732F" }} className="me-2" />{sub.category?.name || '—'}
                                         </td>
                                         <td className="fw-semibold">{sub.name}</td>
+                                        <td className="fw-bold" style={{ color: "#A5732F" }}>
+                                            {sub.startingFromPrice ? `$${sub.startingFromPrice}` : '—'}
+                                        </td>
                                         <td>
-                                            {sub.isActive ? (
-                                                <span className="text-success d-flex align-items-center gap-1 small fw-bold"><FaCheckCircle /><span>Active</span></span>
-                                            ) : (
-                                                <span className="text-danger d-flex align-items-center gap-1 small fw-bold"><FaTimesCircle /><span>Inactive</span></span>
-                                            )}
+                                            <select
+                                                className={`form-select form-select-sm border-0 fw-bold ${ sub.isActive ? 'text-success' : 'text-danger'}`}
+                                                style={{ width: '110px', backgroundColor: sub.isActive ? '#d1f5e0' : '#fde8e8' }}
+                                                value={sub.isActive ? 'active' : 'inactive'}
+                                                onChange={(e) => handleToggleStatus(sub._id, e.target.value === 'active')}
+                                            >
+                                                <option value="active">Active</option>
+                                                <option value="inactive">Inactive</option>
+                                            </select>
                                         </td>
                                         <td>
                                             <div className="d-flex gap-1">
-                                                <button onClick={() => handleOpenEdit(sub)} className="btn btn-sm btn-light border text-primary" title="Edit"><FaEdit /></button>
+                                                <button onClick={() => handleOpenEdit(sub)} className="btn btn-sm btn-light border" style={{ color: "#A5732F" }} title="Edit"><FaEdit /></button>
                                                 <button onClick={() => handleDelete(sub._id)} className="btn btn-sm btn-light border text-danger" title="Delete"><FaTrash /></button>
                                             </div>
                                         </td>
                                     </tr>
                                 ))}
-                                {subcategories.length === 0 && (
-                                    <tr><td colSpan="5" className="text-center py-5 text-muted">No sub-categories found. Create your first sub-category!</td></tr>
+                                {filteredSubcategories.length === 0 && (
+                                    <tr><td colSpan="7" className="text-center py-5 text-muted">No sub-categories found. Create your first sub-category!</td></tr>
                                 )}
                             </tbody>
                         </table>

@@ -45,26 +45,26 @@ export default function PrivacyPolicy() {
             {/* Left: Country + Language */}
             <div style={{ position: 'sticky', top: 80 }}>
                 <div style={{ marginBottom: 24 }}>
-                    <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1.5px', color: '#888', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    {/* <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1.5px', color: '#888', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
                         <span>🌐</span> COUNTRIES
-                    </div>
-                    {COUNTRIES.map(c => (
+                    </div> */}
+                    {/* {COUNTRIES.map(c => (
                         <div key={c} onClick={() => setActiveCountry(c)}
                             style={{ fontSize: '13px', padding: '4px 0', cursor: 'pointer', color: activeCountry === c ? '#111' : '#666', fontWeight: activeCountry === c ? 700 : 400 }}>
                             {c}
                         </div>
-                    ))}
+                    ))} */}
                 </div>
                 <div>
-                    <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1.5px', color: '#888', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    {/* <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1.5px', color: '#888', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
                         <span>🔤</span> LANGUAGE
-                    </div>
-                    {LANGUAGES.map(l => (
+                    </div> */}
+                    {/* {LANGUAGES.map(l => (
                         <div key={l} onClick={() => setActiveLang(l)}
                             style={{ fontSize: '13px', padding: '4px 0', cursor: 'pointer', color: activeLang === l ? '#A5732F' : '#666', fontWeight: activeLang === l ? 700 : 400 }}>
                             {l}
                         </div>
-                    ))}
+                    ))} */}
                 </div>
             </div>
 
@@ -77,7 +77,7 @@ export default function PrivacyPolicy() {
                     Welcome to 1APP Company's privacy policy ("Privacy Policy" or "Policy").
                 </p>
                 <p style={{ fontSize: '14px', lineHeight: 1.8, color: '#333', marginBottom: 12 }}>
-                    <strong>1APP Company Limited</strong> (formerly known as <strong>UrbanClap Technologies India Pvt. Ltd.</strong>), and its affiliates (collectively, "1APP Company", "we", "us" or "our") are engaged in the business of providing web-based solutions to facilitate connections between customers that seek specific services and service professionals that offer these services. This Policy outlines our practices in relation to the collection, storage, usage, processing and disclosure of personal data that you have consented to share with us when you access, use, or otherwise interact with our website available at{' '}
+                    <strong>1APP Company Limited</strong> (formerly known as <strong>1App Technologies India Pvt. Ltd.</strong>), and its affiliates (collectively, "1APP Company", "we", "us" or "our") are engaged in the business of providing web-based solutions to facilitate connections between customers that seek specific services and service professionals that offer these services. This Policy outlines our practices in relation to the collection, storage, usage, processing and disclosure of personal data that you have consented to share with us when you access, use, or otherwise interact with our website available at{' '}
                     <a href="https://www.1appcompany.com/" style={{ color: '#A5732F' }}>https://www.1appcompany.com/</a>{' '}
                     or mobile application "1APP Company" (collectively, "Platform") or avail products or services that 1APP Company offers you on or through the Platform (collectively, the "Services"). In this Policy, the services offered to you by service professionals on or through the Platform are referred to as "Professional Services".
                 </p>

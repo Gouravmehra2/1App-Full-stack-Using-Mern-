@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { ProfileShimmer } from '../components/Shimmer';
-import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaCheckCircle, FaExclamationTriangle, FaCheckDouble, FaUpload } from 'react-icons/fa';
+import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaCheckCircle, FaExclamationTriangle, FaCheckDouble, FaUpload,FaPhoneAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 const Profile = () => {
@@ -101,7 +101,7 @@ const Profile = () => {
                             </div>
                             <div className="d-flex align-items-center justify-content-between text-muted">
                                 <div className="d-flex align-items-center gap-2">
-                                    <FaPhone size={14} />
+                                    <FaPhoneAlt size={14} />
                                     <span className="small">{user?.phone}</span>
                                 </div>
                                 {user?.isPhoneVerified ? (

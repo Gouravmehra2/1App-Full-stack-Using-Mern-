@@ -1,25 +1,31 @@
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+
 const express = require('express');
+const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
-const path = require('path');
 const fs = require('fs');
-require('dotenv').config();
+
+const http = require('http');
+const server = http.createServer(app);
+
+const {Server} = require('socket.io');
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
-const slotsRoutes = require('./routes/slotsRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const blogRoutes = require('./routes/blogRoutes');
 const Service = require('./models/Service');
 
 // Import middleware
 const { xssProtection } = require('./middleware/security');
 
-const app = express();
 const dns = require('dns');
 // Set DNS servers. Using Cloudflare and Google DNS.
 dns.setServers(['1.1.1.1', '8.8.8.8']);
@@ -54,6 +60,22 @@ if (fs.existsSync(uploadsPath)) {
     fs.mkdirSync(uploadsPath, { recursive: true });
 }
 
+const io = new Server(server, {
+    cors: {
+        origin: ['http://localhost:3000', 'http://localhost:3001'],
+        methods: ['GET', 'POST'],
+        credentials: true
+    },
+    pingInterval: 25000,
+    pingTimeout: 60000,
+    transports: ['websocket', 'polling']
+});
+
+// Make io accessible across the app without circular imports
+const { setIO } = require('./utils/socketInstance');
+setIO(io);
+
+
 // ========== SERVE STATIC FILES ==========
 app.use('/uploads', express.static(uploadsPath));
 console.log('✅ Serving static files from:', uploadsPath);
@@ -61,7 +83,7 @@ console.log('✅ Serving static files from:', uploadsPath);
 // Security middleware
 app.use(helmet());
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    origin: ['http://1app-frontend.s3-website-us-west-1.amazonaws.com','http://1app-admin.s3-website-us-west-1.amazonaws.com','*','http://localhost:3000','http://localhost:3001'],
     credentials: true,
     optionsSuccessStatus: 200
 }));
@@ -88,8 +110,8 @@ app.use(xssProtection);
 app.use('/api/auth', authRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/bookings', bookingRoutes);
-app.use('/api/slots', slotsRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/blogs', blogRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -121,8 +143,37 @@ app.use((req, res) => {
     });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+
+
+io.on("connection", (socket) => {
+
+    console.log("User Connected:", socket.id);
+
+    // Send welcome message to this client
+    socket.emit("welcome", {
+        message: "Welcome from Backend"
+    });
+
+    // Listen for message from frontend
+    socket.on("sendMessage", (data) => {
+
+        console.log("Received:", data);
+
+        socket.emit("reply", {
+            message: "Backend received your message"
+        });
+
+    });
+
+    socket.on("disconnect", () => {
+        console.log("User Disconnected:", socket.id);
+    });
+
+});
+
+const PORT = process.env.PORT;
+
+server.listen(PORT , () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`📍 Environment: ${process.env.NODE_ENV}`);
 });

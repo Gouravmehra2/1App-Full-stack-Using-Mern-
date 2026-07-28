@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { FaUser, FaPhone, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaSms } from 'react-icons/fa';
+import { FaUser, FaPhone, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaSms ,FaPhoneAlt} from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useGoogleLogin } from '@react-oauth/google';
 import AuthPanel from './AuthPanel';
@@ -52,6 +52,7 @@ const SignupPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [otp, setOtp] = useState('');
+    const [devOtp, setDevOtp] = useState(null);
     const [registrationStep, setRegistrationStep] = useState('details');
     const [showPass, setShowPass] = useState(false);
     const strength = getStrength(password);
@@ -84,7 +85,8 @@ const SignupPage = () => {
         }
 
         try {
-            await startRegister({ name, email, phone, password });
+            const res = await startRegister({ name, email, phone, password });
+            setDevOtp(res.devOtp || null);
             setRegistrationStep('otp');
             toast.success('OTP sent. Verify your phone to create your account.');
         } catch (err) {
@@ -94,6 +96,7 @@ const SignupPage = () => {
 
     const editDetails = () => {
         setOtp('');
+        setDevOtp(null);
         setRegistrationStep('details');
     };
 
@@ -140,7 +143,7 @@ const SignupPage = () => {
                                         onChange={e => setName(e.target.value)} style={inputStyle} />
                                 </Field>
 
-                                <Field label="Phone Number" icon={<FaPhone color="#888" size={14} />}>
+                                <Field label="Phone Number" icon={<FaPhoneAlt color="#888" size={14} />}>
                                     <input type="tel" required placeholder="+91 98765 43210" value={phone}
                                         onChange={e => setPhone(e.target.value)} style={inputStyle} />
                                 </Field>
@@ -194,6 +197,41 @@ const SignupPage = () => {
                                     <input type="text" inputMode="numeric" maxLength="6" required placeholder="Enter 6-digit OTP" value={otp}
                                         onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))} style={inputStyle} />
                                 </Field>
+
+                                {/* Dev-mode OTP hint */}
+                                {devOtp && (
+                                    <div style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        background: '#fdf5ea',
+                                        border: '1.5px dashed #A5732F',
+                                        borderRadius: 10,
+                                        padding: '10px 16px',
+                                        marginBottom: 16,
+                                    }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#A5732F', letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                                                Dev mode · OTP
+                                            </span>
+                                            <span style={{ fontSize: '1.35rem', fontWeight: 800, letterSpacing: 6, color: '#1a1a1a', fontFamily: 'monospace' }}>
+                                                {devOtp}
+                                            </span>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            title="Auto-fill OTP"
+                                            onClick={() => setOtp(devOtp)}
+                                            style={{
+                                                background: '#A5732F', color: '#fff', border: 'none',
+                                                borderRadius: 8, padding: '6px 14px', fontWeight: 700,
+                                                fontSize: '0.8rem', cursor: 'pointer', flexShrink: 0,
+                                            }}
+                                        >
+                                            Auto-fill
+                                        </button>
+                                    </div>
+                                )}
                             </>
                         )}
 

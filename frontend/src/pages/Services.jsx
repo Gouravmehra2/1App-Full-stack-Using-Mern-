@@ -4,6 +4,7 @@ import { FaStar, FaTag, FaShoppingCart, FaCheckCircle, FaShieldAlt, FaCalendarAl
 import serviceService from '../services/serviceService';
 import { resolveImageUrl } from '../services/api';
 import { CartContext } from '../context/CartContext';
+import { useSocket } from '../context/SocketContext';
 import { ServicesShimmer } from '../components/Shimmer';
 
 const UPLOAD_IMAGE_URL = process.env.REACT_APP_IMAGE_URL || '';
@@ -34,6 +35,7 @@ export default function Services() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const { cartItems, addToCart, updateQuantity } = useContext(CartContext);
+    const { socket } = useSocket();
 
     const categoryId = searchParams.get('category');
     const subcategoryId = searchParams.get('subcategory');
@@ -107,6 +109,44 @@ export default function Services() {
             setActiveSubId(subcategories[0]._id);
         }
     }, [subcategories, activeSubId]);
+
+    // ── Real-time subcategory updates via Socket.IO ────────────────────────────
+    useEffect(() => {
+        if (!socket || !categoryId) return;
+
+        const handleSubCreated = ({ subcategory }) => {
+            // Only add if it belongs to the currently viewed category
+            if (subcategory?.category?._id !== categoryId && subcategory?.category !== categoryId) return;
+            setSubcategories(prev => {
+                if (prev.some(s => s._id === subcategory._id)) return prev;
+                return [...prev, subcategory].sort((a, b) => a.name.localeCompare(b.name));
+            });
+        };
+
+        const handleSubUpdated = ({ subcategory }) => {
+            setSubcategories(prev =>
+                prev.map(s => s._id === subcategory._id ? subcategory : s)
+                    .filter(s => s.isActive !== false)
+                    .sort((a, b) => a.name.localeCompare(b.name))
+            );
+        };
+
+        const handleSubDeleted = ({ subcategoryId }) => {
+            setSubcategories(prev => prev.filter(s => s._id !== subcategoryId));
+            // If the deleted sub was active, reset to first available
+            setActiveSubId(prev => (prev === subcategoryId ? null : prev));
+        };
+
+        socket.on('subcategory:created', handleSubCreated);
+        socket.on('subcategory:updated', handleSubUpdated);
+        socket.on('subcategory:deleted', handleSubDeleted);
+
+        return () => {
+            socket.off('subcategory:created', handleSubCreated);
+            socket.off('subcategory:updated', handleSubUpdated);
+            socket.off('subcategory:deleted', handleSubDeleted);
+        };
+    }, [socket, categoryId]);
 
     // Slide auto-advance
     useEffect(() => {

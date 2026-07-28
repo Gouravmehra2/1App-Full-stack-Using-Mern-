@@ -20,6 +20,12 @@ const validateRegister = [
     checkValidationResult
 ];
 
+const validateVerifyRegister = [
+    body('phone').trim().notEmpty().withMessage('Phone number is required'),
+    body('code').trim().isLength({ min: 6, max: 6 }).withMessage('Please provide a valid 6-digit OTP'),
+    checkValidationResult
+];
+
 const validateLogin = [
     body('email').trim().isEmail().withMessage('Please provide a valid email'),
     body('password').notEmpty().withMessage('Password is required'),
@@ -49,6 +55,7 @@ const validateService = [
 
 module.exports = {
     validateRegister,
+    validateVerifyRegister,
     validateLogin,
     validateBooking,
     validateService

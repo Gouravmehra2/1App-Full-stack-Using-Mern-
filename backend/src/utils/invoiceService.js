@@ -18,7 +18,7 @@ const generateTextInvoice = (booking) => {
 
     let invoice = `
 =========================================
-          vmarc SERVICE INVOICE
+          1APP SERVICE INVOICE
 =========================================
 Invoice Date: ${formattedDate}
 Booking ID  : ${booking._id}
@@ -47,8 +47,8 @@ SERVICES ORDERED:
     invoice += `-----------------------------------------
 TOTAL AMOUNT:                   $${booking.totalAmount.toFixed(2)}
 =========================================
-      Thank you for choosing vmarc!
-      For support, call +1800-vmarc
+      Thank you for choosing 1APP!
+      For support, call +1800-1APP
 =========================================
 `;
     return invoice;

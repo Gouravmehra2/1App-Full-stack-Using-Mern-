@@ -307,7 +307,7 @@ const ServiceDetail = () => {
                 </Section>
             )}
 
-            {/* Our Process - exact Urban Company style */}
+            {/* Our Process - exact 1App Company style */}
             {service.processSteps?.length > 0 && (
                 <Section>
                     <h2 style={{ fontSize: '26px', fontWeight: '800', marginBottom: '24px', marginTop: 0, color: '#111' }}>Our process</h2>

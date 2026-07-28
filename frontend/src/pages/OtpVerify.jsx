@@ -7,7 +7,7 @@ import { ResetAuthPanel } from './AuthPanel';
 const OtpVerify = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { phone, identifier } = location.state || {};
+    const { phone, identifier, devOtp } = location.state || {};
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const inputs = useRef([]);
 
@@ -81,6 +81,45 @@ const OtpVerify = () => {
                                 />
                             ))}
                         </div>
+
+                        {/* Dev-mode OTP hint — only shown when Twilio SMS is off */}
+                        {devOtp && (
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                background: '#fdf5ea',
+                                border: '1.5px dashed #A5732F',
+                                borderRadius: 10,
+                                padding: '10px 16px',
+                                marginBottom: 20,
+                            }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#A5732F', letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                                        Dev mode · OTP
+                                    </span>
+                                    <span style={{ fontSize: '1.35rem', fontWeight: 800, letterSpacing: 6, color: '#1a1a1a', fontFamily: 'monospace' }}>
+                                        {devOtp}
+                                    </span>
+                                </div>
+                                <button
+                                    type="button"
+                                    title="Auto-fill OTP"
+                                    onClick={() => {
+                                        const digits = devOtp.split('');
+                                        setOtp(digits);
+                                        inputs.current[5]?.focus();
+                                    }}
+                                    style={{
+                                        background: '#A5732F', color: '#fff', border: 'none',
+                                        borderRadius: 8, padding: '6px 14px', fontWeight: 700,
+                                        fontSize: '0.8rem', cursor: 'pointer', flexShrink: 0,
+                                    }}
+                                >
+                                    Auto-fill
+                                </button>
+                            </div>
+                        )}
 
                         <button type="submit"
                             style={{ width: '100%', background: '#A5732F', color: '#fff', border: 'none', borderRadius: 8, padding: '13px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>

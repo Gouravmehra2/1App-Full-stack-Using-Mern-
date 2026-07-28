@@ -1,6 +1,15 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const otpService = require('../utils/otpService');
+const {
+    sendWelcomeEmail,
+    sendLoginNotification,
+    sendForgotPasswordEmail,
+    sendPasswordResetSuccess,
+} = require('../utils/emailService');
+
+const pendingRegistrations = new Map();
+const PENDING_REGISTRATION_TTL = 5 * 60 * 1000;
 
 const signToken = (id, role) => {
     return jwt.sign(
@@ -23,6 +32,126 @@ const sendTokenResponse = (user, statusCode, res) => {
             user
         }
     });
+};
+
+/**
+ * @desc    Start user registration and send OTP before creating account
+ * @route   POST /api/auth/start-register
+ */
+exports.startRegister = async (req, res, next) => {
+    try {
+        const { name, email, password, phone, address } = req.body;
+
+        const emailExists = await User.findOne({ email });
+        if (emailExists) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email is already registered'
+            });
+        }
+
+        const phoneExists = await User.findOne({ phone });
+        if (phoneExists) {
+            return res.status(400).json({
+                success: false,
+                message: 'Phone number is already registered'
+            });
+        }
+
+        pendingRegistrations.set(phone, {
+            userData: { name, email, password, phone, address },
+            expires: Date.now() + PENDING_REGISTRATION_TTL
+        });
+
+        await otpService.sendOTP(phone);
+
+        const otp = otpService.getLastOTP ? otpService.getLastOTP(phone) : null;
+
+        res.status(200).json({
+            success: true,
+            message: `OTP sent to ${phone}`,
+            phone,
+            ...(otp && { devOtp: otp }),
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+/**
+ * @desc    Verify registration OTP and create account
+ * @route   POST /api/auth/verify-register
+ */
+exports.verifyRegister = async (req, res, next) => {
+    try {
+        const { phone, code } = req.body;
+
+        if (!phone || !code) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide phone and OTP code'
+            });
+        }
+
+        const pending = pendingRegistrations.get(phone);
+        if (!pending) {
+            return res.status(400).json({
+                success: false,
+                message: 'No pending registration found. Please sign up again.'
+            });
+        }
+
+        if (Date.now() > pending.expires) {
+            pendingRegistrations.delete(phone);
+            return res.status(400).json({
+                success: false,
+                message: 'Registration OTP expired. Please sign up again.'
+            });
+        }
+
+        const isValid = otpService.verifyOTP(phone, code);
+        if (!isValid) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid or expired OTP code'
+            });
+        }
+
+        const { userData } = pending;
+
+        const emailExists = await User.findOne({ email: userData.email });
+        if (emailExists) {
+            pendingRegistrations.delete(phone);
+            return res.status(400).json({
+                success: false,
+                message: 'Email is already registered'
+            });
+        }
+
+        const phoneExists = await User.findOne({ phone });
+        if (phoneExists) {
+            pendingRegistrations.delete(phone);
+            return res.status(400).json({
+                success: false,
+                message: 'Phone number is already registered'
+            });
+        }
+
+        const user = await User.create({
+            ...userData,
+            isPhoneVerified: true
+        });
+
+        pendingRegistrations.delete(phone);
+
+        sendWelcomeEmail(user).catch(err =>
+            console.error('Welcome email failed:', err.message)
+        );
+
+        sendTokenResponse(user, 201, res);
+    } catch (err) {
+        next(err);
+    }
 };
 
 /**
@@ -66,6 +195,11 @@ exports.register = async (req, res, next) => {
             console.error('Failed to trigger initial OTP:', smsError.message);
         }
 
+        // Send welcome email (non-blocking)
+        sendWelcomeEmail(user).catch(err =>
+            console.error('Welcome email failed:', err.message)
+        );
+
         sendTokenResponse(user, 201, res);
     } catch (err) {
         next(err);
@@ -104,6 +238,11 @@ exports.login = async (req, res, next) => {
                 message: 'Invalid email or password'
             });
         }
+
+        // Send login notification email (non-blocking)
+        sendLoginNotification(user).catch(err =>
+            console.error('Login notification email failed:', err.message)
+        );
 
         sendTokenResponse(user, 200, res);
     } catch (err) {
@@ -171,6 +310,91 @@ exports.updateMe = async (req, res, next) => {
                 user
             }
         });
+    } catch (err) {
+        next(err);
+    }
+};
+
+/**
+ * @desc    Forgot password - send OTP to phone or email
+ * @route   POST /api/auth/forgot-password
+ */
+exports.forgotPassword = async (req, res, next) => {
+    try {
+        const { identifier } = req.body; // phone or email
+        if (!identifier) {
+            return res.status(400).json({ success: false, message: 'Please provide email or phone number' });
+        }
+
+        const user = await User.findOne({
+            $or: [{ email: identifier.toLowerCase() }, { phone: identifier }]
+        });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'No account found with this email or phone' });
+        }
+
+        await otpService.sendOTP(user.phone);
+
+        // Also send OTP via email if user has an email (non-blocking)
+        if (user.email) {
+            const otp = otpService.getLastOTP ? otpService.getLastOTP(user.phone) : null;
+            if (otp) {
+                sendForgotPasswordEmail(user, otp).catch(err =>
+                    console.error('Forgot password email failed:', err.message)
+                );
+            }
+        }
+
+        // Always expose the OTP in the response so the frontend can display it on screen.
+        const devOtp = otpService.getLastOTP ? otpService.getLastOTP(user.phone) : null;
+
+        res.status(200).json({
+            success: true,
+            message: `OTP sent to registered phone ${user.phone}`,
+            phone: user.phone,
+            ...(devOtp && { devOtp }),
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+/**
+ * @desc    Reset password - verify OTP and set new password
+ * @route   POST /api/auth/reset-password
+ */
+exports.resetPassword = async (req, res, next) => {
+    try {
+        const { phone, otp, newPassword } = req.body;
+
+        if (!phone || !otp || !newPassword) {
+            return res.status(400).json({ success: false, message: 'Please provide phone, otp and newPassword' });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+        }
+
+        const isValid = otpService.verifyOTP(phone, otp);
+        if (!isValid) {
+            return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
+        }
+
+        const user = await User.findOne({ phone });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        // Send password reset success email (non-blocking)
+        sendPasswordResetSuccess(user).catch(err =>
+            console.error('Password reset success email failed:', err.message)
+        );
+
+        res.status(200).json({ success: true, message: 'Password reset successfully' });
     } catch (err) {
         next(err);
     }

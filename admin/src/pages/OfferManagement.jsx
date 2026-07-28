@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 
 const OfferManagement = () => {
     const [offers, setOffers] = useState([
-        { code: 'vmarc10', discount: '10% OFF', description: 'Applicable on wiring and cabling services', isActive: true },
+        { code: '1APP10', discount: '10% OFF', description: 'Applicable on wiring and cabling services', isActive: true },
         { code: 'ELECTRO20', discount: '20% OFF', description: 'Discount on Smart DB distributions upgrades', isActive: true },
         { code: 'SAFETYFIRST', discount: 'Flat $200 OFF', description: 'Applicable on home inspections', isActive: true }
     ]);
@@ -66,7 +66,7 @@ const OfferManagement = () => {
                                     type="text" 
                                     required 
                                     className="form-control bg-light border-0" 
-                                    placeholder="vmarc30"
+                                    placeholder="1APP30"
                                     value={code}
                                     onChange={(e) => setCode(e.target.value)}
                                 />
@@ -96,7 +96,7 @@ const OfferManagement = () => {
                         </div>
 
                         <div className="d-flex gap-2 justify-content-end">
-                            <button type="button" onClick={() => setShowForm(false)} className="btn btn-outline-brand px-4 py-2">
+                            <button type="button" onClick={() => setShowForm(false)} className="btn btn-outline-secondary px-4 py-2">
                                 Cancel
                             </button>
                             <button type="submit" className="btn btn-brand fw-bold px-4 py-2 shadow-sm">
@@ -110,9 +110,9 @@ const OfferManagement = () => {
             <div className="row g-4">
                 {offers.map((offer, idx) => (
                     <div key={idx} className="col-md-4">
-                        <div className="card border-0 shadow-sm rounded-3 p-4 bg-white hover-shadow transition-all border-top border-dark border-3">
+                        <div className="card border-0 shadow-sm rounded-3 p-4 bg-white hover-shadow transition-all" style={{ borderTop: "3px solid #A5732F" }}>
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <span className="badge bg-light text-primary border font-monospace px-3 py-1.5 fs-6 fw-bold">
+                                <span className="badge bg-brand-light text-brand border font-monospace px-3 py-1.5 fs-6 fw-bold" style={{ background: "#fdf5ea", color: "#A5732F", border: "1px solid #A5732F" }}>
                                     {offer.code}
                                 </span>
                                 <span className="text-success d-flex align-items-center gap-1 small fw-bold">

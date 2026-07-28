@@ -1,6 +1,11 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+const tryHeroImg = (filename) => {
+        try { return require(`../assets/hero/${filename}`); }
+        catch { return ''; }
+    };
+
 const LINKS = [
     { label: 'About Us', to: '/about' },
     { label: 'Investor Relations', to: null },
@@ -9,17 +14,11 @@ const LINKS = [
     { label: 'Privacy Policy', to: '/privacy-policy' },
     { label: 'Interest-Based Advertising', to: null },
     { label: 'Anti Discrimination Policy', to: '/anti-discrimination' },
-    { label: 'Service Professionals Welfare Policy', to: null },
-    { label: 'Information Security Policy Statement & Objective', to: null },
     { label: 'Reviews', to: '/reviews' },
     { label: 'Near Me', to: null },
     { label: 'Careers', to: null },
     { label: 'Blogs', to: '/blogs' },
     { label: 'Contact Us', to: '/contact' },
-    { label: 'Quick Links', to: null },
-    { label: 'RO Water Purifier', to: '/services?search=RO Water Purifier' },
-    { label: 'Native M1 RO Water Purifier', to: '/services?search=Native M1 RO' },
-    { label: 'Native M2 RO Water Purifier', to: '/services?search=Native M2 RO' },
 ];
 
 const CITIES = {
@@ -102,26 +101,24 @@ export default function Footer() {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, paddingBottom: 24 }}>
                     {/* Logo */}
                     <div onClick={() => { navigate('/'); scrollTop(); }} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-                        <div style={{ background: '#fff', color: '#111', fontWeight: 900, fontSize: '18px', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>1</div>
-                        <span style={{ color: '#fff', fontWeight: 800, fontSize: '20px', letterSpacing: 1 }}>APP</span>
+                        <div style={{ background: '#fff', color: '#111', fontWeight: 900, fontSize: '18px', width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>
+
+                          <img src={tryHeroImg('1app_logo.png') } alt="Hero" style={{width: '40px', height: 'auto'}}/>
+
+                        </div>
                     </div>
 
                     {/* Copyright */}
-                    <p style={{ color: '#555', fontSize: '12px', margin: 0, maxWidth: 420 }}>
-                        © 2014-26 1APP Company Limited (formerly known as 1APP Technologies India Limited and 1APP Technologies India India Limited)
+                    <p style={{ color: '#ffffff', fontSize: '12px', margin: 0, maxWidth: 420 }}>
+                        © 2026 1APP Company Limited (formerly known as 1APP Technologies)
                     </p>
 
                     {/* Social + App icons */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        {Array(6).fill(0).map((_, i) => (
-                            <div key={i} style={{ width: 32, height: 32, borderRadius: '50%', background: '#333', cursor: 'pointer' }} />
+                        {['instagram.png','facebook.png','linkedin.png'].map((e) => (
+                             <img src={tryHeroImg(e) } alt="Hero" style={{width: '32px', height: '32px'}}/>
                         ))}
-                        <div style={{ width: 40, height: 32, background: '#1a73e8', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                            <span style={{ color: '#fff', fontSize: '10px', fontWeight: 700 }}>▶</span>
-                        </div>
-                        <div style={{ width: 40, height: 32, background: '#e8341a', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                            <span style={{ color: '#fff', fontSize: '10px', fontWeight: 700 }}>✦</span>
-                        </div>
+                       
                     </div>
                 </div>
             </div>

@@ -53,7 +53,7 @@ const TEAM = [
 const CTA = [
     { title: 'For Customers', desc: 'Enjoy the premium convenience of verified services at your doorstep.', btn: 'Download App', dark: false },
     { title: 'For Professionals', desc: 'Join the platform that helps you grow your business and reach new heights.', btn: 'Join as Partner', dark: true },
-    { title: 'For Partners', desc: 'Collaborate with Urban Service to scale your service enterprise.', btn: 'Partner with Us', dark: false },
+    { title: 'For Partners', desc: 'Collaborate with 1App Service to scale your service enterprise.', btn: 'Partner with Us', dark: false },
 ];
 
 export default function AboutUs() {
@@ -284,7 +284,7 @@ export default function AboutUs() {
             </div>
 
             {/* ── Leadership Team ── */}
-            <div style={{ background: '#f5f5f0', padding: '72px 0' }}>
+            {/* <div style={{ background: '#f5f5f0', padding: '72px 0' }}>
                 <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 40px' }}>
                     <h2 style={{ fontWeight: 900, fontSize: '1.8rem', textAlign: 'center', marginBottom: 48 }}>Leadership Team</h2>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
@@ -303,7 +303,7 @@ export default function AboutUs() {
                         ))}
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {/* ── CTA Cards ── */}
             <div style={{ background: '#f5f5f0', padding: '0 0 72px' }}>
