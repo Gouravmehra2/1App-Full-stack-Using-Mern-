@@ -189,7 +189,7 @@ const Home = () => {
                     <div style={{ position: 'relative', zIndex: 3, maxWidth: '560px' }}>
                         <h1 style={{ fontSize: 'clamp(36px, 4.5vw, 50px)', lineHeight: 1.1, color: '#fff', fontWeight: 800, marginBottom: '14px' }}>
                             At your ease,<br />
-                            at your <span style={{ color: '#A5732F' }}>Doorsteps!</span>
+                            at your <span style={{ color: '#000000' }}>Doorsteps!</span>
                         </h1>
                         <p style={{ color: 'white', fontSize: '18px', lineHeight: 1.6, marginBottom: '20px' }}>
                             All the services you need,right where you need them.
@@ -222,7 +222,7 @@ const Home = () => {
                                         onClick={() => handleCategoryClick(cat.name)}
                                         style={{
                                             background:
-                                                'linear-gradient(180deg, #D99330 0%, #A5732F 50%, #D99330 100%)',
+                                                'linear-gradient(180deg, #D99330 0%, #000000 50%, #D99330 100%)',
                                             borderRadius: '22px',
                                             padding: '1.5px',
                                             cursor: 'pointer',
@@ -287,7 +287,7 @@ const Home = () => {
                                                         onError={(e) => { e.target.style.display = 'none'; }}
                                                     />
                                                 ) : (
-                                                    <FaTools size={28} style={{ color: '#A5732F' }} />
+                                                    <FaTools size={28} style={{ color: '#000000' }} />
                                                 )}
                                             </div>
 
@@ -337,7 +337,7 @@ const Home = () => {
                                                 borderRadius: '50%',
                                                 background:
                                                     'linear-gradient(180deg, #D99330 0%, #3B2300 100%)',
-                                                border: '1.5px solid #A5732F',
+                                                border: '1.5px solid #000000',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
@@ -353,19 +353,19 @@ const Home = () => {
                         {/* Trust badges */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginTop: '32px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <div style={{ width: 28, height: 28, border: '1.5px solid #A5732F', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <FaStar size={13} style={{ color: '#A5732F' }} />
+                                <div style={{ width: 28, height: 28, border: '1.5px solid #000000', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <FaStar size={13} style={{ color: '#000000' }} />
                                 </div>
                                 <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px' }}>Verified Professionals</span>
                             </div>
                             <div style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.15)' }} />
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <FaClock size={15} style={{ color: '#A5732F' }} />
+                                <FaClock size={15} style={{ color: '#000000' }} />
                                 <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px' }}>On-time Service</span>
                             </div>
                             <div style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.15)' }} />
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <FaTag size={14} style={{ color: '#A5732F' }} />
+                                <FaTag size={14} style={{ color: '#000000' }} />
                                 <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px' }}>Upfront Pricing</span>
                             </div>
                         </div>
@@ -387,7 +387,7 @@ const Home = () => {
                                         <h5 className="fw-bold mb-2">Wall panels</h5>
                                         <p className="text-muted small">Transform your home in a day</p>
                                     </div>
-                                    <button className="btn btn-sm rounded-pill px-3" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }}>Explore</button>
+                                    <button className="btn btn-sm rounded-pill px-3" style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }}>Explore</button>
                                 </div>
                                 <div style={{ width: '120px', flexShrink: 0, background: 'linear-gradient(135deg, #c8c8b8 0%, #a8a898 100%)' }} className="d-flex align-items-center justify-content-center">
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '3px', padding: '10px' }}>
@@ -405,7 +405,7 @@ const Home = () => {
                                         <h5 className="fw-bold mb-1">Deep clean with foam-jet AC service</h5>
                                         <p className="text-muted small">AC service &amp; repair</p>
                                     </div>
-                                    <button className="btn btn-sm rounded-pill px-3" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }}>Book now</button>
+                                    <button className="btn btn-sm rounded-pill px-3" style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }}>Book now</button>
                                 </div>
                                 <div style={{ width: '120px', flexShrink: 0, background: 'linear-gradient(160deg, #1a2a4a 0%, #2a4a6a 100%)' }} className="d-flex align-items-center justify-content-center">
                                     <div className="text-center text-white">
@@ -420,7 +420,7 @@ const Home = () => {
                             <div className="rounded-4 overflow-hidden d-flex" style={{ background: '#0d5c4a', minHeight: '180px' }}>
                                 <div className="p-4 d-flex flex-column justify-content-between" style={{ flex: 1 }}>
                                     <h5 className="fw-bold text-white">Kitchen cleaning starting at $399 only</h5>
-                                    <button className="btn btn-sm rounded-pill px-3" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }}>Book now</button>
+                                    <button className="btn btn-sm rounded-pill px-3" style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }}>Book now</button>
                                 </div>
                                 <div style={{ width: '80px', flexShrink: 0, background: 'linear-gradient(180deg, #0a9e7a 0%, #07856a 100%)', borderRadius: '0 16px 16px 0' }} />
                             </div>
@@ -431,7 +431,7 @@ const Home = () => {
             */}
 
             {/* New & Noteworthy Section */}
-            <section className="py-5 bg-white">
+            {/* <section className="py-5 bg-white">
                 <div className="container">
                     <h2 className="fw-bold mb-4">New and noteworthy</h2>
                     <div
@@ -469,10 +469,10 @@ const Home = () => {
                         ))}
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* Most Booked Services */}
-            <section className="py-5 bg-white">
+            {/* <section className="py-5 bg-white">
                 <div className="container">
                     <h2 className="fw-bold mb-4">Most booked services</h2>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
@@ -507,10 +507,10 @@ const Home = () => {
                         ))}
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* Home Services */}
-            {(() => {
+            {/* {(() => {
                 const cat = getCategoryByName('HomeServices');
                 if (!cat) return null;
 
@@ -555,7 +555,7 @@ const Home = () => {
                         </div>
                     </section>
                 );
-            })()}
+            })()} */}
 
             {/* IT Services */}
             {/*
@@ -593,6 +593,75 @@ const Home = () => {
             })()}
             */}
 
+            {/* Exclusive Home Services Offers */}
+            <section className="py-5 bg-white">
+                <div className="container">
+                    <h2 className="fw-bold mb-1">Exclusive Home Services Offers</h2>
+                    <p className="text-muted mb-4">Book Cleaner, Plumber, Handyman, Gardner or any one for your home help.</p>
+                    <div className="position-relative">
+                        <div
+                            id="offersScrollRow"
+                            className="d-flex gap-4 pb-2"
+                            style={{ overflowX: 'auto', scrollbarWidth: 'none', scrollBehavior: 'smooth' }}
+                        >
+                            {[
+                                { badge: 'UP TO $500 OFF', title: 'Home Cleaning', desc: 'Deep Cleaning. Sofa Cleaning. Spotless Spaces.', img: 'cleaning_image.png', category: 'Cleaning' },
+                                { badge: 'SAME DAY SERVICE', title: 'Plumbing', desc: 'Leak Repairs. Pipe Installation. Water Solutions.', img: 'plumbing_image.png', category: 'Plumbing' },
+                                { badge: 'CERTIFIED EXPERTS', title: 'Electrical', desc: 'Switches. Wiring. Safe Installations.', img: 'electrician.png', category: 'Electrical' },
+                                { badge: 'UP TO $300 OFF', title: 'Handyman', desc: 'Repairs. Installations. Fix Anything.', img: 'handy_man.png', category: 'Handyman' },
+                                { badge: 'SAME DAY SERVICE', title: 'AC & Appliance', desc: 'AC Service. Appliance Repair. Quick Fix.', img: 'ac_repair.png', category: 'AC & Appliance' },
+                            ].map((item, idx) => (
+                                <div
+                                    key={idx}
+                                    className="rounded-4 overflow-hidden position-relative flex-shrink-0"
+                                    style={{ width: 'calc(33.33% - 12px)', minWidth: '260px', minHeight: '260px', background: '#222', cursor: 'pointer' }}
+                                    onClick={() => handleCategoryClick(item.category)}
+                                >
+                                    <img
+                                        src={tryHeroImg(item.img)}
+                                        alt={item.title}
+                                        className="position-absolute w-100 h-100"
+                                        style={{ objectFit: 'cover', top: 0, left: 0, opacity: 0.55 }}
+                                        onError={(e) => { e.target.style.display = 'none'; }}
+                                    />
+                                    <div className="position-relative p-4 d-flex flex-column justify-content-between" style={{ minHeight: '260px' }}>
+                                        <div>
+                                            <span className="fw-bold text-white px-2 py-1 rounded-2 mb-2 d-inline-block" style={{ background: '#000000', fontSize: '10px', letterSpacing: '0.5px' }}>{item.badge}</span>
+                                            <p className="text-white mb-1" style={{ fontSize: '11px', opacity: 0.7, letterSpacing: '1px' }}>ONE-APP</p>
+                                            <h4 className="fw-bold text-white mb-2">{item.title}</h4>
+                                            <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '13px', lineHeight: 1.6 }}>{item.desc}</p>
+                                        </div>
+                                        <button
+                                            className="btn fw-semibold rounded-3 px-4 py-2"
+                                            style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }}
+                                            onClick={(e) => { e.stopPropagation(); handleCategoryClick(item.category); }}
+                                        >
+                                            Book Now
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        {/* Left Arrow */}
+                        <button
+                            className="position-absolute d-flex align-items-center justify-content-center border-0 bg-white rounded-circle shadow"
+                            style={{ top: '50%', left: '-18px', transform: 'translateY(-50%)', width: '36px', height: '36px', zIndex: 2, cursor: 'pointer' }}
+                            onClick={() => { const el = document.getElementById('offersScrollRow'); el.scrollBy({ left: -300, behavior: 'smooth' }); }}
+                        >
+                            <FaArrowRight style={{ transform: 'rotate(180deg)', fontSize: '14px' }} />
+                        </button>
+                        {/* Right Arrow */}
+                        <button
+                            className="position-absolute d-flex align-items-center justify-content-center border-0 bg-white rounded-circle shadow"
+                            style={{ top: '50%', right: '-18px', transform: 'translateY(-50%)', width: '36px', height: '36px', zIndex: 2, cursor: 'pointer' }}
+                            onClick={() => { const el = document.getElementById('offersScrollRow'); el.scrollBy({ left: 300, behavior: 'smooth' }); }}
+                        >
+                            <FaArrowRight style={{ fontSize: '14px' }} />
+                        </button>
+                    </div>
+                </div>
+            </section>
+
             {/* Home Painting Banner */}
             <section className="py-5 bg-white">
                 <div className="container">
@@ -600,7 +669,7 @@ const Home = () => {
                         <div className="p-5 d-flex flex-column justify-content-center" style={{ flex: '0 0 45%' }}>
                             <h2 className="fw-bold mb-2" style={{ color: '#1a1a1a', fontSize: '1.6rem', lineHeight: 1.3 }}>Give your space the glow-up it deserves</h2>
                             <p className="text-muted mb-4">Home painting</p>
-                            {/* <button className="btn rounded-3 px-4 py-2" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }}>Buy now</button> */}
+                            {/* <button className="btn rounded-3 px-4 py-2" style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }}>Buy now</button> */}
                         </div>
                         <div style={{ flex: '0 0 55%', overflow: 'hidden' }}>
                             <img
@@ -729,11 +798,11 @@ const Home = () => {
                 <div className="container">
                     <div className="rounded-4 overflow-hidden d-flex" style={{ background: '#d6d9e0', minHeight: '220px' }}>
                         <div className="p-5 d-flex flex-column justify-content-center" style={{ flex: '0 0 45%' }}>
-                            <span className="fw-semibold text-white px-3 py-1 rounded-2 mb-3" style={{ background: '#A5732F', fontSize: '11px', width: 'fit-content' }}>UP TO $3,100 OFF</span>
+                            <span className="fw-semibold text-white px-3 py-1 rounded-2 mb-3" style={{ background: '#000000', fontSize: '11px', width: 'fit-content' }}>UP TO $3,100 OFF</span>
                             <p className="mb-1" style={{ fontSize: '12px', color: '#444', letterSpacing: '0.5px' }}>ONE-APP</p>
                             <h2 className="fw-bold mb-2" style={{ color: '#1a1a1a', fontSize: '2rem', lineHeight: 1.2 }}>RO water purifier</h2>
                             <p className="text-muted mb-4">Needs no service for 2 years</p>
-                            <button className="btn rounded-3 px-4 py-2 fw-semibold" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }}>Buy now</button>
+                            <button className="btn rounded-3 px-4 py-2 fw-semibold" style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }}>Buy now</button>
                         </div>
                         <div style={{ flex: '0 0 55%', overflow: 'hidden' }}>
                             <img
@@ -839,7 +908,7 @@ const Home = () => {
                   
                         <div className="position-absolute h-100" style={{ top: 0, left: 0, width: '60%', background: 'linear-gradient(to right, #111 60%, transparent 100%)' }} />
                         <div className="position-relative p-5 d-flex flex-column justify-content-center" style={{ minHeight: '380px', maxWidth: '520px' }}>
-                            <span className="fw-bold text-white px-3 py-1 rounded-2 mb-3" style={{ background: '#A5732F', fontSize: '11px', width: 'fit-content', letterSpacing: '0.5px' }}>ONE APP. ALL SERVICES.</span>
+                            <span className="fw-bold text-white px-3 py-1 rounded-2 mb-3" style={{ background: '#000000', fontSize: '11px', width: 'fit-content', letterSpacing: '0.5px' }}>ONE APP. ALL SERVICES.</span>
                             <p className="text-white mb-1" style={{ fontSize: '12px', opacity: 0.7, letterSpacing: '1px' }}>ONE-APP</p>
                             <h2 className="fw-bold text-white mb-2" style={{ fontSize: '2.4rem', lineHeight: 1.2 }}>All Home Services<br />in One App</h2>
                             <p className="mb-4" style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', lineHeight: 1.6 }}>Everything your home needs,<br />delivered by trusted experts.</p>
@@ -866,9 +935,9 @@ const Home = () => {
                             </div>
                            
                             <div className="d-flex align-items-center gap-4 flex-wrap">
-                                <button className="btn fw-semibold rounded-3 px-4 py-2" style={{ background: '#A5732F', color: '#fff', border: 'none' }} onClick={() => navigate('/services')}>Book Now</button>
+                                <button className="btn fw-semibold rounded-3 px-4 py-2" style={{ background: '#000000', color: '#fff', border: 'none' }} onClick={() => navigate('/services')}>Book Now</button>
                                 <div className="d-flex align-items-center gap-2" style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px' }}>
-                                    <FaShieldAlt style={{ color: '#A5732F' }} />
+                                    <FaShieldAlt style={{ color: '#000000' }} />
                                     <span>Verified Professionals</span>
                                     <span>·</span>
                                     <span>On-time Service</span>
@@ -886,80 +955,13 @@ const Home = () => {
 
 
 
-            {/* Exclusive Home Services Offers */}
-            <section className="py-5 bg-white">
-                <div className="container">
-                    <h2 className="fw-bold mb-1">Exclusive Home Services Offers</h2>
-                    <p className="text-muted mb-4">Book Cleaner, Plumber, Handyman, Gardner or any one for your home help.</p>
-                    <div className="position-relative">
-                        <div
-                            id="offersScrollRow"
-                            className="d-flex gap-4 pb-2"
-                            style={{ overflowX: 'auto', scrollbarWidth: 'none', scrollBehavior: 'smooth' }}
-                        >
-                            {[
-                                { badge: 'UP TO $500 OFF', title: 'Home Cleaning', desc: 'Deep Cleaning. Sofa Cleaning. Spotless Spaces.', img: 'cleaning_image.png', category: 'Cleaning' },
-                                { badge: 'SAME DAY SERVICE', title: 'Plumbing', desc: 'Leak Repairs. Pipe Installation. Water Solutions.', img: 'plumbing_image.png', category: 'Plumbing' },
-                                { badge: 'CERTIFIED EXPERTS', title: 'Electrical', desc: 'Switches. Wiring. Safe Installations.', img: 'electrician.png', category: 'Electrical' },
-                                { badge: 'UP TO $300 OFF', title: 'Handyman', desc: 'Repairs. Installations. Fix Anything.', img: 'handy_man.png', category: 'Handyman' },
-                                { badge: 'SAME DAY SERVICE', title: 'AC & Appliance', desc: 'AC Service. Appliance Repair. Quick Fix.', img: 'ac_repair.png', category: 'AC & Appliance' },
-                            ].map((item, idx) => (
-                                <div
-                                    key={idx}
-                                    className="rounded-4 overflow-hidden position-relative flex-shrink-0"
-                                    style={{ width: 'calc(33.33% - 12px)', minWidth: '260px', minHeight: '260px', background: '#222', cursor: 'pointer' }}
-                                    onClick={() => handleCategoryClick(item.category)}
-                                >
-                                    <img
-                                        src={tryHeroImg(item.img)}
-                                        alt={item.title}
-                                        className="position-absolute w-100 h-100"
-                                        style={{ objectFit: 'cover', top: 0, left: 0, opacity: 0.55 }}
-                                        onError={(e) => { e.target.style.display = 'none'; }}
-                                    />
-                                    <div className="position-relative p-4 d-flex flex-column justify-content-between" style={{ minHeight: '260px' }}>
-                                        <div>
-                                            <span className="fw-bold text-white px-2 py-1 rounded-2 mb-2 d-inline-block" style={{ background: '#A5732F', fontSize: '10px', letterSpacing: '0.5px' }}>{item.badge}</span>
-                                            <p className="text-white mb-1" style={{ fontSize: '11px', opacity: 0.7, letterSpacing: '1px' }}>ONE-APP</p>
-                                            <h4 className="fw-bold text-white mb-2">{item.title}</h4>
-                                            <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '13px', lineHeight: 1.6 }}>{item.desc}</p>
-                                        </div>
-                                        <button
-                                            className="btn fw-semibold rounded-3 px-4 py-2"
-                                            style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }}
-                                            onClick={(e) => { e.stopPropagation(); handleCategoryClick(item.category); }}
-                                        >
-                                            Book Now
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        {/* Left Arrow */}
-                        <button
-                            className="position-absolute d-flex align-items-center justify-content-center border-0 bg-white rounded-circle shadow"
-                            style={{ top: '50%', left: '-18px', transform: 'translateY(-50%)', width: '36px', height: '36px', zIndex: 2, cursor: 'pointer' }}
-                            onClick={() => { const el = document.getElementById('offersScrollRow'); el.scrollBy({ left: -300, behavior: 'smooth' }); }}
-                        >
-                            <FaArrowRight style={{ transform: 'rotate(180deg)', fontSize: '14px' }} />
-                        </button>
-                        {/* Right Arrow */}
-                        <button
-                            className="position-absolute d-flex align-items-center justify-content-center border-0 bg-white rounded-circle shadow"
-                            style={{ top: '50%', right: '-18px', transform: 'translateY(-50%)', width: '36px', height: '36px', zIndex: 2, cursor: 'pointer' }}
-                            onClick={() => { const el = document.getElementById('offersScrollRow'); el.scrollBy({ left: 300, behavior: 'smooth' }); }}
-                        >
-                            <FaArrowRight style={{ fontSize: '14px' }} />
-                        </button>
-                    </div>
-                </div>
-            </section>
+            
 
             {/* IT & Technology Section */}
             <section className="py-5 bg-white">
                 <div className="container">
                     <div className="d-flex justify-content-between align-items-center mb-4">
-                        <h2 className="fw-bold mb-0">IT &amp; Technology</h2>
+                        <h2 className="fw-bold mb-0">Information Technology</h2>
                         <button onClick={() => handleViewAllServices('IT & Technology')} className="btn btn-link text-dark fw-semibold text-decoration-none p-0">See All</button>
                     </div>
                     <div className="row g-3 mb-3">
@@ -970,15 +972,15 @@ const Home = () => {
                                     <span className="fw-bold text-white px-2 py-1 rounded-2 mb-3 d-inline-block" style={{ background: '#7c3aed', fontSize: '10px', width: 'fit-content' }}>Top Rated</span>
                                     <h4 className="fw-bold text-white mb-2">Custom Software &amp; App Development</h4>
                                     <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '13px' }}>Build your dream product with our expert development teams.</p>
-                                    <button className="btn fw-semibold rounded-3 px-4 py-2 mt-2" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={(e) => { e.stopPropagation(); handleCategoryClick('IT & Technology'); }}>Get a Quote</button>
+                                    <button className="btn fw-semibold rounded-3 px-4 py-2 mt-2" style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }} onClick={(e) => { e.stopPropagation(); handleCategoryClick('IT & Technology'); }}>Get a Quote</button>
                                 </div>
                             </div>
                         </div>
                         <div className="col-lg-5 d-flex flex-column gap-3">
-                            {[{ icon: <FaLaptop size={20} />, title: 'Web Design', desc: 'Stunning UI/UX for your brand.' }, { icon: <FaUserMd size={20} />, title: 'IT Support', desc: '24/7 technical assistance.' }].map((item, idx) => (
+                            {[{ icon: <FaLaptop size={20} />, title: 'Web Design', desc: 'Stunning UI/UX for your brand.' }, { icon: <FaUserMd size={20} />, title: 'Technical Assistance.', desc: '24/7' }].map((item, idx) => (
                                 <div key={idx} className="rounded-4 border p-4 d-flex flex-column justify-content-between flex-grow-1" style={{ cursor: 'pointer' }} >
                                     <div className="mb-3"><div className="mb-3 text-dark">{item.icon}</div><div className="fw-bold mb-1" style={{ fontSize: '15px' }}>{item.title}</div><div className="text-muted small">{item.desc}</div></div>
-                                    <button className="btn btn-sm rounded-3 px-3" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={(e) => { navigate('/contact'); }}>Contact now</button>
+                                    <button className="btn btn-sm rounded-3 px-3" style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }} onClick={(e) => { navigate('/contact'); }}>Contact now</button>
                                 </div>
                             ))}
                         </div>
@@ -986,12 +988,12 @@ const Home = () => {
                     <div className="rounded-4 overflow-hidden d-flex" style={{ background: '#faf7f2' }}>
                         <div className="p-5 d-flex flex-column justify-content-between" style={{ flex: '0 0 55%' }}>
                             <div>
-                                <h2 className="fw-bold mb-2" style={{ fontSize: '2.2rem', lineHeight: 1.2 }}>IT &amp;<br />Technology<br />&amp; Marketing</h2>
+                                <h2 className="fw-bold mb-2" style={{ fontSize: '2.2rem', lineHeight: 1.2 }}>IT &amp; Marketing</h2>
                                 <p className="text-muted mb-4">Digital solutions to grow your business</p>
                                 <div className="row g-2">
                                     <div className="col-6">
-                                        <div className="fw-semibold small mb-2">IT &amp; Technology</div>
-                                        {['IT Support', 'Web Design', 'Website Development', 'App Development', 'Software Development'].map((s, i) => {
+                                        <div className="fw-semibold small mb-2">Technology</div>
+                                        {[ 'Web Design', 'Website Development', 'App Development', 'Software Development'].map((s, i) => {
                                             const itCat = getCategoryByName('IT');
                                             const sub = itCat?.subcategories?.find(sc => sc.name.toLowerCase().includes(s.toLowerCase()) || s.toLowerCase().includes(sc.name.toLowerCase()));
                                             return (
@@ -1017,7 +1019,7 @@ const Home = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button className="btn rounded-3 px-4 py-2 mt-4" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={() => {
+                            <button className="btn rounded-3 px-4 py-2 mt-4" style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }} onClick={() => {
                                 const cat = getCategoryByName('IT');
                                 if (cat) navigate(`/services?category=${cat.id}`);
                                 else handleCategoryClick('IT & Technology');
@@ -1089,7 +1091,7 @@ const Home = () => {
                                     <h2 className="fw-bold text-white mb-3" style={{ fontSize: '1.8rem', lineHeight: 1.2 }}>Elevate your lifestyle.</h2>
                                     <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '13px', lineHeight: 1.6 }}>Certified professionals at your doorstep. We prioritize quality, safety, and your peace of mind.</p>
                                 </div>
-                                <button className="btn rounded-pill px-4 py-2 fw-semibold" style={{ width: 'fit-content', fontSize: '13px', background: '#A5732F', color: '#fff', border: 'none' }}>Join Plus Membership</button>
+                                <button className="btn rounded-pill px-4 py-2 fw-semibold" style={{ width: 'fit-content', fontSize: '13px', background: '#000000', color: '#fff', border: 'none' }}>Join Plus Membership</button>
                             </div>
                         </div>
                         
@@ -1103,7 +1105,7 @@ const Home = () => {
                                 ].map((item, idx) => (
                                     <div key={idx} className="col-6">
                                         <div className="rounded-4 p-4 h-100 d-flex flex-column align-items-start justify-content-center" style={{ background: '#f5f5f5', minHeight: '100px' }}>
-                                            <span style={{ color: '#A5732F', marginBottom: '10px' }}>{item.icon}</span>
+                                            <span style={{ color: '#000000', marginBottom: '10px' }}>{item.icon}</span>
                                             <span className="fw-semibold" style={{ fontSize: '14px' }}>{item.label}</span>
                                         </div>
                                     </div>
@@ -1162,13 +1164,13 @@ const Home = () => {
                         />
                         <div className="position-absolute w-100 h-100" style={{ top: 0, left: 0, background: 'linear-gradient(to right, rgba(15,15,15,0.95) 40%, transparent 100%)' }} />
                         <div className="position-relative p-5 d-flex flex-column justify-content-center" style={{ minHeight: '300px', maxWidth: '420px' }}>
-                            <span className="fw-bold text-white px-2 py-1 rounded-2 mb-3 d-inline-block" style={{ background: '#A5732F', fontSize: '10px', width: 'fit-content', letterSpacing: '0.5px' }}>UP TO $1,700 OFF</span>
+                            <span className="fw-bold text-white px-2 py-1 rounded-2 mb-3 d-inline-block" style={{ background: '#000000', fontSize: '10px', width: 'fit-content', letterSpacing: '0.5px' }}>UP TO $1,700 OFF</span>
                             <p className="text-white mb-1" style={{ fontSize: '11px', opacity: 0.7, letterSpacing: '1.5px' }}>ONE-APP</p>
                             <h2 className="fw-bold text-white mb-3" style={{ fontSize: '2.2rem', lineHeight: 1.2 }}>Accounting<br />&amp; Finance</h2>
                             <p className="text-white mb-4" style={{ opacity: 0.8, lineHeight: 2, fontSize: '14px' }}>
                                 Accounting.<br />Bookkeeping.<br />Tax Services.<br />Financial Consulting.
                             </p>
-                            <button className="btn fw-semibold rounded-3 px-4 py-2" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={() => handleCategoryClick('Accounting & Finance')}>Buy now</button>
+                            <button className="btn fw-semibold rounded-3 px-4 py-2" style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }} onClick={() => handleCategoryClick('Accounting & Finance')}>Buy now</button>
                         </div>
                     </div>
                 </div>
@@ -1236,10 +1238,10 @@ const Home = () => {
 
                     <div className="row g-3 mb-3">
                         {[
-                            { badge: 'UP TO $400 OFF', badgeBg: '#A5732F', title: 'Tutoring', desc: 'Academic Excellence.\nExpert.\nYour Sound.', img: 'tutoring.png' },
-                            { badge: 'FREE DEMO', badgeBg: '#A5732F', title: 'Language Training', desc: 'Master New Languages.\nFluency Guaranteed.', img: 'language.png' },
+                            { badge: 'UP TO $400 OFF', badgeBg: '#000000', title: 'Tutoring', desc: 'Academic Excellence.\nExpert.\nYour Sound.', img: 'tutoring.png' },
+                            { badge: 'FREE DEMO', badgeBg: '#000000', title: 'Language Training', desc: 'Master New Languages.\nFluency Guaranteed.', img: 'language.png' },
                             { badge: 'EXPERT COACHES', badgeBg: '#7c3aed', title: 'Music Lessons', desc: 'Learn Instruments.\nDiscover.\nYour Sound.', img: 'music.png' },
-                            { badge: 'BEST SELLER', badgeBg: '#A5732F', title: 'Skill Development', desc: 'Master New Crafts.\nCareer Ready.', img: 'skill.png' },
+                            { badge: 'BEST SELLER', badgeBg: '#000000', title: 'Skill Development', desc: 'Master New Crafts.\nCareer Ready.', img: 'skill.png' },
                         ].map((item, idx) => (
                             <div key={idx} className="col-6">
                                 <div className="rounded-4 overflow-hidden position-relative" style={{ minHeight: '215px', background: '#222', cursor: 'pointer' }} onClick={() => handleCategoryClick('Education')}>
@@ -1253,7 +1255,7 @@ const Home = () => {
                                                 {item.desc.split('\n').map((l, i) => <span key={i}>{l}<br /></span>)}
                                             </p>
                                         </div>
-                                        <button className="btn btn-sm fw-semibold rounded-3 px-3" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={(e) => { e.stopPropagation(); handleCategoryClick('Education'); }}>Book Now</button>
+                                        <button className="btn btn-sm fw-semibold rounded-3 px-3" style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }} onClick={(e) => { e.stopPropagation(); handleCategoryClick('Education'); }}>Book Now</button>
                                     </div>
                                 </div>
                             </div>
@@ -1266,8 +1268,8 @@ const Home = () => {
                                 <h6 className="fw-bold mb-2">Certified Professionals only.</h6>
                                 <p className="text-muted small mb-5">Every educator on Oneapp Services or Partner Platform undergoes a rigorous 5-step background verification and skill assessment process before joining our elite network.</p>
                                 <div className="d-flex gap-3">
-                                    <span className="d-flex align-items-center gap-1" style={{ fontSize: '12px', color: '#A5732F' }}><FaShieldAlt size={12} /> Identity Verified</span>
-                                    <span className="d-flex align-items-center gap-1" style={{ fontSize: '12px', color: '#A5732F' }}><FaGraduationCap size={12} /> Degree Verified</span>
+                                    <span className="d-flex align-items-center gap-1" style={{ fontSize: '12px', color: '#000000' }}><FaShieldAlt size={12} /> Identity Verified</span>
+                                    <span className="d-flex align-items-center gap-1" style={{ fontSize: '12px', color: '#000000' }}><FaGraduationCap size={12} /> Degree Verified</span>
                                 </div>
                             </div>
                         </div>
@@ -1297,7 +1299,7 @@ const Home = () => {
                                     <span key={i} className="px-3 py-1 rounded-pill" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: '11px' }}>{tag}</span>
                                 ))}
                             </div>
-                            <button className="btn fw-semibold rounded-3 px-4 py-2" style={{ width: 'fit-content', background: '#A5732F', color: '#fff', border: 'none' }} onClick={() => handleCategoryClick('Events & Media')}>Book Now &rarr;</button>
+                            <button className="btn fw-semibold rounded-3 px-4 py-2" style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }} onClick={() => handleCategoryClick('Events & Media')}>Book Now &rarr;</button>
                         </div>
                         <div className="position-absolute" style={{ bottom: '20px', right: '30px' }}>
                             <span className="fw-bold text-white" style={{ fontSize: '11px', opacity: 0.4, letterSpacing: '3px' }}>EVENTS &amp; MEDIA SERVICES</span>
@@ -1361,7 +1363,7 @@ const Home = () => {
                             <p className="text-muted mb-5" style={{ fontSize: '16px', lineHeight: 1.8 }}>
                                 We believe deeply in driving social and economic progress across the region. We use our app to connect customers to the communities that need the most support.
                             </p>
-                            <button className="btn fw-bold px-4 py-2 rounded-3" style={{ background: '#A5732F', color: '#fff', fontSize: '15px', border: 'none' }}>
+                            <button className="btn fw-bold px-4 py-2 rounded-3" style={{ background: '#000000', color: '#fff', fontSize: '15px', border: 'none' }}>
                                 Read more
                             </button>
                         </div>

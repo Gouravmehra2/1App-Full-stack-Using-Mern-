@@ -37,9 +37,9 @@ h6, .h6 { font-size: 1rem; }
 p { font-size: 1rem; line-height: 1.6; }
 .small, small { font-size: 0.875rem; }
 
-/* ── Brand Button: #A5732F ── */
+/* ── Brand Button: #000000 ── */
 .btn-brand {
-  background-color: #A5732F;
+  background-color: #000000;
   color: #fff !important;
   border: none;
   font-weight: 700;
@@ -58,13 +58,13 @@ p { font-size: 1rem; line-height: 1.6; }
 
 .btn-outline-brand {
   background-color: transparent;
-  color: #A5732F !important;
-  border: 1.5px solid #A5732F;
+  color: #000000 !important;
+  border: 1.5px solid #000000;
   font-weight: 700;
 }
 .btn-outline-brand:hover,
 .btn-outline-brand:focus {
-  background-color: #A5732F;
+  background-color: #000000;
   color: #fff !important;
   box-shadow: 0 4px 12px rgba(165, 115, 47, 0.25);
 }

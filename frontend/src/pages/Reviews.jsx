@@ -52,7 +52,7 @@ export default function Reviews() {
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                     <span style={{ fontWeight: 700, fontSize: '14px' }}>{r.name}</span>
-                                    <span style={{ background: '#A5732F', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: 4, display: 'flex', alignItems: 'center', gap: 3 }}>
+                                    <span style={{ background: '#000000', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: 4, display: 'flex', alignItems: 'center', gap: 3 }}>
                                         {r.rating.toFixed(1)} ★
                                     </span>
                                 </div>
@@ -68,7 +68,7 @@ export default function Reviews() {
             <div style={{ display: 'flex', justifyContent: 'center', gap: 4, marginTop: 32 }}>
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
                     <button key={p} onClick={() => handlePage(p)}
-                        style={{ width: 36, height: 36, borderRadius: 6, border: '1px solid #ddd', background: p === page ? '#A5732F' : '#fff', color: p === page ? '#fff' : '#333', fontWeight: p === page ? 700 : 400, fontSize: '14px', cursor: 'pointer' }}>
+                        style={{ width: 36, height: 36, borderRadius: 6, border: '1px solid #ddd', background: p === page ? '#000000' : '#fff', color: p === page ? '#fff' : '#333', fontWeight: p === page ? 700 : 400, fontSize: '14px', cursor: 'pointer' }}>
                         {p}
                     </button>
                 ))}

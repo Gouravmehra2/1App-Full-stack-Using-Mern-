@@ -50,7 +50,7 @@ const QtyControl = ({ quantity, onDec, onInc }) => (
     <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #e0e0e0', borderRadius: 8, overflow: 'hidden' }}>
         <button onClick={onDec} style={{ border: 'none', background: 'none', width: 32, height: 32, cursor: 'pointer', fontSize: 16, color: '#555', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
         <span style={{ minWidth: 28, textAlign: 'center', fontWeight: 700, fontSize: 14 }}>{quantity}</span>
-        <button onClick={onInc} style={{ border: 'none', background: 'none', width: 32, height: 32, cursor: 'pointer', fontSize: 16, color: '#A5732F', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+        <button onClick={onInc} style={{ border: 'none', background: 'none', width: 32, height: 32, cursor: 'pointer', fontSize: 16, color: '#000000', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
     </div>
 );
 
@@ -119,7 +119,7 @@ const Cart = () => {
                 <Link
                     to="/services"
                     style={{
-                        background: '#A5732F',
+                        background: '#000000',
                         color: '#fff',
                         border: 'none',
                         borderRadius: 12,
@@ -159,7 +159,7 @@ const Cart = () => {
                         {/* Saving banner */}
                         <div style={{ background: '#fff', borderRadius: 14, padding: '12px 18px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 10 }}>
                             <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#f5ede0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                                <FaTag size={13} color="#A5732F" />
+                                <FaTag size={13} color="#000000" />
                             </div>
                             <span style={{ fontSize: 14, color: '#333' }}>
                                 Saving <strong>$0.00</strong> on this order
@@ -171,7 +171,7 @@ const Cart = () => {
                             <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 6, color: '#111' }}>Account</div>
                             {isAuthenticated ? (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                    <FaCheckCircle color="#A5732F" size={15} />
+                                    <FaCheckCircle color="#000000" size={15} />
                                     <span style={{ fontSize: 14, color: '#555' }}>
                                         Logged in as <strong>{user?.name || user?.email}</strong>
                                     </span>
@@ -181,7 +181,7 @@ const Cart = () => {
                                     <p style={{ fontSize: 14, color: '#888', margin: '0 0 14px' }}>To book the service, please login or sign up</p>
                                     <button
                                         onClick={() => navigate('/login')}
-                                        style={{ width: '100%', background: '#A5732F', color: '#fff', border: 'none', borderRadius: 10, padding: '13px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}
+                                        style={{ width: '100%', background: '#000000', color: '#fff', border: 'none', borderRadius: 10, padding: '13px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}
                                     >
                                         Login
                                     </button>
@@ -198,7 +198,7 @@ const Cart = () => {
                                     <button onClick={() => setSlotModalOpen(true)} style={{ border: '1px solid #e6e6e6', background: '#fff', padding: '8px 10px', borderRadius: 8, cursor: 'pointer' }}>Edit</button>
                                 </div>
                             ) : (
-                                <button onClick={() => setSlotModalOpen(true)} style={{ width: '100%', background: '#A5732F', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>Select time & date</button>
+                                <button onClick={() => setSlotModalOpen(true)} style={{ width: '100%', background: '#000000', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>Select time & date</button>
                             )}
                         </div>
                     </div>
@@ -248,7 +248,7 @@ const Cart = () => {
                             {/* Avoid calling checkbox */}
                             <hr style={{ border: 'none', borderTop: '1.5px dashed #e0e0e0', margin: '8px 0 14px' }} />
                             <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
-                                <input type="checkbox" defaultChecked style={{ width: 17, height: 17, accentColor: '#A5732F', cursor: 'pointer' }} />
+                                <input type="checkbox" defaultChecked style={{ width: 17, height: 17, accentColor: '#000000', cursor: 'pointer' }} />
                                 <span style={{ fontSize: 13, color: '#666' }}>Avoid calling before reaching the location</span>
                             </label>
                         </div>
@@ -256,7 +256,7 @@ const Cart = () => {
                         {/* Coupons */}
                         <div style={{ background: '#fff', borderRadius: 14, padding: '16px 22px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14 }}>
                             <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#f5ede0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                                <FaPercent size={14} color="#A5732F" />
+                                <FaPercent size={14} color="#000000" />
                             </div>
                             <div>
                                 <div style={{ fontWeight: 700, fontSize: 14, color: '#111' }}>Coupons and offers</div>
@@ -275,8 +275,8 @@ const Cart = () => {
                                 <span>${total.toFixed(2)}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, fontSize: 14 }}>
-                                <span style={{ color: '#A5732F', fontWeight: 600 }}>Free service offer</span>
-                                <span style={{ color: '#A5732F', fontWeight: 600 }}>-$0.00</span>
+                                <span style={{ color: '#000000', fontWeight: 600 }}>Free service offer</span>
+                                <span style={{ color: '#000000', fontWeight: 600 }}>-$0.00</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontSize: 14, color: '#555' }}>
                                 <span>Total amount</span>
@@ -295,7 +295,7 @@ const Cart = () => {
 
                             <button
                                 onClick={handleCheckout}
-                                style={{ width: '100%', background: '#A5732F', color: '#fff', border: 'none', borderRadius: 12, padding: '15px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}
+                                style={{ width: '100%', background: '#000000', color: '#fff', border: 'none', borderRadius: 12, padding: '15px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}
                             >
                                 Proceed to Pay
                             </button>

@@ -23,6 +23,22 @@ const NavigationBar = () => {
 
     return (
         <nav className="sticky-top bg-white border-bottom" style={{ zIndex: 1030 }}>
+            <style>{`
+                .navbar-dropdown .dropdown-item:active,
+                .navbar-dropdown .dropdown-item:focus {
+                    background-color: #000 !important;
+                    color: #fff !important;
+                }
+                .navbar-dropdown .dropdown-item:active svg,
+                .navbar-dropdown .dropdown-item:focus svg {
+                    color: #fff !important;
+                }
+                .navbar-dropdown .dropdown-item.text-danger:active,
+                .navbar-dropdown .dropdown-item.text-danger:focus {
+                    background-color: transparent !important;
+                    color: var(--bs-danger) !important;
+                }
+            `}</style>
             <div className="container">
                 <div className="d-flex align-items-center py-3 gap-4">
 
@@ -31,23 +47,13 @@ const NavigationBar = () => {
                     <img src={tryHeroImg('1app_logo.png') } alt="Hero" style={{width: '40px', height: 'auto'}}/>
                     </Link>
 
-                    {/* Nav Links */}
-                    <div className="d-none d-lg-flex align-items-center gap-3">
-                        <Link to="/" className="text-dark text-decoration-none fw-medium" style={{ fontSize: '14px' }}>Revamp</Link>
-                        <Link to="/services" className="text-dark text-decoration-none fw-medium" style={{ fontSize: '14px' }}>Native</Link>
-                        <Link to="/services" className="text-dark text-decoration-none fw-medium" style={{ fontSize: '14px' }}>Beauty</Link>
-                    </div>
+                    {/* Right: Search + Cart + User */}
+                    <div className="d-flex align-items-center gap-3 ms-auto">
 
-                    {/* Center: Location + Search */}
-                    <div className="d-none d-lg-flex align-items-center gap-2 flex-grow-1 justify-content-center">
-                        {/* Location Search Bar */}
-                        <SearchAutocomplete wrapperStyle={{ flexGrow: 1, maxWidth: '200px' }} />
-                        {/* Service Search Bar */}
-                        <ServiceSearchAutocomplete wrapperStyle={{ width: '50%' }} />
-                    </div>
-
-                    {/* Right: Cart + User */}
-                    <div className="d-flex align-items-center gap-3 ms-auto flex-shrink-0">
+                        {/* Search fields — shrink to content */}
+                        <div className="d-none d-lg-flex align-items-center gap-2">
+                            <SearchAutocomplete wrapperStyle={{ minWidth: '185px', maxWidth: '200px' }} />
+                            <ServiceSearchAutocomplete wrapperStyle={{ minWidth: '185px', maxWidth: '200px' }} /></div>
                         {/* Cart */}
                         <Link to="/cart" className="position-relative text-dark" style={{ fontSize: '20px' }}>
                             <FaShoppingCart />
@@ -66,11 +72,14 @@ const NavigationBar = () => {
                                         <FaUser size={14} color="#fff" />
                                     </div>
                                 </button>
-                                <ul className="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                                    <li><Link className="dropdown-item d-flex align-items-center gap-2 py-2" to="/profile"><FaUser className="text-muted" /><span>Profile</span></Link></li>
-                                    <li><Link className="dropdown-item d-flex align-items-center gap-2 py-2" to="/bookings"><FaListAlt className="text-muted" /><span>My Bookings</span></Link></li>
+                                <ul className="dropdown-menu dropdown-menu-end shadow border-0 mt-2 navbar-dropdown">
+                                    <li><Link className="dropdown-item d-flex align-items-center gap-2 py-2 text-dark" to="/profile"><FaUser className="text-muted" /><span>Profile</span></Link></li>
+                                    <li><Link className="dropdown-item d-flex align-items-center gap-2 py-2 text-dark" to="/bookings"><FaListAlt className="text-muted" /><span>My Bookings</span></Link></li>
                                     <li><hr className="dropdown-divider" /></li>
-                                    <li><button className="dropdown-item d-flex align-items-center gap-2 py-2 text-danger" onClick={handleLogout}><FaSignOutAlt /><span>Logout</span></button></li>
+                                    <li><button className="dropdown-item d-flex align-items-center gap-2 py-2 text-danger" onClick={handleLogout} style={{ border: 'none', background: 'none' }}>
+                                        <FaSignOutAlt />
+                                        <span>Logout</span>
+                                    </button></li>
                                 </ul>
                             </div>
                         ) : (

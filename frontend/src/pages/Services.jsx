@@ -183,7 +183,7 @@ export default function Services() {
                     {/* One-App Cover */}
                     <div style={{ background: '#fdf5ea', border: '1px solid #e8c98a', borderRadius: 12, padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, cursor: 'pointer' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                            <FaShieldAlt style={{ color: '#A5732F', fontSize: 18 }} />
+                            <FaShieldAlt style={{ color: '#000000', fontSize: 18 }} />
                             <div>
                                 <div style={{ fontWeight: 700, fontSize: 13 }}>One-App Cover</div>
                                 <div style={{ fontSize: 12, color: '#555' }}>Up to 30 days warranty</div>
@@ -346,22 +346,22 @@ export default function Services() {
                                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                                 <span
                                                     onClick={() => navigate(`/service/${svc._id}`)}
-                                                    style={{ color: '#A5732F', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}
+                                                    style={{ color: '#000000', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}
                                                 >
                                                     View details
                                                 </span>
                                                 {qty === 0 ? (
                                                     <button
                                                         onClick={() => addToCart(svc, 1)}
-                                                        style={{ border: '1.5px solid #A5732F', background: '#fff', color: '#A5732F', fontWeight: 700, borderRadius: 20, padding: '6px 24px', cursor: 'pointer', fontSize: 14 }}
+                                                        style={{ border: '1.5px solid #000000', background: '#fff', color: '#000000', fontWeight: 700, borderRadius: 20, padding: '6px 24px', cursor: 'pointer', fontSize: 14 }}
                                                     >
                                                         Add
                                                     </button>
                                                 ) : (
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, border: '1.5px solid #A5732F', borderRadius: 20, padding: '4px 12px' }}>
-                                                        <button onClick={() => updateQuantity(svc._id, qty - 1)} style={{ border: 'none', background: 'none', fontWeight: 700, fontSize: 16, cursor: 'pointer', color: '#A5732F', lineHeight: 1 }}>−</button>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, border: '1.5px solid #000000', borderRadius: 20, padding: '4px 12px' }}>
+                                                        <button onClick={() => updateQuantity(svc._id, qty - 1)} style={{ border: 'none', background: 'none', fontWeight: 700, fontSize: 16, cursor: 'pointer', color: '#000000', lineHeight: 1 }}>−</button>
                                                         <span style={{ fontWeight: 700, minWidth: 16, textAlign: 'center' }}>{qty}</span>
-                                                        <button onClick={() => updateQuantity(svc._id, qty + 1)} style={{ border: 'none', background: 'none', fontWeight: 700, fontSize: 16, cursor: 'pointer', color: '#A5732F', lineHeight: 1 }}>+</button>
+                                                        <button onClick={() => updateQuantity(svc._id, qty + 1)} style={{ border: 'none', background: 'none', fontWeight: 700, fontSize: 16, cursor: 'pointer', color: '#000000', lineHeight: 1 }}>+</button>
                                                     </div>
                                                 )}
                                             </div>
@@ -378,7 +378,7 @@ export default function Services() {
                     {/* One-App Promise */}
                     <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                            <FaMedal style={{ color: '#A5732F', fontSize: 22 }} />
+                            <FaMedal style={{ color: '#000000', fontSize: 22 }} />
                             <span style={{ fontWeight: 700, fontSize: 15 }}>One-App Promise</span>
                         </div>
                         {[
@@ -388,7 +388,7 @@ export default function Services() {
                             'Quality Guaranteed',
                         ].map((item) => (
                             <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                                <FaCheckCircle style={{ color: '#A5732F', fontSize: 15, flexShrink: 0 }} />
+                                <FaCheckCircle style={{ color: '#000000', fontSize: 15, flexShrink: 0 }} />
                                 <span style={{ fontSize: 13, color: '#333' }}>{item}</span>
                             </div>
                         ))}
@@ -423,7 +423,7 @@ export default function Services() {
                                 ))}
                                 <button
                                     onClick={() => navigate('/cart')}
-                                    style={{ width: '100%', background: '#A5732F', color: '#fff', border: 'none', borderRadius: 12, padding: '14px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: 20, paddingRight: 20, marginTop: 8 }}
+                                    style={{ width: '100%', background: '#000000', color: '#fff', border: 'none', borderRadius: 12, padding: '14px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: 20, paddingRight: 20, marginTop: 8 }}
                                 >
                                     <span>${cartTotal.toLocaleString()}</span>
                                     <span>View Cart</span>

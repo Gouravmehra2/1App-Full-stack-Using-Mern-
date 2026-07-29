@@ -79,7 +79,7 @@ const StripePaymentForm = ({ bookingDetails, paymentOrder, amount, onSuccess, on
 
             <div style={{ background: '#f5f5f5', borderRadius: 12, padding: '16px 20px', marginBottom: 20, textAlign: 'center' }}>
                 <div style={{ fontSize: 12, color: '#888', marginBottom: 4 }}>Amount to Pay</div>
-                <div style={{ fontWeight: 800, fontSize: '2rem', color: '#A5732F', fontFamily: 'monospace' }}>${amount.toFixed(2)}</div>
+                <div style={{ fontWeight: 800, fontSize: '2rem', color: '#000000', fontFamily: 'monospace' }}>${amount.toFixed(2)}</div>
             </div>
 
             <div style={{ marginBottom: 18 }}>
@@ -97,7 +97,7 @@ const StripePaymentForm = ({ bookingDetails, paymentOrder, amount, onSuccess, on
                     <button
                         type="submit"
                         disabled={!stripe || !elements}
-                        style={{ width: '100%', background: '#A5732F', color: '#fff', border: 'none', borderRadius: 12, padding: '14px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}
+                        style={{ width: '100%', background: '#000000', color: '#fff', border: 'none', borderRadius: 12, padding: '14px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}
                     >
                         Pay ${amount.toFixed(2)}
                     </button>
@@ -217,7 +217,7 @@ const Checkout = () => {
                     ) : (
                         <div style={{ padding: 24, textAlign: 'center' }}>
                             <p style={{ color: '#c62828', fontWeight: 700 }}>Stripe is not configured for this payment.</p>
-                            <button onClick={() => setShowGateway(false)} style={{ background: '#A5732F', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 18px', cursor: 'pointer', fontWeight: 700 }}>
+                            <button onClick={() => setShowGateway(false)} style={{ background: '#000000', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 18px', cursor: 'pointer', fontWeight: 700 }}>
                                 Back to checkout
                             </button>
                         </div>
@@ -248,7 +248,7 @@ const Checkout = () => {
                                 <form onSubmit={handleCreateOrder} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                                     <div>
                                         <label style={labelStyle}>
-                                            <FaMapMarkerAlt color="#A5732F" /> Full Address
+                                            <FaMapMarkerAlt color="#000000" /> Full Address
                                         </label>
                                         <textarea
                                             rows="3"
@@ -262,7 +262,7 @@ const Checkout = () => {
 
                                     <div>
                                         <label style={labelStyle}>
-                                            <FaPhoneAlt color="#A5732F" /> Contact Phone Number
+                                            <FaPhoneAlt color="#000000" /> Contact Phone Number
                                         </label>
                                         <input
                                             type="tel"
@@ -287,7 +287,7 @@ const Checkout = () => {
 
                                     <button
                                         type="submit"
-                                        style={{ width: '100%', background: '#A5732F', color: '#fff', border: 'none', borderRadius: 12, padding: '15px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer', marginTop: 4 }}
+                                        style={{ width: '100%', background: '#000000', color: '#fff', border: 'none', borderRadius: 12, padding: '15px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer', marginTop: 4 }}
                                     >
                                         Proceed to Stripe Payment
                                     </button>
@@ -300,12 +300,12 @@ const Checkout = () => {
                                 <div style={{ fontWeight: 800, fontSize: 16, color: '#111', marginBottom: 14 }}>Booking Schedule</div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: '#555' }}>
-                                        <FaCalendarAlt color="#A5732F" />
+                                        <FaCalendarAlt color="#000000" />
                                         <span>Date:</span>
                                         <strong style={{ color: '#111' }}>{new Date(bookingDate).toLocaleDateString()}</strong>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: '#555' }}>
-                                        <FaClock color="#A5732F" />
+                                        <FaClock color="#000000" />
                                         <span>Slot:</span>
                                         <strong style={{ color: '#111' }}>{bookingSlot}</strong>
                                     </div>
@@ -323,8 +323,8 @@ const Checkout = () => {
                                 ))}
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, fontSize: 14 }}>
-                                    <span style={{ color: '#A5732F', fontWeight: 600 }}>Free service offer</span>
-                                    <span style={{ color: '#A5732F', fontWeight: 600 }}>-$0.00</span>
+                                    <span style={{ color: '#000000', fontWeight: 600 }}>Free service offer</span>
+                                    <span style={{ color: '#000000', fontWeight: 600 }}>-$0.00</span>
                                 </div>
 
                                 <hr style={{ border: 'none', borderTop: '1px solid #f0f0f0', margin: '10px 0 14px' }} />

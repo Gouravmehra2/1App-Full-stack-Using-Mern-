@@ -68,11 +68,11 @@ const LoginPage = () => {
                     {/* Header */}
                     <div style={{ textAlign: 'center', marginBottom: 32 }}>
                         <p style={{ fontWeight: 800, fontSize: '1.25rem', color: '#1A1A1A', marginBottom: 4, letterSpacing: 0.5 }}>
-                            <span style={{ color: '#A5732F' }}>1APP</span> PORTAL
+                            <span style={{ color: '#000000' }}>1APP</span> PORTAL
                         </p>
-                        <h2 style={{ fontWeight: 800, fontSize: '1.9rem', color: '#A5732F', margin: '4px 0 8px' }}>Welcome Back</h2>
+                        <h2 style={{ fontWeight: 800, fontSize: '1.9rem', color: '#000000', margin: '4px 0 8px' }}>Welcome Back</h2>
                         <p style={{ color: '#888', fontSize: '0.9rem', margin: 0 }}>Login to your account to continue</p>
-                        <div style={{ width: 40, height: 3, background: '#A5732F', margin: '12px auto 0', borderRadius: 2 }} />
+                        <div style={{ width: 40, height: 3, background: '#000000', margin: '12px auto 0', borderRadius: 2 }} />
                     </div>
 
                     <form onSubmit={handleSubmit}>
@@ -94,7 +94,7 @@ const LoginPage = () => {
                             </div>
                             <div style={{ textAlign: 'right', marginTop: 5 }}>
                                 <button type="button" onClick={() => { setUseEmail(!useEmail); setIdentifier(''); }}
-                                    style={{ background: 'none', border: 'none', color: '#A5732F', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', padding: 0 }}>
+                                    style={{ background: 'none', border: 'none', color: '#000000', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', padding: 0 }}>
                                     {useEmail ? 'Use Phone Number' : 'Use Email'}
                                 </button>
                             </div>
@@ -119,14 +119,14 @@ const LoginPage = () => {
                                 </button>
                             </div>
                             <div style={{ textAlign: 'right', marginTop: 5 }}>
-                                <Link to="/forgot-password" style={{ color: '#A5732F', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>
+                                <Link to="/forgot-password" style={{ color: '#000000', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>
                                     Forgot password ?
                                 </Link>
                             </div>
                         </div>
 
                         <button type="submit" disabled={loading} style={{
-                            width: '100%', background: '#A5732F', color: '#fff', border: 'none',
+                            width: '100%', background: '#000000', color: '#fff', border: 'none',
                             borderRadius: 8, padding: '13px', fontWeight: 700, fontSize: '1rem',
                             cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                             gap: 8, marginTop: 20
@@ -153,7 +153,7 @@ const LoginPage = () => {
 
                     <p style={{ textAlign: 'center', marginTop: 22, fontSize: '0.88rem', color: '#555' }}>
                         Don't have an account?{' '}
-                        <Link to="/signup" style={{ color: '#A5732F', fontWeight: 700, textDecoration: 'none' }}>Sign Up</Link>
+                        <Link to="/signup" style={{ color: '#000000', fontWeight: 700, textDecoration: 'none' }}>Sign Up</Link>
                     </p>
                 </div>
             </div>

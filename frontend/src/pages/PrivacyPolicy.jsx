@@ -61,7 +61,7 @@ export default function PrivacyPolicy() {
                     </div> */}
                     {/* {LANGUAGES.map(l => (
                         <div key={l} onClick={() => setActiveLang(l)}
-                            style={{ fontSize: '13px', padding: '4px 0', cursor: 'pointer', color: activeLang === l ? '#A5732F' : '#666', fontWeight: activeLang === l ? 700 : 400 }}>
+                            style={{ fontSize: '13px', padding: '4px 0', cursor: 'pointer', color: activeLang === l ? '#000000' : '#666', fontWeight: activeLang === l ? 700 : 400 }}>
                             {l}
                         </div>
                     ))} */}
@@ -78,12 +78,12 @@ export default function PrivacyPolicy() {
                 </p>
                 <p style={{ fontSize: '14px', lineHeight: 1.8, color: '#333', marginBottom: 12 }}>
                     <strong>1APP Company Limited</strong> (formerly known as <strong>1App Technologies India Pvt. Ltd.</strong>), and its affiliates (collectively, "1APP Company", "we", "us" or "our") are engaged in the business of providing web-based solutions to facilitate connections between customers that seek specific services and service professionals that offer these services. This Policy outlines our practices in relation to the collection, storage, usage, processing and disclosure of personal data that you have consented to share with us when you access, use, or otherwise interact with our website available at{' '}
-                    <a href="https://www.1appcompany.com/" style={{ color: '#A5732F' }}>https://www.1appcompany.com/</a>{' '}
+                    <a href="https://www.1appcompany.com/" style={{ color: '#000000' }}>https://www.1appcompany.com/</a>{' '}
                     or mobile application "1APP Company" (collectively, "Platform") or avail products or services that 1APP Company offers you on or through the Platform (collectively, the "Services"). In this Policy, the services offered to you by service professionals on or through the Platform are referred to as "Professional Services".
                 </p>
                 <p style={{ fontSize: '14px', lineHeight: 1.8, color: '#333', marginBottom: 24 }}>
                     Please note that unless specifically defined in this Policy, capitalised terms shall have the same meaning ascribed to them in our Terms and Conditions, available at{' '}
-                    <a href="/terms" style={{ color: '#A5732F' }}>https://www.1appcompany.com/terms</a>{' '}
+                    <a href="/terms" style={{ color: '#000000' }}>https://www.1appcompany.com/terms</a>{' '}
                     ("Terms"). Please read this Policy in consonance with the Terms.
                 </p>
 
@@ -103,7 +103,7 @@ export default function PrivacyPolicy() {
                     <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1.5px', color: '#888', marginBottom: 14 }}>PRIVACY POLICY</div>
                     {SECTIONS.map(sec => (
                         <div key={sec.id} onClick={() => scrollTo(sec.id)}
-                            style={{ fontSize: '12px', padding: '5px 0 5px 10px', cursor: 'pointer', color: active === sec.id ? '#A5732F' : '#444', fontWeight: active === sec.id ? 700 : 400, borderLeft: active === sec.id ? '2px solid #A5732F' : '2px solid transparent', marginBottom: 2 }}>
+                            style={{ fontSize: '12px', padding: '5px 0 5px 10px', cursor: 'pointer', color: active === sec.id ? '#000000' : '#444', fontWeight: active === sec.id ? 700 : 400, borderLeft: active === sec.id ? '2px solid #000000' : '2px solid transparent', marginBottom: 2 }}>
                             {sec.title}
                         </div>
                     ))}
@@ -111,7 +111,7 @@ export default function PrivacyPolicy() {
                 <div style={{ border: '1px solid #e0e0e0', borderRadius: 12, padding: '20px' }}>
                     <p style={{ fontSize: '13px', fontWeight: 700, marginBottom: 6 }}>Need help?</p>
                     <p style={{ fontSize: '13px', color: '#555', marginBottom: 14 }}>If you have any questions about this Privacy Policy, please contact us.</p>
-                    <a href="/contact" style={{ display: 'block', background: '#A5732F', color: '#fff', textAlign: 'center', padding: '12px', borderRadius: 8, fontWeight: 700, fontSize: '14px', textDecoration: 'none' }}>Contact Support</a>
+                    <a href="/contact" style={{ display: 'block', background: '#000000', color: '#fff', textAlign: 'center', padding: '12px', borderRadius: 8, fontWeight: 700, fontSize: '14px', textDecoration: 'none' }}>Contact Support</a>
                 </div>
             </div>
         </div>

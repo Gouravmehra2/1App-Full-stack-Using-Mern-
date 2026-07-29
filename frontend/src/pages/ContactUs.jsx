@@ -70,7 +70,7 @@ export default function ContactUs() {
                     </div>
 
                     <button type="submit" disabled={submitting}
-                        style={{ background: '#A5732F', color: '#fff', border: 'none', borderRadius: 8, padding: '14px 32px', fontWeight: 700, fontSize: '15px', cursor: 'pointer', width: 'fit-content' }}>
+                        style={{ background: '#000000', color: '#fff', border: 'none', borderRadius: 8, padding: '14px 32px', fontWeight: 700, fontSize: '15px', cursor: 'pointer', width: 'fit-content' }}>
                         {submitting ? 'Sending...' : 'Submit'}
                     </button>
                 </form>
@@ -82,7 +82,7 @@ export default function ContactUs() {
                     <p style={{ fontSize: '14px', color: '#555', lineHeight: 1.7, marginBottom: 10 }}>
                         For any immediate help regarding your bookings, please log-in and visit our Help Center. You will be able to get instant resolution through our chat support.
                     </p>
-                    <a href="#" style={{ color: '#A5732F', fontWeight: 700, fontSize: '14px', textDecoration: 'none' }}>Open Help Center &rsaquo;</a>
+                    <a href="#" style={{ color: '#000000', fontWeight: 700, fontSize: '14px', textDecoration: 'none' }}>Open Help Center &rsaquo;</a>
                 </InfoCard>
 
                 <InfoCard title="Still facing issues?">
@@ -109,7 +109,7 @@ export default function ContactUs() {
                     <p style={{ fontSize: '14px', color: '#555', lineHeight: 1.7, marginBottom: 10 }}>
                         You can view a list of all our office addresses by clicking below
                     </p>
-                    <a href="#" style={{ color: '#A5732F', fontWeight: 700, fontSize: '14px', textDecoration: 'none' }}>View addresses &rsaquo;</a>
+                    <a href="#" style={{ color: '#000000', fontWeight: 700, fontSize: '14px', textDecoration: 'none' }}>View addresses &rsaquo;</a>
                 </InfoCard>
             </div>
         </div>

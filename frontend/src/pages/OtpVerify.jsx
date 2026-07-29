@@ -52,13 +52,13 @@ const OtpVerify = () => {
 
                     <div style={{ marginBottom: 28 }}>
                         <h2 style={{ fontWeight: 800, fontSize: '1.8rem', marginBottom: 8 }}>
-                            Verify <span style={{ color: '#A5732F' }}>OTP</span>
+                            Verify <span style={{ color: '#000000' }}>OTP</span>
                         </h2>
                         <p style={{ color: '#777', fontSize: '0.9rem', lineHeight: 1.5 }}>
                             We've sent a 6-digit OTP to your registered phone{' '}
                             <strong style={{ color: '#333' }}>{maskedPhone}</strong>
                         </p>
-                        <div style={{ width: 40, height: 3, background: '#A5732F', marginTop: 12 }} />
+                        <div style={{ width: 40, height: 3, background: '#000000', marginTop: 12 }} />
                     </div>
 
                     <form onSubmit={handleSubmit}>
@@ -75,7 +75,7 @@ const OtpVerify = () => {
                                     onKeyDown={e => handleKeyDown(e, idx)}
                                     style={{
                                         width: 48, height: 52, textAlign: 'center', fontSize: '1.4rem', fontWeight: 700,
-                                        border: `2px solid ${digit ? '#A5732F' : '#ddd'}`, borderRadius: 10, outline: 'none',
+                                        border: `2px solid ${digit ? '#000000' : '#ddd'}`, borderRadius: 10, outline: 'none',
                                         transition: 'border-color 0.2s',
                                     }}
                                 />
@@ -89,13 +89,13 @@ const OtpVerify = () => {
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
                                 background: '#fdf5ea',
-                                border: '1.5px dashed #A5732F',
+                                border: '1.5px dashed #000000',
                                 borderRadius: 10,
                                 padding: '10px 16px',
                                 marginBottom: 20,
                             }}>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#A5732F', letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#000000', letterSpacing: 0.5, textTransform: 'uppercase' }}>
                                         Dev mode · OTP
                                     </span>
                                     <span style={{ fontSize: '1.35rem', fontWeight: 800, letterSpacing: 6, color: '#1a1a1a', fontFamily: 'monospace' }}>
@@ -111,7 +111,7 @@ const OtpVerify = () => {
                                         inputs.current[5]?.focus();
                                     }}
                                     style={{
-                                        background: '#A5732F', color: '#fff', border: 'none',
+                                        background: '#000000', color: '#fff', border: 'none',
                                         borderRadius: 8, padding: '6px 14px', fontWeight: 700,
                                         fontSize: '0.8rem', cursor: 'pointer', flexShrink: 0,
                                     }}
@@ -122,14 +122,14 @@ const OtpVerify = () => {
                         )}
 
                         <button type="submit"
-                            style={{ width: '100%', background: '#A5732F', color: '#fff', border: 'none', borderRadius: 8, padding: '13px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                            style={{ width: '100%', background: '#000000', color: '#fff', border: 'none', borderRadius: 8, padding: '13px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                             Verify OTP <span style={{ fontSize: '1.1rem' }}>→</span>
                         </button>
                     </form>
 
                     <p style={{ textAlign: 'center', marginTop: 20, fontSize: '0.88rem', color: '#555' }}>
                         Remember your Password?{' '}
-                        <Link to="/login" style={{ color: '#A5732F', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link>
+                        <Link to="/login" style={{ color: '#000000', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link>
                     </p>
                 </div>
             </div>

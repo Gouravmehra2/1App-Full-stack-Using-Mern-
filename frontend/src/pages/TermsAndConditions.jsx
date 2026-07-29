@@ -46,7 +46,7 @@ export default function TermsAndConditions() {
 
                 <p style={{ fontSize: '14px', lineHeight: 1.8, color: '#333', marginBottom: 16 }}>
                     These terms and conditions ("Terms") govern the use of software made available on or through, and/or services provided by, 1APP Company (the "Company", "we", "us", or "1APP"), including the "Platform" and various sub-services made available on or through the Platform. The "Services", These Terms also include our privacy policy available at{' '}
-                    <a href="/privacy-policy" style={{ color: '#A5732F' }}>https://1app.com/privacy-policy</a>{' '}
+                    <a href="/privacy-policy" style={{ color: '#000000' }}>https://1app.com/privacy-policy</a>{' '}
                     ("Privacy Policy"), and any guidelines, additional, or supplemental terms, policies, and disclaimers made available or issued by us from time to time ("Supplemental Terms"). The Privacy Policy and the Supplemental Terms form an integral part of these Terms. In the event of a conflict between these Terms and the Privacy Policy or the Supplemental Terms, the Privacy Policy or the Supplemental Terms shall prevail.
                 </p>
                 <p style={{ fontSize: '14px', lineHeight: 1.8, color: '#333', marginBottom: 16 }}>
@@ -73,14 +73,14 @@ export default function TermsAndConditions() {
                     {SECTIONS.map(sec => (
                         <div key={sec.id}
                             onClick={() => scrollTo(sec.id)}
-                            style={{ fontSize: '13px', padding: '6px 0', cursor: 'pointer', color: active === sec.id ? '#A5732F' : '#444', fontWeight: active === sec.id ? 700 : 400, borderLeft: active === sec.id ? '2px solid #A5732F' : '2px solid transparent', paddingLeft: 10, marginBottom: 2 }}>
+                            style={{ fontSize: '13px', padding: '6px 0', cursor: 'pointer', color: active === sec.id ? '#000000' : '#444', fontWeight: active === sec.id ? 700 : 400, borderLeft: active === sec.id ? '2px solid #000000' : '2px solid transparent', paddingLeft: 10, marginBottom: 2 }}>
                             {sec.title}
                         </div>
                     ))}
                 </div>
                 <div style={{ border: '1px solid #e0e0e0', borderRadius: 12, padding: '20px' }}>
                     <p style={{ fontSize: '13px', color: '#555', marginBottom: 14 }}>Need help understanding our terms? Our support team is available 24/7.</p>
-                    <a href="/contact" style={{ display: 'block', background: '#A5732F', color: '#fff', textAlign: 'center', padding: '12px', borderRadius: 8, fontWeight: 700, fontSize: '14px', textDecoration: 'none' }}>Contact Support</a>
+                    <a href="/contact" style={{ display: 'block', background: '#000000', color: '#fff', textAlign: 'center', padding: '12px', borderRadius: 8, fontWeight: 700, fontSize: '14px', textDecoration: 'none' }}>Contact Support</a>
                 </div>
             </div>
         </div>

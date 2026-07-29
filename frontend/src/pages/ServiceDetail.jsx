@@ -237,7 +237,7 @@ const ServiceDetail = () => {
                     const cheapest = service.variants.reduce((min, v) => (v.offerPrice || v.price) < (min.offerPrice || min.price) ? v : min, service.variants[0]);
                     const perUnit = cheapest.quantity > 1 ? ((cheapest.offerPrice || cheapest.price) / cheapest.quantity).toFixed(2) : null;
                     return perUnit ? (
-                        <div style={{ color: '#A5732F', fontSize: '14px', fontWeight: '600' }}>♦ ${perUnit} per bathroom</div>
+                        <div style={{ color: '#000000', fontSize: '14px', fontWeight: '600' }}>♦ ${perUnit} per bathroom</div>
                     ) : null;
                 })()}
             </div>
@@ -261,9 +261,9 @@ const ServiceDetail = () => {
                             const perUnit = v.quantity > 1 ? (vOffer / v.quantity).toFixed(2) : null;
                             return (
                                 <div key={v._id} onClick={() => setSelectedVariant(v)}
-                                    style={{ ...variantCard, border: isSelected ? '2px solid #A5732F' : '1.5px solid #ddd', position: 'relative', overflow: 'hidden' }}>
+                                    style={{ ...variantCard, border: isSelected ? '2px solid #000000' : '1.5px solid #ddd', position: 'relative', overflow: 'hidden' }}>
                                     {vDiscount > 0 && (
-                                        <div style={{ position: 'absolute', top: 0, right: 0, background: '#fdf5ea', color: '#A5732F', fontSize: '11px', fontWeight: '700', padding: '3px 8px', borderBottomLeftRadius: '8px' }}>
+                                        <div style={{ position: 'absolute', top: 0, right: 0, background: '#fdf5ea', color: '#000000', fontSize: '11px', fontWeight: '700', padding: '3px 8px', borderBottomLeftRadius: '8px' }}>
                                             {vDiscount}% OFF
                                         </div>
                                     )}
@@ -294,9 +294,9 @@ const ServiceDetail = () => {
                                 return (
                                     <div key={addon._id} style={{ minWidth: '180px', border: '1.5px solid #ddd', borderRadius: '12px', padding: '14px', flexShrink: 0 }}>
                                         <div style={{ fontWeight: '600', fontSize: '14px', marginBottom: '6px' }}>{addon.name} (additional)</div>
-                                        <div style={{ color: '#A5732F', fontWeight: '600', fontSize: '14px', marginBottom: '12px' }}>+ ${(addon.price || 0).toFixed(2)}</div>
+                                        <div style={{ color: '#000000', fontWeight: '600', fontSize: '14px', marginBottom: '12px' }}>+ ${(addon.price || 0).toFixed(2)}</div>
                                         <button onClick={() => toggleAddon(addon)}
-                                            style={{ width: '100%', padding: '8px', border: '1.5px solid #A5732F', borderRadius: '8px', background: '#fff', color: '#A5732F', fontWeight: '600', cursor: 'pointer', fontSize: '14px' }}>
+                                            style={{ width: '100%', padding: '8px', border: '1.5px solid #000000', borderRadius: '8px', background: '#fff', color: '#000000', fontWeight: '600', cursor: 'pointer', fontSize: '14px' }}>
                                             {added ? 'Added ✓' : 'Add'}
                                         </button>
                                     </div>
@@ -425,22 +425,22 @@ const ServiceDetail = () => {
                             {
                                 text: 'Background verified',
                                 sub: 'Identity & police check completed',
-                                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A5732F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+                                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
                             },
                             {
                                 text: 'Average 4.8+ ratings',
                                 sub: 'Consistently rated by customers',
-                                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A5732F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                             },
                             {
                                 text: '300+ hours of training',
                                 sub: 'Skilled & certified professionals',
-                                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A5732F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                             },
                             {
                                 text: 'Verified by 1APP',
                                 sub: 'Trusted and quality assured',
-                                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A5732F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
                             },
                         ].map((item, i) => (
                             <div key={i} style={{
@@ -518,7 +518,7 @@ const ServiceDetail = () => {
                     <h2 style={sectionTitle}>What is covered</h2>
                     {service.includedItems.map(item => (
                         <div key={item._id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 0', borderBottom: '1px solid #f0f0f0' }}>
-                            <span style={{ color: '#A5732F', fontWeight: '700', fontSize: '16px' }}>✓</span>
+                            <span style={{ color: '#000000', fontWeight: '700', fontSize: '16px' }}>✓</span>
                             <span style={{ fontSize: '15px', color: '#444' }}>{item.title}</span>
                         </div>
                     ))}
@@ -560,7 +560,7 @@ const ServiceDetail = () => {
                     <h2 style={{ ...sectionTitle, marginBottom: '4px' }}>Damage protection</h2>
                     <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>Up to $5,000 cover if any damage happens<br />during the job</p>
                 </div>
-                <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: '#A5732F', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <span style={{ color: '#fff', fontSize: '22px' }}>✓</span>
                 </div>
             </Section>
@@ -585,7 +585,7 @@ const ServiceDetail = () => {
                                         flexShrink: 0,
                                         transition: 'background 0.2s',
                                     }}>
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={openFaq === i ? '#A5732F' : '#888'} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={openFaq === i ? '#000000' : '#888'} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                                             <circle cx="12" cy="12" r="10"/>
                                             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
                                             <line x1="12" y1="17" x2="12.01" y2="17"/>
@@ -597,7 +597,7 @@ const ServiceDetail = () => {
                                     width: '28px',
                                     height: '28px',
                                     borderRadius: '50%',
-                                    background: openFaq === i ? '#A5732F' : '#f0f0f0',
+                                    background: openFaq === i ? '#000000' : '#f0f0f0',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -725,7 +725,7 @@ const ServiceDetail = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{ fontSize: '20px', fontWeight: '800', color: '#1a1a2e' }}>${getTotalPrice().toFixed(2)}</span>
                         {discountPct > 0 && !selectedVariant && (
-                            <span style={{ background: '#fdf5ea', color: '#A5732F', fontSize: '12px', fontWeight: '700', padding: '2px 8px', borderRadius: '20px' }}>{discountPct}% OFF</span>
+                            <span style={{ background: '#fdf5ea', color: '#000000', fontSize: '12px', fontWeight: '700', padding: '2px 8px', borderRadius: '20px' }}>{discountPct}% OFF</span>
                         )}
                     </div>
                     {discountPct > 0 && !selectedVariant && (
@@ -733,7 +733,7 @@ const ServiceDetail = () => {
                     )}
                 </div>
                 <button onClick={handleAddToCart}
-                    style={{ background: '#A5732F', color: '#fff', border: 'none', borderRadius: '10px', padding: '12px 32px', fontWeight: '700', fontSize: '16px', cursor: 'pointer' }}>
+                    style={{ background: '#000000', color: '#fff', border: 'none', borderRadius: '10px', padding: '12px 32px', fontWeight: '700', fontSize: '16px', cursor: 'pointer' }}>
                     Add to cart
                 </button>
             </div>

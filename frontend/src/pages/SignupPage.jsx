@@ -18,7 +18,7 @@ const getStrength = (pwd) => {
 };
 
 const strengthLabel = ['', 'Weak', 'Fair', 'Good', 'Strong'];
-const strengthColor = ['', '#e53935', '#fb8c00', '#fdd835', '#A5732F'];
+const strengthColor = ['', '#e53935', '#fb8c00', '#fdd835', '#000000'];
 
 const inputStyle = { border: 'none', outline: 'none', flex: 1, fontSize: '0.95rem', background: 'transparent' };
 
@@ -126,13 +126,13 @@ const SignupPage = () => {
                 <div style={{ maxWidth: 420, width: '100%', margin: '0 auto' }}>
                     <div style={{ textAlign: 'center', marginBottom: 28 }}>
                         <p style={{ fontWeight: 700, fontSize: '1.1rem', color: '#1a1a1a', marginBottom: 2 }}>
-                            <span style={{ color: '#A5732F' }}>1APP</span> Portal
+                            <span style={{ color: '#000000' }}>1APP</span> Portal
                         </p>
-                        <h2 style={{ fontWeight: 800, fontSize: '1.9rem', color: '#A5732F', margin: '4px 0 6px' }}>Create Account</h2>
+                        <h2 style={{ fontWeight: 800, fontSize: '1.9rem', color: '#000000', margin: '4px 0 6px' }}>Create Account</h2>
                         <p style={{ color: '#888', fontSize: '0.9rem', margin: 0 }}>
                             {registrationStep === 'details' ? 'Enter your details to receive an OTP' : 'Verify OTP to finish signup'}
                         </p>
-                        <div style={{ width: 40, height: 3, background: '#A5732F', margin: '10px auto 0', borderRadius: 2 }} />
+                        <div style={{ width: 40, height: 3, background: '#000000', margin: '10px auto 0', borderRadius: 2 }} />
                     </div>
 
                     <form onSubmit={handleSubmit}>
@@ -186,9 +186,9 @@ const SignupPage = () => {
                         ) : (
                             <>
                                 <div style={{ background: '#f5fbf6', border: '1px solid #d7eadb', borderRadius: 8, padding: 12, marginBottom: 16 }}>
-                                    <div style={{ color: '#A5732F', fontWeight: 800, fontSize: '0.9rem' }}>Verify your phone</div>
+                                    <div style={{ color: '#000000', fontWeight: 800, fontSize: '0.9rem' }}>Verify your phone</div>
                                     <div style={{ color: '#555', fontSize: '0.85rem', marginTop: 4 }}>OTP sent to {phone}</div>
-                                    <button type="button" onClick={editDetails} style={{ background: 'none', border: 'none', color: '#A5732F', fontWeight: 700, padding: '8px 0 0', cursor: 'pointer' }}>
+                                    <button type="button" onClick={editDetails} style={{ background: 'none', border: 'none', color: '#000000', fontWeight: 700, padding: '8px 0 0', cursor: 'pointer' }}>
                                         Edit details
                                     </button>
                                 </div>
@@ -205,13 +205,13 @@ const SignupPage = () => {
                                         alignItems: 'center',
                                         justifyContent: 'space-between',
                                         background: '#fdf5ea',
-                                        border: '1.5px dashed #A5732F',
+                                        border: '1.5px dashed #000000',
                                         borderRadius: 10,
                                         padding: '10px 16px',
                                         marginBottom: 16,
                                     }}>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#A5732F', letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                                            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#000000', letterSpacing: 0.5, textTransform: 'uppercase' }}>
                                                 Dev mode · OTP
                                             </span>
                                             <span style={{ fontSize: '1.35rem', fontWeight: 800, letterSpacing: 6, color: '#1a1a1a', fontFamily: 'monospace' }}>
@@ -223,7 +223,7 @@ const SignupPage = () => {
                                             title="Auto-fill OTP"
                                             onClick={() => setOtp(devOtp)}
                                             style={{
-                                                background: '#A5732F', color: '#fff', border: 'none',
+                                                background: '#000000', color: '#fff', border: 'none',
                                                 borderRadius: 8, padding: '6px 14px', fontWeight: 700,
                                                 fontSize: '0.8rem', cursor: 'pointer', flexShrink: 0,
                                             }}
@@ -236,7 +236,7 @@ const SignupPage = () => {
                         )}
 
                         <button type="submit" disabled={loading} style={{
-                            width: '100%', background: '#A5732F', color: '#fff', border: 'none',
+                            width: '100%', background: '#000000', color: '#fff', border: 'none',
                             borderRadius: 8, padding: '13px', fontWeight: 700, fontSize: '1rem',
                             cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                             marginTop: 4
@@ -266,7 +266,7 @@ const SignupPage = () => {
 
                     <p style={{ textAlign: 'center', marginTop: 20, fontSize: '0.88rem', color: '#555' }}>
                         Already have an account?{' '}
-                        <Link to="/login" style={{ color: '#A5732F', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link>
+                        <Link to="/login" style={{ color: '#000000', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link>
                     </p>
                 </div>
             </div>

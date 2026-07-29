@@ -71,15 +71,15 @@ const ServiceSearchAutocomplete = ({ placeholder = "Search services...", wrapper
     return (
         <div ref={wrapperRef} style={{ position: 'relative', ...wrapperStyle }}>
             <form onSubmit={handleSubmit} className="d-flex align-items-center gap-2 px-3 py-2 rounded-pill border" style={{ background: '#fff', fontSize: '13px', color: '#444', cursor: 'text' }}>
-                <FaSearch size={13} className="text-muted" />
+                <FaSearch size={13} className="text-muted flex-shrink-0" />
                 <input
                     type="text"
-                    className="border-0 bg-transparent flex-grow-1"
+                    className="border-0 bg-transparent"
                     placeholder={placeholder}
                     value={query}
                     onChange={handleChange}
                     onFocus={() => suggestions.length > 0 && setOpen(true)}
-                    style={{ outline: 'none', fontSize: '13px', color: '#444' }}
+                    style={{ outline: 'none', fontSize: '13px', color: '#444', width: query ? `${Math.max(80, query.length * 8)}px` : '150px', minWidth: '80px', maxWidth: '160px', transition: 'width 0.2s' }}
                     autoComplete="off"
                 />
                 {loading && (

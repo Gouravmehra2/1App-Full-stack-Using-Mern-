@@ -111,7 +111,7 @@ export default function Blogs() {
                 <button
                     onClick={() => setActiveTab(null)}
                     style={{
-                        background: '#A5732F', color: '#fff', border: 'none',
+                        background: '#000000', color: '#fff', border: 'none',
                         borderRadius: 8, padding: '10px 24px', fontWeight: 700,
                         fontSize: 14, cursor: 'pointer',
                     }}
@@ -183,7 +183,7 @@ export default function Blogs() {
                                 key={cat._id ?? 'all'}
                                 onClick={() => setActiveTab(cat._id)}
                                 style={{
-                                    border: 'none', background: isActive ? '#A5732F' : '#f5f5f5',
+                                    border: 'none', background: isActive ? '#000000' : '#f5f5f5',
                                     color: isActive ? '#fff' : '#555',
                                     padding: '7px 16px', borderRadius: 20,
                                     fontWeight: isActive ? 700 : 500, fontSize: 13,
