@@ -158,6 +158,8 @@ const Home = () => {
         return <HomeShimmer />;
     }
 
+    
+
     return (
         <div className="home-page">
 
