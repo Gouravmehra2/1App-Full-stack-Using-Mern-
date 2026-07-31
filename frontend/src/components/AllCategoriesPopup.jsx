@@ -1,46 +1,60 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTimes, FaTag } from 'react-icons/fa';
-import serviceService from '../services/serviceService';
 
 const UPLOAD_IMAGE_URL = `${process.env.REACT_APP_IMAGE_URL}`;
 
-const resolveSubcategoryImage = (image) => {
+const resolveCategoryImage = (image) => {
     if (!image) return null;
     if (image.startsWith('http://') || image.startsWith('https://')) return image;
     const filename = image.replace(/^\/uploads\//, '').replace(/^\//, '');
     return `${UPLOAD_IMAGE_URL}${filename}`;
 };
 
-const tileBgColors = [
-    '#f5f0eb', '#f0f4ff', '#f0fff4', '#fff8f0',
-    '#fdf0ff', '#f0faff', '#fffff0', '#fff0f5',
-];
-
-const CategoryPopup = ({ category, categoryId, subcategories, onClose }) => {
+/**
+ * AllCategoriesPopup
+ * Shows all top-level categories as tiles.
+ * Clicking a category:
+ *   - If it has subcategories → opens the existing CategoryPopup (via onCategorySelect)
+ *   - Otherwise → navigates directly to /services?category=ID
+ *
+ * Props:
+ *   categories      – array of category objects from the API
+ *   onClose         – called to close this popup
+ *   onCategorySelect – called with the category object when user picks one that has subs
+ */
+const AllCategoriesPopup = ({ categories, onClose, onCategorySelect }) => {
     const navigate = useNavigate();
 
+    // Close on Escape
     useEffect(() => {
         const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
         document.addEventListener('keydown', handleKey);
         return () => document.removeEventListener('keydown', handleKey);
     }, [onClose]);
 
+    // Prevent body scroll while open
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         return () => { document.body.style.overflow = ''; };
     }, []);
 
-    const handleSubcategoryClick = async (sub) => {
-        onClose();
-        navigate(`/services?category=${categoryId}&subcategory=${sub._id}`);
+    const handleCategoryClick = (cat) => {
+        if (cat.subcategories && cat.subcategories.length > 0) {
+            onClose();
+            onCategorySelect(cat);
+        } else {
+            onClose();
+            navigate(`/services?category=${cat.id || cat._id}`);
+        }
     };
 
     return (
         <div
             onClick={onClose}
             style={{
-                position: 'fixed', inset: 0,
+                position: 'fixed',
+                inset: 0,
                 background: 'rgba(0,0,0,0.45)',
                 zIndex: 1050,
                 display: 'flex',
@@ -55,7 +69,7 @@ const CategoryPopup = ({ category, categoryId, subcategories, onClose }) => {
                     background: '#fff',
                     borderRadius: '20px',
                     padding: '36px 32px 32px',
-                    maxWidth: '620px',
+                    maxWidth: '720px',
                     width: '100%',
                     maxHeight: '85vh',
                     overflowY: 'auto',
@@ -63,6 +77,7 @@ const CategoryPopup = ({ category, categoryId, subcategories, onClose }) => {
                     boxShadow: '0 20px 60px rgba(0,0,0,0.18)',
                 }}
             >
+                {/* Close button */}
                 <button
                     onClick={onClose}
                     style={{
@@ -80,27 +95,30 @@ const CategoryPopup = ({ category, categoryId, subcategories, onClose }) => {
                     <FaTimes />
                 </button>
 
-                <h2 style={{ fontWeight: 800, fontSize: '1.75rem', marginBottom: '28px', color: '#111' }}>
-                    {category}
+                <h2 style={{ fontWeight: 800, fontSize: '1.75rem', marginBottom: '6px', color: '#111' }}>
+                    All Services
                 </h2>
+                <p style={{ color: '#888', fontSize: '14px', marginBottom: '28px' }}>
+                    Browse all service categories
+                </p>
 
-                {subcategories.length === 0 ? (
+                {categories.length === 0 ? (
                     <p style={{ color: '#888', textAlign: 'center', padding: '24px 0' }}>
-                        No subcategories available yet.
+                        No categories available yet.
                     </p>
                 ) : (
                     <div
                         style={{
-                            display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-                            gap: "18px",
-                            marginTop: "20px",
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+                            gap: '18px',
+                            marginTop: '20px',
                         }}
                     >
-                        {subcategories.map((sub, idx) => (
+                        {categories.map((cat, idx) => (
                             <div
-                                key={sub._id || idx}
-                                onClick={() => handleSubcategoryClick(sub)}
+                                key={cat.id || cat._id || idx}
+                                onClick={() => handleCategoryClick(cat)}
                                 style={{
                                     cursor: 'pointer',
                                     background: '#fff',
@@ -127,7 +145,7 @@ const CategoryPopup = ({ category, categoryId, subcategories, onClose }) => {
                                     e.currentTarget.style.transform = 'translateY(0)';
                                 }}
                             >
-                                {/* Icon */}
+                                {/* Category image / icon */}
                                 <div
                                     style={{
                                         width: '54px',
@@ -139,35 +157,36 @@ const CategoryPopup = ({ category, categoryId, subcategories, onClose }) => {
                                         flexShrink: 0,
                                     }}
                                 >
-                                    {sub.icon ? (
+                                    {cat.image ? (
                                         <img
-                                            src={resolveSubcategoryImage(sub.icon)}
-                                            alt={sub.name}
+                                            src={resolveCategoryImage(cat.image)}
+                                            alt={cat.name}
                                             style={{
                                                 width: '100%',
                                                 height: '100%',
                                                 objectFit: 'contain',
                                                 display: 'block',
                                             }}
+                                            onError={(e) => { e.target.style.display = 'none'; }}
                                         />
                                     ) : (
                                         <FaTag size={24} color="#222" />
                                     )}
                                 </div>
 
-                                {/* Label */}
+                                {/* Category name */}
                                 <div
                                     style={{
                                         color: '#1a1a1a',
                                         fontSize: '11px',
-                                        fontWeight: '600',
+                                        fontWeight: 600,
                                         textAlign: 'center',
-                                        lineHeight: '1.35',
+                                        lineHeight: 1.35,
                                         wordBreak: 'break-word',
                                         maxWidth: '90%',
                                     }}
                                 >
-                                    {sub.name}
+                                    {cat.name}
                                 </div>
                             </div>
                         ))}
@@ -178,4 +197,4 @@ const CategoryPopup = ({ category, categoryId, subcategories, onClose }) => {
     );
 };
 
-export default CategoryPopup;
+export default AllCategoriesPopup;

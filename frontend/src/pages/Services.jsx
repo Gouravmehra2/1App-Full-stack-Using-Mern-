@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { FaStar, FaTag, FaShoppingCart, FaCheckCircle, FaShieldAlt, FaCalendarAlt, FaMedal } from 'react-icons/fa';
+import { FaStar, FaTag, FaShoppingCart, FaCheckCircle, FaShieldAlt, FaCalendarAlt, FaMedal, FaArrowRight } from 'react-icons/fa';
 import serviceService from '../services/serviceService';
 import { resolveImageUrl } from '../services/api';
 import { CartContext } from '../context/CartContext';
@@ -48,10 +48,30 @@ export default function Services() {
     const [slide, setSlide] = useState(0);
     const [loading, setLoading] = useState(true);
 
+    // All-categories browse mode (no params)
+    const [allCategories, setAllCategories] = useState([]);
+    const isBrowseAll = !categoryId && !subcategoryId && !searchQuery;
+
     // Keep activeSubId in sync when URL subcategory param changes (e.g. from search navigation)
     useEffect(() => {
         if (subcategoryId) setActiveSubId(subcategoryId);
     }, [subcategoryId]);
+
+    // ── Browse-all mode: load categories + all services ──────────────────────
+    useEffect(() => {
+        if (!isBrowseAll) return;
+        setLoading(true);
+        Promise.all([
+            serviceService.getCategoriesWithSubcategories(),
+            serviceService.getAllServices(),
+        ]).then(([catRes, svcRes]) => {
+            if (catRes.success) setAllCategories(catRes.data.categories || []);
+            if (svcRes.success) {
+                const svcs = svcRes.data?.services || svcRes.data || [];
+                setServices(Array.isArray(svcs) ? svcs : []);
+            }
+        }).catch(() => {}).finally(() => setLoading(false));
+    }, [isBrowseAll]);
 
     // Handle free-text search: fetch matching services directly
     useEffect(() => {
@@ -98,10 +118,10 @@ export default function Services() {
             fetchServices(activeSubId);
         } else if (subcategoryId) {
             setActiveSubId(subcategoryId);
-        } else {
+        } else if (!isBrowseAll) {
             setLoading(false);
         }
-    }, [activeSubId, subcategoryId, searchQuery, fetchServices]);
+    }, [activeSubId, subcategoryId, searchQuery, fetchServices, isBrowseAll]);
 
     // Auto-select first subcategory if none selected
     useEffect(() => {
@@ -167,6 +187,178 @@ export default function Services() {
     const cartTotal = cartItems.reduce((t, i) => t + i.service.price * i.quantity, 0);
     const activeSubName = subcategories.find(s => s._id === activeSubId)?.name || '';
 
+    // ── Browse-all mode render ─────────────────────────────────────────────────
+    if (isBrowseAll) {
+        return (
+            <div style={{ background: '#f5f5f5', minHeight: '100vh', padding: '24px 16px' }}>
+                <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+
+                    {/* Hero banner */}
+                    <div style={{
+                        borderRadius: 16, overflow: 'hidden', marginBottom: 32,
+                        background: SLIDES[slide].bg,
+                        padding: '40px 36px', position: 'relative',
+                    }}>
+                        <div style={{ color: '#fff', maxWidth: 500, position: 'relative', zIndex: 1 }}>
+                            <div style={{ background: 'rgba(255,255,255,0.2)', display: 'inline-block', padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 700, letterSpacing: 1, marginBottom: 10 }}>
+                                ALL SERVICES
+                            </div>
+                            <h2 style={{ fontWeight: 800, fontSize: '1.8rem', lineHeight: 1.3, marginBottom: 8, color: '#fff' }}>
+                                Everything you need, all in one place.
+                            </h2>
+                            <p style={{ fontSize: 14, opacity: 0.85, lineHeight: 1.6, margin: 0 }}>
+                                Trusted professionals across every service category.
+                            </p>
+                        </div>
+                    </div>
+
+                    {loading ? (
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 20 }}>
+                            {Array(6).fill(0).map((_, i) => (
+                                <div key={i} style={{ background: '#fff', borderRadius: 16, padding: 20, height: 120 }} className="shimmer" />
+                            ))}
+                        </div>
+                    ) : (
+                        <>
+                            {/* Categories with their services */}
+                            {allCategories.map((cat) => {
+                                const catServices = services.filter(s =>
+                                    (s.category?._id || s.category?.id || s.category) === (cat._id || cat.id)
+                                );
+                                if (catServices.length === 0) return null;
+                                return (
+                                    <div key={cat.id || cat._id} style={{ marginBottom: 40 }}>
+                                        {/* Category header */}
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                                {cat.image && (
+                                                    <img
+                                                        src={(() => {
+                                                            const img = cat.image;
+                                                            if (!img) return null;
+                                                            if (img.startsWith('http')) return img;
+                                                            return `${UPLOAD_IMAGE_URL}${img.replace(/^\/uploads\//, '').replace(/^\//, '')}`;
+                                                        })()}
+                                                        alt={cat.name}
+                                                        style={{ width: 36, height: 36, objectFit: 'contain', borderRadius: 8 }}
+                                                        onError={(e) => { e.target.style.display = 'none'; }}
+                                                    />
+                                                )}
+                                                <h3 style={{ fontWeight: 800, fontSize: '1.2rem', margin: 0, color: '#1a1a1a' }}>{cat.name}</h3>
+                                            </div>
+                                            <button
+                                                onClick={() => navigate(`/services?category=${cat.id || cat._id}`)}
+                                                style={{
+                                                    display: 'flex', alignItems: 'center', gap: 6,
+                                                    background: 'none', border: 'none',
+                                                    color: '#555', fontWeight: 600, fontSize: 13, cursor: 'pointer',
+                                                }}
+                                            >
+                                                See all <FaArrowRight size={11} />
+                                            </button>
+                                        </div>
+
+                                        {/* Services grid */}
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>
+                                            {catServices.slice(0, 4).map(svc => {
+                                                const qty = getQty(svc._id);
+                                                return (
+                                                    <div key={svc._id} style={{
+                                                        background: '#fff', borderRadius: 16, padding: 16,
+                                                        boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+                                                        display: 'flex', gap: 14, alignItems: 'flex-start',
+                                                    }}>
+                                                        <div style={{ width: 90, height: 90, borderRadius: 12, overflow: 'hidden', flexShrink: 0, background: '#f0f0f0' }}>
+                                                            {svc.featuredImage
+                                                                ? <img src={resolveImageUrl(svc.featuredImage)} alt={svc.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                                : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><FaTag size={24} color="#ccc" /></div>
+                                                            }
+                                                        </div>
+                                                        <div style={{ flex: 1, minWidth: 0 }}>
+                                                            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{svc.name}</div>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 6 }}>
+                                                                <FaStar style={{ color: '#111', fontSize: 11 }} />
+                                                                <span style={{ fontWeight: 700, fontSize: 12 }}>{svc.ratingsAverage || 4.8}</span>
+                                                            </div>
+                                                            <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 10 }}>
+                                                                Starts at ${svc.price}
+                                                            </div>
+                                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                                <span
+                                                                    onClick={() => navigate(`/service/${svc._id}`)}
+                                                                    style={{ color: '#555', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}
+                                                                >
+                                                                    View details
+                                                                </span>
+                                                                {qty === 0 ? (
+                                                                    <button
+                                                                        onClick={() => addToCart(svc, 1)}
+                                                                        style={{ border: '1.5px solid #000', background: '#fff', color: '#000', fontWeight: 700, borderRadius: 20, padding: '4px 16px', cursor: 'pointer', fontSize: 13 }}
+                                                                    >
+                                                                        Add
+                                                                    </button>
+                                                                ) : (
+                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, border: '1.5px solid #000', borderRadius: 20, padding: '3px 10px' }}>
+                                                                        <button onClick={() => updateQuantity(svc._id, qty - 1)} style={{ border: 'none', background: 'none', fontWeight: 700, fontSize: 15, cursor: 'pointer', color: '#000', lineHeight: 1 }}>−</button>
+                                                                        <span style={{ fontWeight: 700, minWidth: 14, textAlign: 'center', fontSize: 13 }}>{qty}</span>
+                                                                        <button onClick={() => updateQuantity(svc._id, qty + 1)} style={{ border: 'none', background: 'none', fontWeight: 700, fontSize: 15, cursor: 'pointer', color: '#000', lineHeight: 1 }}>+</button>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+
+                            {/* Fallback: if categories didn't match, show flat list */}
+                            {allCategories.length === 0 && services.length > 0 && (
+                                <div>
+                                    <h3 style={{ fontWeight: 800, fontSize: '1.2rem', marginBottom: 16 }}>All Services</h3>
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>
+                                        {services.map(svc => {
+                                            const qty = getQty(svc._id);
+                                            return (
+                                                <div key={svc._id} style={{ background: '#fff', borderRadius: 16, padding: 16, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', display: 'flex', gap: 14 }}>
+                                                    <div style={{ width: 90, height: 90, borderRadius: 12, overflow: 'hidden', flexShrink: 0, background: '#f0f0f0' }}>
+                                                        {svc.featuredImage
+                                                            ? <img src={resolveImageUrl(svc.featuredImage)} alt={svc.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                            : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><FaTag size={24} color="#ccc" /></div>
+                                                        }
+                                                    </div>
+                                                    <div style={{ flex: 1 }}>
+                                                        <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>{svc.name}</div>
+                                                        <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 10 }}>Starts at ${svc.price}</div>
+                                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                            <span onClick={() => navigate(`/service/${svc._id}`)} style={{ color: '#555', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>View details</span>
+                                                            {qty === 0 ? (
+                                                                <button onClick={() => addToCart(svc, 1)} style={{ border: '1.5px solid #000', background: '#fff', color: '#000', fontWeight: 700, borderRadius: 20, padding: '4px 16px', cursor: 'pointer', fontSize: 13 }}>Add</button>
+                                                            ) : (
+                                                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, border: '1.5px solid #000', borderRadius: 20, padding: '3px 10px' }}>
+                                                                    <button onClick={() => updateQuantity(svc._id, qty - 1)} style={{ border: 'none', background: 'none', fontWeight: 700, fontSize: 15, cursor: 'pointer', color: '#000' }}>−</button>
+                                                                    <span style={{ fontWeight: 700, minWidth: 14, textAlign: 'center' }}>{qty}</span>
+                                                                    <button onClick={() => updateQuantity(svc._id, qty + 1)} style={{ border: 'none', background: 'none', fontWeight: 700, fontSize: 15, cursor: 'pointer', color: '#000' }}>+</button>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    )}
+                </div>
+            </div>
+        );
+    }
+
+    // ── Normal mode (category / subcategory / search) ──────────────────────────
     return (
         <div style={{ background: '#f5f5f5', minHeight: '100vh' }}>
             <div style={{ maxWidth: 1280, margin: '0 auto', padding: '24px 16px', display: 'grid', gridTemplateColumns: '300px 1fr 280px', gap: 20, alignItems: 'start' }}>
@@ -175,13 +367,13 @@ export default function Services() {
                 <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
                     <h2 style={{ fontWeight: 800, fontSize: '1.4rem', marginBottom: 4 }}>{categoryName}</h2>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 16 }}>
-                        <FaStar style={{ color: '#f5a623' }} />
+                        <FaStar style={{ color: '#111' }} />
                         <span style={{ fontWeight: 700 }}>4.8</span>
                         <span style={{ color: '#888', fontSize: 13 }}>(12M+ bookings)</span>
                     </div>
 
                     {/* One-App Cover */}
-                    <div style={{ background: '#fdf5ea', border: '1px solid #e8c98a', borderRadius: 12, padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, cursor: 'pointer' }}>
+                    <div style={{ background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 12, padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, cursor: 'pointer' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <FaShieldAlt style={{ color: '#000000', fontSize: 18 }} />
                             <div>
@@ -209,8 +401,8 @@ export default function Services() {
                                             onClick={() => handleSubClick(sub)}
                                             style={{
                                                 cursor: 'pointer',
-                                                background: isActive ? '#FDF5E0' : '#FEFCF7',
-                                                border: `1.5px solid #B8863B`,
+                                                background: isActive ? '#f0f0f0' : '#fff',
+                                                border: isActive ? '1.5px solid #000' : '1.5px solid #ddd',
                                                 borderRadius: '18px',
                                                 padding: '14px 8px 12px',
                                                 display: 'flex',
@@ -222,8 +414,8 @@ export default function Services() {
                                                 height:'100px',
                                                 // minHeight: '110px',
                                                 boxShadow: isActive
-                                                    ? '0 0 0 3px rgba(184,134,59,0.25), 0 4px 16px rgba(184,134,59,0.30)'
-                                                    : '0 0 0 2px rgba(184,134,59,0.12), 0 2px 10px rgba(184,134,59,0.15)',
+                                                    ? '0 0 0 2px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.12)'
+                                                    : '0 0 0 1px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.06)',
                                                 transition: 'all 0.2s ease',
                                             }}
                                         >
@@ -242,7 +434,7 @@ export default function Services() {
                                                         alt={sub.name}
                                                         style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                                                     />
-                                                    : <FaTag size={22} color="#B8863B" />
+                                                    : <FaTag size={22} color="#222" />
                                                 }
                                             </div>
                                             {/* Label */}
@@ -336,7 +528,7 @@ export default function Services() {
                                                 </div>
                                             </div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                                                <FaStar style={{ color: '#f5a623', fontSize: 12 }} />
+                                                <FaStar style={{ color: '#111', fontSize: 12 }} />
                                                 <span style={{ fontWeight: 700, fontSize: 13 }}>{svc.ratingsAverage || 4.8}</span>
                                                 {svc.ratingsCount && <span style={{ color: '#888', fontSize: 12 }}>({(svc.ratingsCount / 1000000).toFixed(1)}M reviews)</span>}
                                             </div>

@@ -101,11 +101,8 @@ export default function Footer() {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, paddingBottom: 24 }}>
                     {/* Logo */}
                     <div onClick={() => { navigate('/'); scrollTop(); }} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-                        <div style={{ background: '#fff', color: '#111', fontWeight: 900, fontSize: '18px', width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>
-
-                          <img src={tryHeroImg('1app_logo.png') } alt="Hero" style={{width: '40px', height: 'auto'}}/>
-
-                        </div>
+                        
+                          <img src={tryHeroImg('1app_logo(white).png') } alt="Hero" style={{ height: '40px'}}/>
                     </div>
 
                     {/* Copyright */}

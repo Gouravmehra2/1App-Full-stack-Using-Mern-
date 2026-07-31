@@ -44,7 +44,7 @@ const NavigationBar = () => {
 
                     {/* Logo */}
                     <Link to="/" className="d-flex align-items-center gap-2 text-decoration-none flex-shrink-0">
-                    <img src={tryHeroImg('1app_logo.png') } alt="Hero" style={{width: '40px', height: 'auto'}}/>
+                    <img src={tryHeroImg('1app_logo.png') } alt="Hero" style={{ height: '40px'}}/>
                     </Link>
 
                     {/* Right: Search + Cart + User */}

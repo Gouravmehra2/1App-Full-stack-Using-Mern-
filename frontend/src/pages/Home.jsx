@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import serviceService from '../services/serviceService';
 import { resolveImageUrl } from '../services/api';
 import CategoryPopup from '../components/CategoryPopup';
+import AllCategoriesPopup from '../components/AllCategoriesPopup';
 import {
     FaSearch, FaStar, FaUsers, FaTag, FaHome, FaBriefcase,
     FaLaptop, FaBullhorn, FaChartLine, FaUserMd, FaHeartbeat,
@@ -28,6 +29,7 @@ const Home = () => {
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [popupCategory, setPopupCategory] = useState(null);
+    const [showAllCategories, setShowAllCategories] = useState(false);
     const [hierarchy, setHierarchy] = useState({});
 
     const UPLOAD_IMAGE_URL = `${process.env.REACT_APP_IMAGE_URL}`;
@@ -173,427 +175,373 @@ const Home = () => {
                 />
             )}
 
-            {/* Hero Section - Dark */}
-            <div style={{ padding: '12px' }}>
+            {/* All Categories Popup */}
+            {showAllCategories && (
+                <AllCategoriesPopup
+                    categories={categoriesWithSubs}
+                    onClose={() => setShowAllCategories(false)}
+                    onCategorySelect={(cat) => {
+                        setPopupCategory({
+                            label: cat.name,
+                            categoryId: cat.id || cat._id,
+                            subcategories: cat.subcategories,
+                        });
+                    }}
+                />
+            )}
+
+
+            {/* ── Hero Section ── */}
+            <div style={{ padding: '12px' , background: '#ffffffff' }}>
                 <div style={{
                     position: 'relative',
-                    overflow: 'hidden',
                     borderRadius: '32px',
-                    background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1208 60%, #0d0d0d 100%)',
-                    padding: '48px 48px 32px',
+                    overflow: 'hidden',
+                    minHeight: '580px',
+                    height:'700px',
+    
                 }}>
-                    {/* Background hero image (full) */}
-                    <img src={tryHeroImg('new_header_image.png')} alt="Hero" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.88, borderRadius: '32px', zIndex: 0 }} onError={(e) => { e.target.style.display = 'none'; }} />
-                    {/* Dark overlay so text stays readable */}
-                    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'linear-gradient(to right, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.55) 55%, rgba(10,10,10,0.2) 100%)', borderRadius: '32px', zIndex: 1 }} />
+                    {/* Background photo */}
+                    <img
+                        src={tryHeroImg('BG.png')}
+                        alt="Hero"
+                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}
+                        onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                    {/* Subtle overlay */}
+                    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(255,255,255,0.08)', zIndex: 1 }} />
 
-                    {/* Content */}
-                    <div style={{ position: 'relative', zIndex: 3, maxWidth: '560px' }}>
-                        <h1 style={{ fontSize: 'clamp(36px, 4.5vw, 50px)', lineHeight: 1.1, color: '#fff', fontWeight: 800, marginBottom: '14px' }}>
-                            At your ease,<br />
-                            at your <span style={{ color: '#000000' }}>Doorsteps!</span>
-                        </h1>
-                        <p style={{ color: 'white', fontSize: '18px', lineHeight: 1.6, marginBottom: '20px' }}>
-                            All the services you need,right where you need them.
-                        </p>
+                    {/* ── Three-column layout: LEFT CARD | CENTRE | RIGHT CARD ── */}
+                    <div style={{
+                        position: 'relative',
+                        zIndex: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '40px 28px 120px',
+                        minHeight: '580px',
+                        gap: '20px',
+                        margin: '60px 0px'
+                    }}>
 
-                        {/* Category Grid - dynamic from API (excludes Accounting/Finance, Education, Events & Media) */}
-                        <div
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(4, 1fr)',
-                                gap: '20px',
-                                
-                            }}
-                        >
-                            {categoriesWithSubs
-                                .filter(cat => {
-                                    const n = cat.name.toLowerCase().replace(/\s+/g, '');
-                                    return (
-                                        !n.includes('account') &&
-                                        !n.includes('financ') &&
-                                        !n.includes('educat') &&
-                                        !n.includes('event') &&
-                                        !n.includes('media')
-                                    );
-                                })
-                                .slice(0, 8)
-                                .map((cat, idx) => (
-                                    <div
-                                        key={cat.id || cat._id || idx}
-                                        onClick={() => handleCategoryClick(cat.name)}
-                                        style={{
-                                            background:
-                                                'linear-gradient(180deg, #D99330 0%, #000000 50%, #D99330 100%)',
-                                            borderRadius: '22px',
-                                            padding: '1.5px',
-                                            cursor: 'pointer',
-                                            position: 'relative',
-                                            overflow: 'visible',
+                        {/* ── LEFT CARD — Home Services subcategories ── */}
+                        {(() => {
+                            const homeCat = getCategoryByName('Home');
+                            const homeSubcategories = homeCat?.subcategories?.slice(0, 5) || [
+                                { name: 'Cleaning & Maintenance' },
+                                { name: 'Appliance Repair' },
+                                { name: 'Plumbing' },
+                                { name: 'Electrical' },
+                                { name: 'Painting' },
+                            ];
+                            const subIcons = [
+                                <FaTools size={13} />,
+                                <FaWrench size={13} />,
+                                <FaTint size={13} />,
+                                <FaBolt size={13} />,
+                                <FaPaintRoller size={13} />,
+                            ];
+                            return (
+                                <div style={{
+                                    background: 'rgba(255,255,255,1)',
+                                    backdropFilter: 'blur(15px)',
+                                    WebkitBackdropFilter: 'blur(15px)',
+                                    borderRadius: '24px',
+                                    padding: '24px 20px 20px',
+                                    width: '240px',
+                                    flexShrink: 0,
+                                    boxShadow: '0 8px 40px rgba(0,0,0,0.16)',
+                                    alignSelf: 'center',
+                                }}>
+                                    {/* Card header */}
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '18px' }}>
+                                        <div style={{
+                                            width: '48px', height: '48px', borderRadius: '50%',
+                                            background: '#1a1a1a',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
                                             marginBottom: '10px',
+                                        }}>
+                                            <FaHome size={20} style={{ color: '#fff' }} />
+                                        </div>
+                                        <span style={{ fontWeight: 700, fontSize: '15px', color: '#1a1a1a' }}>Home Services</span>
+                                    </div>
+
+                                    {/* Subcategory list */}
+                                    <div style={{ marginBottom: '18px' }}>
+                                        {homeSubcategories.map((sub, i) => (
+                                            <div
+                                                key={i}
+                                                onClick={() => sub._id
+                                                    ? navigate(`/services?category=${sub.category?._id || sub.category || homeCat?.id}&subcategory=${sub._id}`)
+                                                    : (homeCat ? navigate(`/services?category=${homeCat.id}`) : handleCategoryClick('Home Services'))
+                                                }
+                                                style={{
+                                                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                                    padding: '9px 0',
+                                                    borderBottom: i < homeSubcategories.length - 1 ? '1px solid rgba(0,0,0,0.07)' : 'none',
+                                                    cursor: 'pointer',
+                                                }}
+                                            >
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+                                                    <span style={{ color: '#555', flexShrink: 0 }}>{subIcons[i] || <FaTools size={13} />}</span>
+                                                    <span style={{ fontSize: '13px', color: '#2a2a2a', fontWeight: 700 }}>{sub.name}</span>
+                                                </div>
+                                                <FaArrowRight size={10} style={{ color: '#bbb', flexShrink: 0 }} />
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Explore All Home Services button */}
+                                    <button
+                                        onClick={() => homeCat ? navigate(`/services?category=${homeCat.id}`) : handleCategoryClick('Home Services')}
+                                        style={{
+                                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                            width: '100%',
+                                            background: '#1a1a1a',
+                                            color: '#fff',
+                                            border: 'none',
+                                            borderRadius: '999px',
+                                            padding: '10px 14px',
+                                            fontSize: '13px',
+                                            fontWeight: 600,
+                                            cursor: 'pointer',
                                         }}
                                     >
-                                        {/* Inner Card */}
-                                        <div
-                                            style={{
-                                                background: '#12100a',
-                                                borderRadius: '20px',
-                                                padding: '18px 8px 24px',
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                textAlign: 'center',
-                                                position: 'relative',
-                                                overflow: 'hidden',
-                                            }}
-                                        >
-                                            {/* Top-left blur */}
-                                            <div
-                                                style={{
-                                                    position: 'absolute',
-                                                    top: '-20px',
-                                                    left: '-20px',
-                                                    width: '80px',
-                                                    height: '80px',
-                                                    background: '#332F23',
-                                                    borderRadius: '50%',
-                                                    filter: 'blur(28px)',
-                                                    opacity: 0.9,
-                                                    pointerEvents: 'none',
-                                                }}
-                                            />
-
-                                            {/* Category Image from API */}
-                                            <div
-                                                style={{
-                                                    width: '55px',
-                                                    height: '55px',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    position: 'relative',
-                                                    zIndex: 1,
-                                                }}
-                                            >
-                                                {cat.image ? (
-                                                    <img
-                                                        src={resolveCategoryImage(cat.image)}
-                                                        alt={cat.name}
-                                                        style={{
-                                                            width: '44px',
-                                                            height: '44px',
-                                                            objectFit: 'contain',
-                                                            display: 'block',
-                                                        }}
-                                                        onError={(e) => { e.target.style.display = 'none'; }}
-                                                    />
-                                                ) : (
-                                                    <FaTools size={28} style={{ color: '#000000' }} />
-                                                )}
-                                            </div>
-
-                                            {/* Category Name from API */}
-                                            <span
-                                                style={{
-                                                    color: '#fff',
-                                                    fontSize: '12px',
-                                                    fontWeight: 700,
-                                                    lineHeight: 1.35,
-                                                    textAlign: 'center',
-                                                    position: 'relative',
-                                                    zIndex: 1,
-                                                    wordBreak: 'break-word',
-                                                    whiteSpace: 'normal',
-                                                    maxWidth: '90%',
-                                                    marginTop: '6px',
-                                                }}
-                                            >
-                                                {cat.name.includes(' ') ? (
-                                                    <>
-                                                        {cat.name
-                                                            .split(' ')
-                                                            .slice(0, Math.ceil(cat.name.split(' ').length / 2))
-                                                            .join(' ')}
-                                                        <br />
-                                                        {cat.name
-                                                            .split(' ')
-                                                            .slice(Math.ceil(cat.name.split(' ').length / 2))
-                                                            .join(' ')}
-                                                    </>
-                                                ) : (
-                                                    cat.name
-                                                )}
-                                            </span>
-                                        </div>
-
-                                        {/* Bottom Arrow */}
-                                        <div
-                                            style={{
-                                                position: 'absolute',
-                                                bottom: '-16px',
-                                                left: '50%',
-                                                transform: 'translateX(-50%)',
-                                                width: '32px',
-                                                height: '32px',
-                                                borderRadius: '50%',
-                                                background:
-                                                    'linear-gradient(180deg, #D99330 0%, #3B2300 100%)',
-                                                border: '1.5px solid #000000',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                zIndex: 3,
-                                            }}
-                                        >
-                                            <FaArrowRight size={11} style={{ color: '#fff' }} />
-                                        </div>
-                                    </div>
-                                ))}
-                        </div>
-
-                        {/* Trust badges */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginTop: '32px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <div style={{ width: 28, height: 28, border: '1.5px solid #000000', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <FaStar size={13} style={{ color: '#000000' }} />
+                                        <span>Explore All Services</span>
+                                        <span style={{
+                                            background: '#fff',
+                                            color: '#1a1a1a',
+                                            borderRadius: '50%',
+                                            width: '24px', height: '24px',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            flexShrink: 0,
+                                        }}>
+                                            <FaArrowRight size={10} />
+                                        </span>
+                                    </button>
                                 </div>
-                                <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px' }}>Verified Professionals</span>
+                            );
+                        })()}
+
+                        {/* ── CENTRE — Trust badge, headline, CTA ── */}
+                        <div style={{
+                            flex: 1,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                            padding: '0 16px',
+                        }}>
+                            {/* Trust badge */}
+                            <div style={{
+                                display: 'inline-flex', alignItems: 'center', gap: '7px',
+                                background: 'rgba(255,255,255,0.20)',
+                                borderRadius: '999px',
+                                padding: '6px 18px',
+                                fontSize: '12px', fontWeight: 600, color: '#1a1a1a',
+                                letterSpacing: '0.5px',
+                                marginBottom: '22px',
+                                boxShadow: '0 2px 12px rgba(0,0,0,0.10)',
+                            }}>
+                                <FaStar size={11} style={{ color: '#1a1a1a' }} />
+                                TRUSTED BY 10,000+ CUSTOMERS
                             </div>
-                            <div style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.15)' }} />
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <FaClock size={15} style={{ color: '#000000' }} />
-                                <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px' }}>On-time Service</span>
-                            </div>
-                            <div style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.15)' }} />
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <FaTag size={14} style={{ color: '#000000' }} />
-                                <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px' }}>Upfront Pricing</span>
-                            </div>
+
+                            {/* Headline */}
+                            <h1 style={{
+                                fontSize: 'clamp(32px, 4vw, 54px)',
+                                fontWeight: 800,
+                                color: '#1a1a1a',
+                                textAlign: 'center',
+                                lineHeight: 1.12,
+                                marginBottom: '14px',
+                                textShadow: '0 1px 8px rgba(255,255,255,0.6)',
+                            }}>
+                                At your ease,<br />
+                                at your <em style={{ fontStyle: 'italic', fontWeight: 900, fontFamily: 'playfair display' }}>Doorsteps!</em>
+                            </h1>
+
+                            {/* Subtitle */}
+                            <p style={{
+                                fontSize: '16px', color: '#000000ff', fontWeight:'bold',
+                                textAlign: 'center', marginBottom: '28px', lineHeight: 1.5,
+                                textShadow: '0 1px 6px rgba(241, 241, 241, 0.5)',
+                            }}>
+                                All the services you need, right where you need them.
+                            </p>
+
+                            {/* CTA */}
+                            <button
+                                onClick={() => setShowAllCategories(true)}
+                                style={{
+                                    display: 'inline-flex', alignItems: 'center', gap: '10px',
+                                    background: '#1a1a1a', color: '#fff',
+                                    border: 'none', borderRadius: '999px',
+                                    padding: '13px 28px', fontSize: '15px', fontWeight: 600,
+                                    cursor: 'pointer',
+                                    boxShadow: '0 4px 20px rgba(0,0,0,0.25)',
+                                }}
+                            >
+                                Explore All Services
+                                <span style={{
+                                    background: '#fff', color: '#1a1a1a',
+                                    borderRadius: '50%', width: '26px', height: '26px',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                                }}>
+                                    <FaArrowRight size={11} />
+                                </span>
+                            </button>
                         </div>
+
+                        {/* ── RIGHT CARD — All other categories (no subcategories shown) ── */}
+                        {(() => {
+                            const homeCat = getCategoryByName('Home');
+                            const otherCats = categoriesWithSubs
+                                .filter(c => {
+                                    if (!homeCat) return true;
+                                    return (c.id || c._id) !== (homeCat.id || homeCat._id);
+                                })
+                                .slice(0, 5);
+
+                            const catIcons = [
+                                <FaBriefcase size={13} />,
+                                <FaLaptop size={13} />,
+                                <FaBullhorn size={13} />,
+                                <FaUserMd size={13} />,
+                                <FaGraduationCap size={13} />,
+                            ];
+
+                            return (
+                                <div style={{
+                                    background: 'rgba(255,255,255,1)',
+                                    backdropFilter: 'blur(15px)',
+                                    WebkitBackdropFilter: 'blur(15px)',
+                                    borderRadius: '24px',
+                                    padding: '24px 20px 20px',
+                                    width: '240px',
+                                    flexShrink: 0,
+                                    boxShadow: '0 8px 40px rgba(0,0,0,0.16)',
+                                    alignSelf: 'center',
+                                }}>
+                                    {/* Card header */}
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '18px' }}>
+                                        <div style={{
+                                            width: '48px', height: '48px', borderRadius: '50%',
+                                            background: '#1a1a1a',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            marginBottom: '10px',
+                                        }}>
+                                            <FaBriefcase size={20} style={{ color: '#fff' }} />
+                                        </div>
+                                        <span style={{ fontWeight: 700, fontSize: '15px', color: '#1a1a1a' }}>All Services</span>
+                                    </div>
+
+                                    {/* Category list (top-level, no subcategories) */}
+                                    <div style={{ marginBottom: '18px' }}>
+                                        {otherCats.map((cat, i) => (
+                                            <div
+                                                key={cat.id || cat._id || i}
+                                                onClick={() => cat.subcategories && cat.subcategories.length > 0
+                                                    ? setPopupCategory({ label: cat.name, categoryId: cat.id || cat._id, subcategories: cat.subcategories })
+                                                    : navigate(`/services?category=${cat.id || cat._id}`)
+                                                }
+                                                style={{
+                                                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                                    padding: '9px 0',
+                                                    borderBottom: i < otherCats.length - 1 ? '1px solid rgba(0,0,0,0.07)' : 'none',
+                                                    cursor: 'pointer',
+                                                }}
+                                            >
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+                                                    <span style={{ color: '#555', flexShrink: 0 }}>{catIcons[i] || <FaTools size={13} />}</span>
+                                                    <span style={{ fontSize: '13px', color: '#2a2a2a', fontWeight: 700 }}>{cat.name}</span>
+                                                </div>
+                                                <FaArrowRight size={10} style={{ color: '#bbb', flexShrink: 0 }} />
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Explore All Services button */}
+                                    <button
+                                        onClick={() => setShowAllCategories(true)}
+                                        style={{
+                                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                            width: '100%',
+                                            background: '#1a1a1a',
+                                            color: '#fff',
+                                            border: 'none',
+                                            borderRadius: '999px',
+                                            padding: '10px 14px',
+                                            fontSize: '13px',
+                                            fontWeight: 600,
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        <span>Explore All Services</span>
+                                        <span style={{
+                                            background: '#fff',
+                                            color: '#1a1a1a',
+                                            borderRadius: '50%',
+                                            width: '24px', height: '24px',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            flexShrink: 0,
+                                        }}>
+                                            <FaArrowRight size={10} />
+                                        </span>
+                                    </button>
+                                </div>
+                            );
+                        })()}
+
+                    </div>
+
+                    {/* ── Stats bar fixed at the bottom of the hero card ── */}
+                    <div style={{
+                        position: 'absolute',
+                        bottom: '20px',
+                        left: '28px',
+                        right: '28px',
+                        zIndex: 3,
+                        background: 'rgba(255,255,255,0.92)',
+                        backdropFilter: 'blur(16px)',
+                        WebkitBackdropFilter: 'blur(16px)',
+                        borderRadius: '999px',
+                        padding: '14px 28px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-around',
+                        boxShadow: '0 4px 24px rgba(0,0,0,0.10)',
+                    }}>
+                        {[
+                            { icon: <FaTag size={18} />, value: '50+', label: 'SERVICE CATEGORIES' },
+                            { icon: <FaUsers size={18} />, value: '500+', label: 'EXPERT PROFESSIONALS' },
+                            { icon: <FaUserCircle size={18} />, value: '10K+', label: 'HAPPY CUSTOMERS' },
+                            { icon: <FaStar size={18} />, value: '4.8/5', label: 'AVERAGE RATING' },
+                        ].map((stat, i, arr) => (
+                            <React.Fragment key={i}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{
+                                        width: '42px', height: '42px', borderRadius: '50%',
+                                        background: '#1a1a1a',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        color: '#fff', flexShrink: 0,
+                                    }}>
+                                        {stat.icon}
+                                    </div>
+                                    <div>
+                                        <div style={{ fontWeight: 800, fontSize: '18px', color: '#1a1a1a', lineHeight: 1.1 }}>{stat.value}</div>
+                                        <div style={{ fontSize: '10px', color: '#888', fontWeight: 600, letterSpacing: '0.5px' }}>{stat.label}</div>
+                                    </div>
+                                </div>
+                                {i < arr.length - 1 && (
+                                    <div style={{ width: '1px', height: '36px', background: 'rgba(0,0,0,0.10)' }} />
+                                )}
+                            </React.Fragment>
+                        ))}
                     </div>
                 </div>
             </div>
-
-            {/* Offers & Discounts Section */}
-            {/*
-            <section className="py-5 bg-white">
-                <div className="container">
-                    <h2 className="fw-bold mb-4">Offers &amp; discounts</h2>
-                    <div className="row g-4">
-                        <div className="col-md-4">
-                            <div className="rounded-4 overflow-hidden d-flex" style={{ background: '#f5f0eb', minHeight: '180px' }}>
-                                <div className="p-4 d-flex flex-column justify-content-between" style={{ flex: 1 }}>
-                                    <div>
-                                        <p className="text-uppercase small fw-semibold mb-1" style={{ fontSize: '11px', letterSpacing: '0.5px' }}>At Home Consultation</p>
-                                        <h5 className="fw-bold mb-2">Wall panels</h5>
-                                        <p className="text-muted small">Transform your home in a day</p>
-                                    </div>
-                                    <button className="btn btn-sm rounded-pill px-3" style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }}>Explore</button>
-                                </div>
-                                <div style={{ width: '120px', flexShrink: 0, background: 'linear-gradient(135deg, #c8c8b8 0%, #a8a898 100%)' }} className="d-flex align-items-center justify-content-center">
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '3px', padding: '10px' }}>
-                                        {Array(12).fill(0).map((_, i) => (
-                                            <div key={i} style={{ width: '28px', height: '18px', background: i % 2 === 0 ? '#d4d4c4' : '#b8b8a8', borderRadius: '2px' }} />
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-4">
-                            <div className="rounded-4 overflow-hidden d-flex" style={{ background: '#f0f4ff', minHeight: '180px' }}>
-                                <div className="p-4 d-flex flex-column justify-content-between" style={{ flex: 1 }}>
-                                    <div>
-                                        <h5 className="fw-bold mb-1">Deep clean with foam-jet AC service</h5>
-                                        <p className="text-muted small">AC service &amp; repair</p>
-                                    </div>
-                                    <button className="btn btn-sm rounded-pill px-3" style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }}>Book now</button>
-                                </div>
-                                <div style={{ width: '120px', flexShrink: 0, background: 'linear-gradient(160deg, #1a2a4a 0%, #2a4a6a 100%)' }} className="d-flex align-items-center justify-content-center">
-                                    <div className="text-center text-white">
-                                        <div className="fw-bold" style={{ fontSize: '28px', lineHeight: 1 }}>AC</div>
-                                        <div className="fw-bold" style={{ fontSize: '14px' }}>SERVICE</div>
-                                        <div style={{ fontSize: '9px', opacity: 0.7, marginTop: '4px' }}>MODERN COOLING TECH</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-4">
-                            <div className="rounded-4 overflow-hidden d-flex" style={{ background: '#0d5c4a', minHeight: '180px' }}>
-                                <div className="p-4 d-flex flex-column justify-content-between" style={{ flex: 1 }}>
-                                    <h5 className="fw-bold text-white">Kitchen cleaning starting at $399 only</h5>
-                                    <button className="btn btn-sm rounded-pill px-3" style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }}>Book now</button>
-                                </div>
-                                <div style={{ width: '80px', flexShrink: 0, background: 'linear-gradient(180deg, #0a9e7a 0%, #07856a 100%)', borderRadius: '0 16px 16px 0' }} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            */}
-
-            {/* New & Noteworthy Section */}
-            {/* <section className="py-5 bg-white">
-                <div className="container">
-                    <h2 className="fw-bold mb-4">New and noteworthy</h2>
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(5, 1fr)',
-                            gap: '20px',
-                        }}
-                    >
-                        {featuredServices.slice(0, 5).map((service, idx) => (
-                            <div
-                                key={idx}
-                                onClick={() => handleServiceClick(service._id)}
-                                style={{ cursor: 'pointer', minWidth: 0 }}
-                            >
-                                <div
-                                    className="rounded-4 overflow-hidden mb-3"
-                                    style={{ height: '200px', background: '#f0f0f0' }}
-                                >
-                                    {service.featuredImage ? (
-                                        <img src={resolveImageUrl(service.featuredImage)} alt={service.name} className="w-100 h-100" style={{ objectFit: 'cover' }} />
-                                    ) : (
-                                        <div className="w-100 h-100 d-flex align-items-center justify-content-center">
-                                            <FaTools size={40} className="text-muted" />
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="d-flex align-items-center justify-content-between">
-                                    <span className="fw-semibold text-dark" style={{ fontSize: '15px' }}>{service.name || service.name}</span>
-                                    {idx === featuredServices.slice(0, 5).length - 1 && (
-                                        <span className="text-success fw-semibold small ms-2" style={{ whiteSpace: 'nowrap' }}>● In 45 mins</span>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section> */}
-
-            {/* Most Booked Services */}
-            {/* <section className="py-5 bg-white">
-                <div className="container">
-                    <h2 className="fw-bold mb-4">Most booked services</h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
-                        {mostBooked.slice(0, 4).map((service, idx) => (
-                            <div
-                                key={service.id || service._id || idx}
-                                onClick={() => handleServiceClick(service.id || service._id)}
-                                style={{ cursor: 'pointer', minWidth: 0 }}
-                            >
-                                <div className="rounded-4 overflow-hidden mb-3" style={{ height: '200px', background: '#f0f0f0' }}>
-                                    {service.featuredImage ? (
-                                        <img src={resolveImageUrl(service.featuredImage)} alt={service.subcategory || service.name} className="w-100 h-100" style={{ objectFit: 'cover' }} />
-                                    ) : (
-                                        <div className="w-100 h-100 d-flex align-items-center justify-content-center">
-                                            <FaTools size={40} className="text-muted" />
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="fw-semibold text-dark mb-1" style={{ fontSize: '15px' }}>{service.subcategory?.name || service.name}</div>
-                                <div className="d-flex align-items-center gap-2 mb-1">
-                                    <FaStar className="text-dark" style={{ fontSize: '12px' }} />
-                                    <span className="small fw-semibold">{service.ratingsAverage || 4.8}</span>
-                                    <span className="text-muted small">· Instant</span>
-                                </div>
-                                <div className="d-flex align-items-center gap-2">
-                                    <span className="fw-bold">${service.price}</span>
-                                    {service.originalPrice && (
-                                        <span className="text-muted small text-decoration-line-through">${service.originalPrice}</span>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section> */}
-
-            {/* Home Services */}
-            {/* {(() => {
-                const cat = getCategoryByName('HomeServices');
-                if (!cat) return null;
-
-                // Define the specific subcategories we want to show
-                const targetSubcategories = ['Smart Home', 'Diagnostic', 'Home Theater', 'TV Mounting','Cleaning','AC & Appliance'];
-
-                // Filter and sort subcategories to match the target order
-                const sortedSubcategories = targetSubcategories
-                    .map(name => cat.subcategories.find(sub =>
-                        sub.name.toLowerCase().includes(name.toLowerCase()) ||
-                        name.toLowerCase().includes(sub.name.toLowerCase())
-                    ))
-                    .filter(sub => sub); // Remove any undefined entries
-
-                return (
-                    <section className="py-5 bg-white">
-                        <div className="container">
-                            <div className="d-flex justify-content-between align-items-start mb-4">
-                                <div>
-                                    <h2 className="fw-bold mb-1">{cat.name}</h2>
-                                    <p className="text-muted small mb-0">Professional home technology and installation services</p>
-                                </div>
-                                <button onClick={() => navigate(`/services?category=${cat.id}`)} className="btn btn-link text-dark fw-semibold text-decoration-none p-0">See all</button>
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
-                                {sortedSubcategories.slice(0, 4).map((sub, idx) => (
-                                    <div key={idx} onClick={() => navigate(`/services?subcategory=${sub._id}`)} style={{ cursor: 'pointer', minWidth: 0 }}>
-                                        <div className="rounded-4 overflow-hidden mb-3" style={{ height: '220px', background: '#f0f0f0' }}>
-                                            {sub.image ? (
-                                                <img src={resolveCategoryImage(sub.image)} alt={sub.name} className="w-100 h-100" style={{ objectFit: 'cover' }} />
-                                            ) : (
-                                                <div className="w-100 h-100 d-flex align-items-center justify-content-center"><FaTools size={40} className="text-muted" /></div>
-                                            )}
-                                        </div>
-                                        <div className="fw-semibold text-dark mb-1" style={{ fontSize: '15px' }}>{sub.name}</div>
-                                        <div className="d-flex align-items-center gap-2">
-                                            <span className="fw-bold">${sub.startingFromPrice}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </section>
-                );
-            })()} */}
-
-            {/* IT Services */}
-            {/*
-            {(() => {
-                const cat = getCategoryByName('IT '); if (!cat) return null; return (
-                    <section className="py-5 bg-white">
-                        <div className="container">
-                            <div className="d-flex justify-content-between align-items-start mb-4">
-                                <div>
-                                    <h2 className="fw-bold mb-1">{cat.name}</h2>
-                                    <p className="text-muted small mb-0">Monthly cleaning essential services</p>
-                                </div>
-                                <button onClick={() => navigate(`/services?category=${cat.id}`)} className="btn btn-link text-dark fw-semibold text-decoration-none p-0">See all</button>
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
-                                {cat.subcategories.slice(0, 4).map((sub, idx) => (
-                                    <div key={idx} onClick={() => navigate(`/services?subcategory=${sub._id}`)} style={{ cursor: 'pointer', minWidth: 0 }}>
-                                        <div className="rounded-4 overflow-hidden mb-3" style={{ height: '220px', background: '#f0f0f0' }}>
-                                            {sub.image ? (
-                                                <img src={resolveCategoryImage(sub.image)} alt={sub.name} className="w-100 h-100" style={{ objectFit: 'cover' }} />
-                                            ) : (
-                                                <div className="w-100 h-100 d-flex align-items-center justify-content-center"><FaTools size={40} className="text-muted" /></div>
-                                            )}
-                                        </div>
-                                        <div className="fw-semibold text-dark mb-1" style={{ fontSize: '15px' }}>{sub.name}</div>
-                                        <div className="d-flex align-items-center gap-2">
-                                            <span className="fw-bold">${sub.startingFromPrice}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </section>
-                );
-            })()}
-            */}
 
             {/* Exclusive Home Services Offers */}
             <section className="py-5 bg-white">
@@ -1067,8 +1015,12 @@ const Home = () => {
                                                     <div className="text-muted" style={{ fontSize: '11px' }}>Standard Package</div>
                                                     <div style={{ fontSize: '13px' }}>Starts From <span className="fw-bold">${sub.startingFromPrice}</span></div>
                                                 </div>
-                                                <button className="btn p-2 rounded-2" style={{ background: '#f5f5f5', border: 'none' }}>
-                                                    <FaPhoneAlt size={14} className="text-dark" />
+                                                <button className="btn p-2 rounded-2" style={{ background: '#f5f5f5', border: 'none', height: '30px' }}>
+                                                    <FaPhoneAlt
+  size={14}
+  className="text-dark"
+  style={{ display: 'flex' }}
+/>
                                                 </button>
                                             </div>
                                         </div>
@@ -1355,7 +1307,7 @@ const Home = () => {
                                 src={tryHeroImg('social-impact.png')}
                                 alt="Our Social Impact"
                                 className="w-100"
-                                style={{ objectFit: 'cover', height: '380px' }}
+                                style={{ objectFit: 'cover', height: '380px' ,padding:'10px' , borderRadius:'30px'}} 
                                 onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
                             />
 
@@ -1365,7 +1317,7 @@ const Home = () => {
                             <p className="text-muted mb-5" style={{ fontSize: '16px', lineHeight: 1.8 }}>
                                 We believe deeply in driving social and economic progress across the region. We use our app to connect customers to the communities that need the most support.
                             </p>
-                            <button className="btn fw-bold px-4 py-2 rounded-3" style={{ background: '#000000', color: '#fff', fontSize: '15px', border: 'none' }}>
+                            <button className="btn fw-bold px-4 py-2 rounded-3 on" style={{ background: '#000000', color: '#fff', fontSize: '15px', border: 'none' }} onClick={() => navigate("/blogs")}>
                                 Read more
                             </button>
                         </div>

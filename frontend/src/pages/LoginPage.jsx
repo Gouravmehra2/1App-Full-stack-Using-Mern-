@@ -5,7 +5,6 @@ import { FaPhone, FaEnvelope, FaLock, FaEye, FaEyeSlash ,FaPhoneAlt} from 'react
 import { toast } from 'react-toastify';
 import { useGoogleLogin } from '@react-oauth/google';
 import AuthPanel from './AuthPanel';
-import axios from 'axios';
 
 const inputStyle = { border: 'none', outline: 'none', flex: 1, fontSize: '0.95rem', background: 'transparent' };
 
@@ -19,7 +18,7 @@ const GoogleIcon = () => (
 );
 
 const LoginPage = () => {
-    const { login, isAuthenticated, loading } = useContext(AuthContext);
+    const { login, googleLogin, isAuthenticated, loading } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
     const fromPath = location.state?.from?.pathname || '/';
@@ -43,15 +42,14 @@ const LoginPage = () => {
         }
     };
 
-    const googleLogin = useGoogleLogin({
+    const googleLoginHandler = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
-                const { data } = await axios.get('googleapis.com/oauth2/v3/userinfo', {
-                    headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-                });
-                await login(data.email, data.sub, { googleId: data.sub, name: data.name, picture: data.picture });
+                await googleLogin(tokenResponse.access_token);
                 toast.success('Logged in with Google!');
-            } catch { toast.error('Google login failed'); }
+            } catch (err) {
+                toast.error(err.message || 'Google login failed');
+            }
         },
         onError: () => toast.error('Google login failed'),
         scope: 'openid email profile',
@@ -142,7 +140,7 @@ const LoginPage = () => {
                         <div style={{ flex: 1, height: 1, background: '#E0E0E0' }} />
                     </div>
 
-                    <button onClick={() => googleLogin()} style={{
+                    <button onClick={() => googleLoginHandler()} style={{
                         width: '100%', background: '#fff', border: '1.5px solid #ddd',
                         borderRadius: 8, padding: '12px', fontWeight: 700, fontSize: '0.95rem',
                         cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10

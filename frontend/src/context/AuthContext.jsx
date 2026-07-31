@@ -105,6 +105,24 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const googleLogin = async (accessToken) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await authService.googleLogin(accessToken);
+            if (res.success) {
+                setUser(res.data.user);
+                return res.data.user;
+            }
+        } catch (err) {
+            const errMsg = err.response?.data?.message || 'Google login failed.';
+            setError(errMsg);
+            throw new Error(errMsg);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const logout = () => {
         authService.logout();
         setUser(null);
@@ -157,7 +175,8 @@ export const AuthProvider = ({ children }) => {
             verifyOTP,
             updateProfile,
             isAuthenticated: !!user,
-            isAdmin: user?.role === 'admin'
+            isAdmin: user?.role === 'admin',
+            googleLogin
         }}>
             {children}
         </AuthContext.Provider>

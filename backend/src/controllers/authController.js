@@ -404,6 +404,50 @@ exports.resetPassword = async (req, res, next) => {
 };
 
 /**
+ * @desc    Google OAuth login — finds existing account by email
+ * @route   POST /api/auth/google
+ */
+exports.googleLogin = async (req, res, next) => {
+    try {
+        const { accessToken } = req.body;
+
+        if (!accessToken) {
+            return res.status(400).json({ success: false, message: 'Access token is required' });
+        }
+
+        // Verify the token with Google and get user info
+        const googleRes = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        if (!googleRes.ok) {
+            return res.status(401).json({ success: false, message: 'Invalid Google access token' });
+        }
+
+        const googleData = await googleRes.json();
+        const { email, name } = googleData;
+
+        if (!email) {
+            return res.status(400).json({ success: false, message: 'Could not retrieve email from Google' });
+        }
+
+        // Find existing user by email
+        const user = await User.findOne({ email: email.toLowerCase() });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'No account found with this Google email. Please sign up first.',
+            });
+        }
+
+        sendTokenResponse(user, 200, res);
+    } catch (err) {
+        next(err);
+    }
+};
+
+/**
  * @desc    Request phone verification OTP
  * @route   POST /api/auth/send-otp
  */
