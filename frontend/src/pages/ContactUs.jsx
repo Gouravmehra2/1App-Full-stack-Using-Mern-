@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 
 const COUNTRY_CODES = ['+91', '+1', '+44', '+971', '+65', '+61'];
 
@@ -88,14 +89,14 @@ export default function ContactUs() {
                 <InfoCard title="Still facing issues?">
                     <p style={{ fontSize: '14px', color: '#555', lineHeight: 1.7 }}>
                         If you've already tried chatting with us and are not satisfied with the resolution - please send us an email on{' '}
-                        <strong>resolve@1appcompany.com</strong>. We will get back to you within 24-48 hours.
+                        <strong>contact@1appweb.com</strong>. We will get back to you within 24-48 hours.
                     </p>
                 </InfoCard>
 
                 <InfoCard title="Media inquiries">
                     <p style={{ fontSize: '14px', color: '#555', lineHeight: 1.7 }}>
                         For media inquiries, you can send us an email on{' '}
-                        <strong>press@1appcompany.com</strong>
+                        <a href="mailto:contact@1appweb.com" style={{ color: '#000', fontWeight: 700, textDecoration: 'none' }}>contact@1appweb.com</a>
                     </p>
                 </InfoCard>
 
@@ -106,10 +107,12 @@ export default function ContactUs() {
                 </InfoCard>
 
                 <InfoCard title="Our office addresses">
-                    <p style={{ fontSize: '14px', color: '#555', lineHeight: 1.7, marginBottom: 10 }}>
-                        You can view a list of all our office addresses by clicking below
-                    </p>
-                    <a href="#" style={{ color: '#000000', fontWeight: 700, fontSize: '14px', textDecoration: 'none' }}>View addresses &rsaquo;</a>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                        <FaMapMarkerAlt size={16} style={{ color: '#111', marginTop: 2, flexShrink: 0 }} />
+                        <p style={{ fontSize: '14px', color: '#555', lineHeight: 1.7, margin: 0 }}>
+                            4404 Westminster Dr, Irving, TX 75038, US
+                        </p>
+                    </div>
                 </InfoCard>
             </div>
         </div>

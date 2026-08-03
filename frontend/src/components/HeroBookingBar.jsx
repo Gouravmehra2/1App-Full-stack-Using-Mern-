@@ -157,7 +157,7 @@ const InlineServiceSearch = ({ selectedService, onSelect }) => {
                     style={fieldInput(!!selectedService)}
                 />
                 {loading && (
-                    <span style={{ fontSize: 11, color: '#bbb', flexShrink: 0, letterSpacing: 2 }}>···</span>
+                    <span style={{ fontSize: 30, color: '#000000', flexShrink: 0, letterSpacing: 2 }}>···</span>
                 )}
             </div>
 

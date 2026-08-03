@@ -360,17 +360,19 @@ const Home = () => {
                                 at your <em style={{ fontStyle: 'italic', fontWeight: 900, fontFamily: 'playfair display' }}>Doorsteps!</em>
                             </h1>
 
+                            {/* ── Booking Bar ── */}
+                            <HeroBookingBar />
                             {/* Subtitle */}
                             <p style={{
                                 fontSize: '16px', color: '#000000ff', fontWeight: 'bold',
                                 textAlign: 'center', marginBottom: '28px', lineHeight: 1.5,
                                 textShadow: '0 1px 6px rgba(241, 241, 241, 0.5)',
+                                padding: '12px ',
                             }}>
                                 All the services you need, right where you need them.
                             </p>
 
-                            {/* ── Booking Bar ── */}
-                            <HeroBookingBar />
+                            
                         </div>
 
                         {/* ── RIGHT CARD — All other categories (no subcategories shown) ── */}
@@ -534,17 +536,34 @@ const Home = () => {
                             style={{ overflowX: 'auto', scrollbarWidth: 'none', scrollBehavior: 'smooth' }}
                         >
                             {[
-                                { badge: 'UP TO $500 OFF', title: 'Home Cleaning', desc: 'Deep Cleaning. Sofa Cleaning. Spotless Spaces.', img: 'cleaning_image.png', category: 'Cleaning' },
-                                { badge: 'SAME DAY SERVICE', title: 'Plumbing', desc: 'Leak Repairs. Pipe Installation. Water Solutions.', img: 'plumbing_image.png', category: 'Plumbing' },
-                                { badge: 'CERTIFIED EXPERTS', title: 'Electrical', desc: 'Switches. Wiring. Safe Installations.', img: 'electrician.png', category: 'Electrical' },
-                                { badge: 'UP TO $300 OFF', title: 'Handyman', desc: 'Repairs. Installations. Fix Anything.', img: 'handy_man.png', category: 'Handyman' },
-                                { badge: 'SAME DAY SERVICE', title: 'AC & Appliance', desc: 'AC Service. Appliance Repair. Quick Fix.', img: 'ac_repair.png', category: 'AC & Appliance' },
-                            ].map((item, idx) => (
+                                { badge: 'UP TO $500 OFF', title: 'Home Cleaning', desc: 'Deep Cleaning. Sofa Cleaning. Spotless Spaces.', img: 'cleaning_image.png', categoryName: 'Cleaning', subcategoryName: 'Home Cleaning' },
+                                { badge: 'SAME DAY SERVICE', title: 'Plumbing', desc: 'Leak Repairs. Pipe Installation. Water Solutions.', img: 'plumbing_image.png', categoryName: 'Plumbing', subcategoryName: null },
+                                { badge: 'CERTIFIED EXPERTS', title: 'Electrical', desc: 'Switches. Wiring. Safe Installations.', img: 'electrician.png', categoryName: 'Electrical', subcategoryName: null },
+                                { badge: 'UP TO $300 OFF', title: 'Handyman', desc: 'Repairs. Installations. Fix Anything.', img: 'handy_man.png', categoryName: 'Handyman', subcategoryName: null },
+                                { badge: 'SAME DAY SERVICE', title: 'AC & Appliance', desc: 'AC Service. Appliance Repair. Quick Fix.', img: 'ac_repair.png', categoryName: 'AC', subcategoryName: null },
+                            ].map((item, idx) => {
+                                const offerCat = getCategoryByName(item.categoryName);
+                                const offerSub = offerCat && item.subcategoryName
+                                    ? offerCat.subcategories?.find(s =>
+                                        s.name?.toLowerCase().includes(item.subcategoryName.toLowerCase()) ||
+                                        item.subcategoryName.toLowerCase().includes(s.name?.toLowerCase())
+                                    )
+                                    : null;
+                                const handleOfferClick = () => {
+                                    if (offerCat && offerSub) {
+                                        navigate(`/services?category=${offerCat.id}&subcategory=${offerSub._id}`);
+                                    } else if (offerCat) {
+                                        navigate(`/services?category=${offerCat.id}`);
+                                    } else {
+                                        navigate(`/services?search=${encodeURIComponent(item.categoryName)}`);
+                                    }
+                                };
+                                return (
                                 <div
                                     key={idx}
                                     className="rounded-4 overflow-hidden position-relative flex-shrink-0"
                                     style={{ width: 'calc(33.33% - 12px)', minWidth: '260px', minHeight: '260px', background: '#222', cursor: 'pointer' }}
-                                    onClick={() => handleCategoryClick(item.category)}
+                                    onClick={handleOfferClick}
                                 >
                                     <img
                                         src={tryHeroImg(item.img)}
@@ -563,13 +582,14 @@ const Home = () => {
                                         <button
                                             className="btn fw-semibold rounded-3 px-4 py-2"
                                             style={{ width: 'fit-content', background: '#000000', color: '#fff', border: 'none' }}
-                                            onClick={(e) => { e.stopPropagation(); handleCategoryClick(item.category); }}
+                                            onClick={(e) => { e.stopPropagation(); handleOfferClick(); }}
                                         >
                                             Book Now
                                         </button>
                                     </div>
                                 </div>
-                            ))}
+                                );
+                            })}
                         </div>
                         {/* Left Arrow */}
                         <button

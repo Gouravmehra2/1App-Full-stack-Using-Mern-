@@ -169,6 +169,8 @@ const Checkout = () => {
             return;
         }
 
+        
+
         setSubmitting(true);
         try {
             const res = await bookingService.createBooking({

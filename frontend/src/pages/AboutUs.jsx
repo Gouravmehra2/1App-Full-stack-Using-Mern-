@@ -204,7 +204,14 @@ export default function AboutUs() {
                                 <div style={{ color: '#333' }}>{item.icon}</div>
                                 <div style={{ fontWeight: 800, fontSize: '1rem' }}>{item.title}</div>
                                 <div style={{ fontSize: '13px', color: '#666', lineHeight: 1.6, flex: 1 }}>{item.desc}</div>
-                                <div style={{ fontSize: '13px', color: '#333', cursor: 'pointer', marginTop: 8 }}>Explore →</div>
+                                <div
+                                    onClick={() => navigate(`/services?search=${encodeURIComponent(item.title)}`)}
+                                    style={{ fontSize: '13px', color: '#333', cursor: 'pointer', marginTop: 8, display: 'inline-flex', alignItems: 'center', gap: 4, fontWeight: 600 }}
+                                    onMouseEnter={e => e.currentTarget.style.color = '#000'}
+                                    onMouseLeave={e => e.currentTarget.style.color = '#333'}
+                                >
+                                    Explore <FaArrowRight size={10} />
+                                </div>
                             </div>
                         ))}
                     </div>
