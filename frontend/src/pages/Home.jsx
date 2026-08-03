@@ -9,7 +9,7 @@ import {
     FaLaptop, FaBullhorn, FaChartLine, FaUserMd, FaHeartbeat,
     FaGraduationCap, FaCalendarAlt, FaPalette, FaCar, FaShieldAlt,
     FaTools, FaWrench, FaPaintRoller, FaBolt, FaSnowflake,
-    FaTint, FaUser, FaClock, FaArrowRight, FaPhone,FaPhoneAlt, FaMapMarkerAlt,
+    FaTint, FaUser, FaClock, FaArrowRight, FaPhone, FaPhoneAlt, FaMapMarkerAlt,
     FaEnvelope, FaFacebook, FaTwitter, FaInstagram, FaYoutube,
     FaWhatsapp, FaAppStore, FaGooglePlay, FaCamera, FaShoppingBag,
     FaUserCircle, FaChartBar, FaBus
@@ -17,6 +17,7 @@ import {
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { HomeShimmer } from '../components/Shimmer';
+import HeroBookingBar from '../components/HeroBookingBar';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -160,7 +161,7 @@ const Home = () => {
         return <HomeShimmer />;
     }
 
-    
+
 
     return (
         <div className="home-page">
@@ -192,14 +193,12 @@ const Home = () => {
 
 
             {/* ── Hero Section ── */}
-            <div style={{ padding: '12px' , background: '#ffffffff' }}>
+            <div style={{ padding: 0, background: '#fff' }}>
                 <div style={{
                     position: 'relative',
-                    borderRadius: '32px',
                     overflow: 'hidden',
                     minHeight: '580px',
-                    height:'700px',
-    
+                    height: '680px',
                 }}>
                     {/* Background photo */}
                     <img
@@ -218,10 +217,9 @@ const Home = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        padding: '40px 28px 120px',
-                        minHeight: '580px',
-                        gap: '20px',
-                        margin: '60px 0px'
+                        padding: '0 40px',
+                        height: '100%',
+                        gap: '24px',
                     }}>
 
                         {/* ── LEFT CARD — Home Services subcategories ── */}
@@ -235,39 +233,39 @@ const Home = () => {
                                 { name: 'Painting' },
                             ];
                             const subIcons = [
-                                <FaTools size={13} />,
-                                <FaWrench size={13} />,
-                                <FaTint size={13} />,
-                                <FaBolt size={13} />,
-                                <FaPaintRoller size={13} />,
+                                <FaTools size={15} />,
+                                <FaWrench size={15} />,
+                                <FaTint size={15} />,
+                                <FaBolt size={15} />,
+                                <FaPaintRoller size={15} />,
                             ];
                             return (
                                 <div style={{
                                     background: 'rgba(255,255,255,1)',
                                     backdropFilter: 'blur(15px)',
                                     WebkitBackdropFilter: 'blur(15px)',
-                                    borderRadius: '24px',
-                                    padding: '24px 20px 20px',
-                                    width: '240px',
+                                    borderRadius: '28px',
+                                    padding: '28px 24px 24px',
+                                    width: '290px',
                                     flexShrink: 0,
                                     boxShadow: '0 8px 40px rgba(0,0,0,0.16)',
                                     alignSelf: 'center',
                                 }}>
                                     {/* Card header */}
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '18px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
                                         <div style={{
-                                            width: '48px', height: '48px', borderRadius: '50%',
+                                            width: '58px', height: '58px', borderRadius: '50%',
                                             background: '#1a1a1a',
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            marginBottom: '10px',
+                                            marginBottom: '12px',
                                         }}>
-                                            <FaHome size={20} style={{ color: '#fff' }} />
+                                            <FaHome size={24} style={{ color: '#fff' }} />
                                         </div>
-                                        <span style={{ fontWeight: 700, fontSize: '15px', color: '#1a1a1a' }}>Home Services</span>
+                                        <span style={{ fontWeight: 700, fontSize: '17px', color: '#1a1a1a' }}>Home Services</span>
                                     </div>
 
                                     {/* Subcategory list */}
-                                    <div style={{ marginBottom: '18px' }}>
+                                    <div style={{ marginBottom: '20px' }}>
                                         {homeSubcategories.map((sub, i) => (
                                             <div
                                                 key={i}
@@ -277,16 +275,16 @@ const Home = () => {
                                                 }
                                                 style={{
                                                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                                    padding: '9px 0',
+                                                    padding: '11px 0',
                                                     borderBottom: i < homeSubcategories.length - 1 ? '1px solid rgba(0,0,0,0.07)' : 'none',
                                                     cursor: 'pointer',
                                                 }}
                                             >
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
-                                                    <span style={{ color: '#555', flexShrink: 0 }}>{subIcons[i] || <FaTools size={13} />}</span>
-                                                    <span style={{ fontSize: '13px', color: '#2a2a2a', fontWeight: 700 }}>{sub.name}</span>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                    <span style={{ color: '#555', flexShrink: 0 }}>{subIcons[i] || <FaTools size={15} />}</span>
+                                                    <span style={{ fontSize: '14px', color: '#2a2a2a', fontWeight: 600 }}>{sub.name}</span>
                                                 </div>
-                                                <FaArrowRight size={10} style={{ color: '#bbb', flexShrink: 0 }} />
+                                                <FaArrowRight size={11} style={{ color: '#bbb', flexShrink: 0 }} />
                                             </div>
                                         ))}
                                     </div>
@@ -301,8 +299,8 @@ const Home = () => {
                                             color: '#fff',
                                             border: 'none',
                                             borderRadius: '999px',
-                                            padding: '10px 14px',
-                                            fontSize: '13px',
+                                            padding: '11px 16px',
+                                            fontSize: '14px',
                                             fontWeight: 600,
                                             cursor: 'pointer',
                                         }}
@@ -312,11 +310,11 @@ const Home = () => {
                                             background: '#fff',
                                             color: '#1a1a1a',
                                             borderRadius: '50%',
-                                            width: '24px', height: '24px',
+                                            width: '26px', height: '26px',
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                                             flexShrink: 0,
                                         }}>
-                                            <FaArrowRight size={10} />
+                                            <FaArrowRight size={11} />
                                         </span>
                                     </button>
                                 </div>
@@ -364,34 +362,15 @@ const Home = () => {
 
                             {/* Subtitle */}
                             <p style={{
-                                fontSize: '16px', color: '#000000ff', fontWeight:'bold',
+                                fontSize: '16px', color: '#000000ff', fontWeight: 'bold',
                                 textAlign: 'center', marginBottom: '28px', lineHeight: 1.5,
                                 textShadow: '0 1px 6px rgba(241, 241, 241, 0.5)',
                             }}>
                                 All the services you need, right where you need them.
                             </p>
 
-                            {/* CTA */}
-                            <button
-                                onClick={() => setShowAllCategories(true)}
-                                style={{
-                                    display: 'inline-flex', alignItems: 'center', gap: '10px',
-                                    background: '#1a1a1a', color: '#fff',
-                                    border: 'none', borderRadius: '999px',
-                                    padding: '13px 28px', fontSize: '15px', fontWeight: 600,
-                                    cursor: 'pointer',
-                                    boxShadow: '0 4px 20px rgba(0,0,0,0.25)',
-                                }}
-                            >
-                                Explore All Services
-                                <span style={{
-                                    background: '#fff', color: '#1a1a1a',
-                                    borderRadius: '50%', width: '26px', height: '26px',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                                }}>
-                                    <FaArrowRight size={11} />
-                                </span>
-                            </button>
+                            {/* ── Booking Bar ── */}
+                            <HeroBookingBar />
                         </div>
 
                         {/* ── RIGHT CARD — All other categories (no subcategories shown) ── */}
@@ -405,11 +384,11 @@ const Home = () => {
                                 .slice(0, 5);
 
                             const catIcons = [
-                                <FaBriefcase size={13} />,
-                                <FaLaptop size={13} />,
-                                <FaBullhorn size={13} />,
-                                <FaUserMd size={13} />,
-                                <FaGraduationCap size={13} />,
+                                <FaBriefcase size={15} />,
+                                <FaLaptop size={15} />,
+                                <FaBullhorn size={15} />,
+                                <FaUserMd size={15} />,
+                                <FaGraduationCap size={15} />,
                             ];
 
                             return (
@@ -417,28 +396,28 @@ const Home = () => {
                                     background: 'rgba(255,255,255,1)',
                                     backdropFilter: 'blur(15px)',
                                     WebkitBackdropFilter: 'blur(15px)',
-                                    borderRadius: '24px',
-                                    padding: '24px 20px 20px',
-                                    width: '240px',
+                                    borderRadius: '28px',
+                                    padding: '28px 24px 24px',
+                                    width: '290px',
                                     flexShrink: 0,
                                     boxShadow: '0 8px 40px rgba(0,0,0,0.16)',
                                     alignSelf: 'center',
                                 }}>
                                     {/* Card header */}
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '18px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
                                         <div style={{
-                                            width: '48px', height: '48px', borderRadius: '50%',
+                                            width: '58px', height: '58px', borderRadius: '50%',
                                             background: '#1a1a1a',
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            marginBottom: '10px',
+                                            marginBottom: '12px',
                                         }}>
-                                            <FaBriefcase size={20} style={{ color: '#fff' }} />
+                                            <FaBriefcase size={24} style={{ color: '#fff' }} />
                                         </div>
-                                        <span style={{ fontWeight: 700, fontSize: '15px', color: '#1a1a1a' }}>All Services</span>
+                                        <span style={{ fontWeight: 700, fontSize: '17px', color: '#1a1a1a' }}>All Services</span>
                                     </div>
 
                                     {/* Category list (top-level, no subcategories) */}
-                                    <div style={{ marginBottom: '18px' }}>
+                                    <div style={{ marginBottom: '20px' }}>
                                         {otherCats.map((cat, i) => (
                                             <div
                                                 key={cat.id || cat._id || i}
@@ -448,16 +427,16 @@ const Home = () => {
                                                 }
                                                 style={{
                                                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                                    padding: '9px 0',
+                                                    padding: '11px 0',
                                                     borderBottom: i < otherCats.length - 1 ? '1px solid rgba(0,0,0,0.07)' : 'none',
                                                     cursor: 'pointer',
                                                 }}
                                             >
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
-                                                    <span style={{ color: '#555', flexShrink: 0 }}>{catIcons[i] || <FaTools size={13} />}</span>
-                                                    <span style={{ fontSize: '13px', color: '#2a2a2a', fontWeight: 700 }}>{cat.name}</span>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                    <span style={{ color: '#555', flexShrink: 0 }}>{catIcons[i] || <FaTools size={15} />}</span>
+                                                    <span style={{ fontSize: '14px', color: '#2a2a2a', fontWeight: 600 }}>{cat.name}</span>
                                                 </div>
-                                                <FaArrowRight size={10} style={{ color: '#bbb', flexShrink: 0 }} />
+                                                <FaArrowRight size={11} style={{ color: '#bbb', flexShrink: 0 }} />
                                             </div>
                                         ))}
                                     </div>
@@ -472,8 +451,8 @@ const Home = () => {
                                             color: '#fff',
                                             border: 'none',
                                             borderRadius: '999px',
-                                            padding: '10px 14px',
-                                            fontSize: '13px',
+                                            padding: '11px 16px',
+                                            fontSize: '14px',
                                             fontWeight: 600,
                                             cursor: 'pointer',
                                         }}
@@ -483,11 +462,11 @@ const Home = () => {
                                             background: '#fff',
                                             color: '#1a1a1a',
                                             borderRadius: '50%',
-                                            width: '24px', height: '24px',
+                                            width: '26px', height: '26px',
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                                             flexShrink: 0,
                                         }}>
-                                            <FaArrowRight size={10} />
+                                            <FaArrowRight size={11} />
                                         </span>
                                     </button>
                                 </div>
@@ -905,7 +884,7 @@ const Home = () => {
 
 
 
-            
+
 
             {/* IT & Technology Section */}
             <section className="py-5 bg-white">
@@ -943,7 +922,7 @@ const Home = () => {
                                 <div className="row g-2">
                                     <div className="col-6">
                                         <div className="fw-semibold small mb-2">Technology</div>
-                                        {[ 'Web Design', 'Website Development', 'App Development', 'Software Development'].map((s, i) => {
+                                        {['Web Design', 'Website Development', 'App Development', 'Software Development'].map((s, i) => {
                                             const itCat = getCategoryByName('IT');
                                             const sub = itCat?.subcategories?.find(sc => sc.name.toLowerCase().includes(s.toLowerCase()) || s.toLowerCase().includes(sc.name.toLowerCase()));
                                             return (
@@ -1017,10 +996,10 @@ const Home = () => {
                                                 </div>
                                                 <button className="btn p-2 rounded-2" style={{ background: '#f5f5f5', border: 'none', height: '30px' }}>
                                                     <FaPhoneAlt
-  size={14}
-  className="text-dark"
-  style={{ display: 'flex' }}
-/>
+                                                        size={14}
+                                                        className="text-dark"
+                                                        style={{ display: 'flex' }}
+                                                    />
                                                 </button>
                                             </div>
                                         </div>
@@ -1307,7 +1286,7 @@ const Home = () => {
                                 src={tryHeroImg('social-impact.png')}
                                 alt="Our Social Impact"
                                 className="w-100"
-                                style={{ objectFit: 'cover', height: '380px' ,padding:'10px' , borderRadius:'30px'}} 
+                                style={{ objectFit: 'cover', height: '380px', padding: '10px', borderRadius: '30px' }}
                                 onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
                             />
 

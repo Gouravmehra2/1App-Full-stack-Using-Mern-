@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState, useEffect } from 'react';
+import React, { useContext, useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
@@ -7,7 +7,7 @@ import { AuthContext } from '../context/AuthContext';
 import bookingService from '../services/bookingService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { CheckoutShimmer } from '../components/Shimmer';
-import { FaMapMarkerAlt, FaPhone, FaPhoneAlt,FaCalendarAlt, FaClock, FaLock, FaArrowLeft } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaPhoneAlt, FaCalendarAlt, FaClock, FaLock, FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 const inputStyle = {
@@ -42,6 +42,9 @@ const StripePaymentForm = ({ bookingDetails, paymentOrder, amount, onSuccess, on
         try {
             const { error, paymentIntent } = await stripe.confirmPayment({
                 elements,
+                confirmParams: {
+                    return_url: window.location.origin + '/bookings',
+                },
                 redirect: 'if_required'
             });
 
@@ -83,7 +86,10 @@ const StripePaymentForm = ({ bookingDetails, paymentOrder, amount, onSuccess, on
             </div>
 
             <div style={{ marginBottom: 18 }}>
-                <PaymentElement />
+                <PaymentElement options={{
+                    layout: 'tabs',
+                    wallets: { applePay: 'never', googlePay: 'never' }
+                }} />
             </div>
 
             {processing ? (
@@ -127,16 +133,18 @@ const Checkout = () => {
     const [paymentOrder, setPaymentOrder] = useState(null);
     const [showGateway, setShowGateway] = useState(false);
 
+    // Keep a stable stripePromise — created once when the publishable key is known,
+    // never recreated (re-creating it would unmount <Elements> mid-flow).
+    const stripePromiseRef = useRef(null);
+
     const bookingDate = sessionStorage.getItem('1App_booking_date');
     const bookingSlot = sessionStorage.getItem('1App_booking_slot');
     const total = getCartTotal();
 
-    const stripePromise = useMemo(() => {
-        const publishableKey = paymentOrder?.publishableKey || process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
-        return publishableKey?.startsWith('pk_') ? loadStripe(publishableKey) : null;
-    }, [paymentOrder?.publishableKey]);
-
     useEffect(() => {
+        // Don't redirect away while the payment gateway is open
+        if (showGateway) return;
+
         if (cartItems.length === 0) {
             navigate('/cart');
             return;
@@ -152,7 +160,7 @@ const Checkout = () => {
             setAddress(user.address || '');
             setPhone(user.phone || '');
         }
-    }, [user, cartItems, bookingDate, bookingSlot, navigate]);
+    }, [user, cartItems, bookingDate, bookingSlot, navigate, showGateway]);
 
     const handleCreateOrder = async (e) => {
         e.preventDefault();
@@ -173,8 +181,15 @@ const Checkout = () => {
             });
 
             if (res.success) {
+                const order = res.data.paymentOrder;
+                // Resolve the publishable key: prefer the one returned by the server,
+                // fall back to the env variable. Build the promise once and cache it.
+                const publishableKey = order?.publishableKey || process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
+                if (publishableKey?.startsWith('pk_') && !stripePromiseRef.current) {
+                    stripePromiseRef.current = loadStripe(publishableKey);
+                }
                 setBookingDetails(res.data.booking);
-                setPaymentOrder(res.data.paymentOrder);
+                setPaymentOrder(order);
                 setShowGateway(true);
             }
         } catch (err) {
@@ -193,7 +208,7 @@ const Checkout = () => {
     };
 
     if (showGateway) {
-        const stripeReady = paymentOrder?.provider === 'stripe' && paymentOrder?.clientSecret && stripePromise;
+        const stripeReady = paymentOrder?.provider === 'stripe' && paymentOrder?.clientSecret && stripePromiseRef.current;
 
         return (
             <div style={{ background: '#f5f5f5', minHeight: '100vh', padding: '28px 0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -205,7 +220,10 @@ const Checkout = () => {
                     </div>
 
                     {stripeReady ? (
-                        <Elements stripe={stripePromise} options={{ clientSecret: paymentOrder.clientSecret }}>
+                        <Elements stripe={stripePromiseRef.current} options={{
+                            clientSecret: paymentOrder.clientSecret,
+                            appearance: { theme: 'stripe' },
+                        }}>
                             <StripePaymentForm
                                 bookingDetails={bookingDetails}
                                 paymentOrder={paymentOrder}

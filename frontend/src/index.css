@@ -183,3 +183,18 @@ p { font-size: 1rem; line-height: 1.6; }
   animation: shimmer 1.4s ease-in-out infinite;
   border-radius: 8px;
 }
+
+
+/* ── Hide Stripe Link floating badge (bottom-right corner) ── */
+/* Stripe injects this badge via a fixed-position iframe outside React's DOM */
+body > iframe[src*="stripe"],
+body > div > iframe[src*="stripe"],
+iframe[title="Stripe"],
+iframe[name*="stripe"],
+/* Targets the outer wrapper div Stripe uses for the floating badge */
+body > div[style*="position: fixed"][style*="bottom"][style*="right"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
