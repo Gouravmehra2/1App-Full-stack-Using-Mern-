@@ -17,29 +17,126 @@ const TIME_SLOTS = [
 
 /* ─────────────────────────────────────────────
    Portal dropdown — renders at document.body
-   so it is never clipped by any ancestor overflow
+   so it is never clipped by any ancestor overflow.
+
+   FIX (scroll shimmer / detached dropdown):
+   The old version called setState on every single
+   scroll event. With two dropdowns mounted at once
+   (service search + slot select), that meant two
+   independent listeners each forcing a layout read
+   (getBoundingClientRect) + a React re-render per
+   scroll tick — layout thrashing + out-of-sync
+   renders, which is what produced the floating /
+   detached dropdown and the "shimmer" while
+   scrolling.
+
+   Now:
+   - Position updates are throttled to once per
+     animation frame via requestAnimationFrame,
+     no matter how many scroll events fire.
+   - The position is written directly to the DOM
+     node's style through a ref, bypassing React
+     state/re-render entirely for the hot path.
+   - `transform: translate3d` is used instead of
+     `top`, so the browser can composite the move on
+     the GPU instead of repainting on every frame.
 ───────────────────────────────────────────── */
-const PortalDropdown = ({ anchorRef, open, children, minWidth }) => {
-    const [style, setStyle] = useState({});
+const DROPDOWN_MAX_HEIGHT = 240;
+const DROPDOWN_GAP = 6;
+
+const PortalDropdown = ({
+    anchorRef,
+    open,
+    children,
+    minWidth
+}) => {
+
+    const nodeRef = useRef(null);
+    const rafRef = useRef(null);
+
+    const applyPosition = useCallback(() => {
+
+        const node = nodeRef.current;
+        const anchor = anchorRef.current;
+        if (!node || !anchor) return;
+
+        const rect = anchor.getBoundingClientRect();
+
+        // account for any sticky/fixed header covering the anchor
+        const stickyHeader = document.querySelector('.sticky-top');
+        const headerBottom = stickyHeader
+            ? stickyHeader.getBoundingClientRect().bottom
+            : 0;
+
+        // hide if the anchor is off-screen OR obscured by the sticky navbar
+        const shouldHide =
+            rect.bottom <= 0 ||
+            rect.top >= window.innerHeight ||
+            rect.top < headerBottom;
+
+        if (shouldHide) {
+            node.style.display = 'none';
+            return;
+        }
+
+        const availableHeight =
+            window.innerHeight - rect.bottom - DROPDOWN_GAP - 10;
+
+        const width = minWidth || rect.width;
+        const maxHeight = Math.max(120, Math.min(DROPDOWN_MAX_HEIGHT, availableHeight));
+
+        node.style.display = 'block';
+        node.style.position = 'fixed';
+        node.style.top = '0px';
+        node.style.left = `${rect.left}px`;
+        node.style.width = `${width}px`;
+        node.style.maxHeight = `${maxHeight}px`;
+        node.style.overflowY = 'auto';
+        node.style.zIndex = 9999;
+        // GPU-composited move instead of a layout-affecting `top` change
+        node.style.transform = `translate3d(0, ${rect.bottom + DROPDOWN_GAP}px, 0)`;
+        node.style.willChange = 'transform';
+
+    }, [anchorRef, minWidth]);
+
+    const scheduleUpdate = useCallback(() => {
+        if (rafRef.current) return; // an update is already queued for this frame
+        rafRef.current = requestAnimationFrame(() => {
+            rafRef.current = null;
+            applyPosition();
+        });
+    }, [applyPosition]);
 
     useEffect(() => {
-        if (!open || !anchorRef.current) return;
-        const rect = anchorRef.current.getBoundingClientRect();
-        setStyle({
-            position: 'fixed',
-            top: rect.bottom + 8,
-            left: rect.left,
-            minWidth: minWidth || rect.width,
-            zIndex: 99999,
-        });
-    }, [open, anchorRef, minWidth]);
+
+        if (!open) return;
+
+        // apply once synchronously so it doesn't flash at (0,0) before first paint
+        applyPosition();
+
+        window.addEventListener('scroll', scheduleUpdate, { capture: true, passive: true });
+        window.addEventListener('resize', scheduleUpdate, { passive: true });
+
+        return () => {
+            window.removeEventListener('scroll', scheduleUpdate, true);
+            window.removeEventListener('resize', scheduleUpdate);
+            if (rafRef.current) {
+                cancelAnimationFrame(rafRef.current);
+                rafRef.current = null;
+            }
+        };
+
+    }, [open, applyPosition, scheduleUpdate]);
 
     if (!open) return null;
 
     return ReactDOM.createPortal(
-        <div style={style}>{children}</div>,
+        <div ref={nodeRef} style={{ display: 'none' }}>
+            {children}
+        </div>,
         document.body
     );
+
 };
 
 /* ─────────────────────────────────────────────
@@ -56,17 +153,17 @@ const Sep = () => (
    Shared dropdown list styles
 ───────────────────────────────────────────── */
 const dropdownListStyle = {
-    background: '#fff',
+    background: "#fff",
     borderRadius: 14,
-    boxShadow: '0 12px 40px rgba(0,0,0,0.16)',
-    listStyle: 'none',
+    boxShadow: "0 12px 40px rgba(0,0,0,0.16)",
+    listStyle: "none",
     margin: 0,
-    padding: '6px 0',
-    overflowY: 'auto',
-    maxHeight: 220,
-    scrollbarWidth: 'thin',
-    scrollbarColor: '#d0d0d0 transparent',
-    border: '1px solid #f0f0f0',
+    padding: "6px 0",
+    overflowY: "auto",
+    width: "100%",
+    scrollbarWidth: "thin",
+    scrollbarColor: "#d0d0d0 transparent",
+    border: "1px solid #f0f0f0"
 };
 
 const dropdownItemStyle = {
@@ -133,14 +230,26 @@ const InlineServiceSearch = ({ selectedService, onSelect }) => {
         const h = (e) => {
             if (
                 wrapperRef.current && !wrapperRef.current.contains(e.target) &&
-                /* portal list items are outside wrapperRef, so we rely on
-                   onMouseDown + handleSelect to close; just close on body click */
                 !e.target.closest('[data-service-dropdown]')
             ) setOpen(false);
         };
         document.addEventListener('mousedown', h);
         return () => document.removeEventListener('mousedown', h);
     }, []);
+
+    /* close (not just visually hide) once the field scrolls fully out of
+       view — avoids leaving a dangling scroll listener + portal mounted
+       indefinitely while the user keeps scrolling the page */
+    useEffect(() => {
+        if (!open) return;
+        const checkStillVisible = () => {
+            if (!anchorRef.current) return;
+            const rect = anchorRef.current.getBoundingClientRect();
+            if (rect.bottom <= 0 || rect.top >= window.innerHeight) setOpen(false);
+        };
+        window.addEventListener('scroll', checkStillVisible, { passive: true });
+        return () => window.removeEventListener('scroll', checkStillVisible);
+    }, [open]);
 
     return (
         <div ref={wrapperRef} style={{ position: 'relative', width: '100%' }}>
@@ -209,6 +318,18 @@ const SlotSelector = ({ value, onChange }) => {
         document.addEventListener('mousedown', h);
         return () => document.removeEventListener('mousedown', h);
     }, []);
+
+    /* same "close once fully scrolled out of view" guard as the search field */
+    useEffect(() => {
+        if (!open) return;
+        const checkStillVisible = () => {
+            if (!anchorRef.current) return;
+            const rect = anchorRef.current.getBoundingClientRect();
+            if (rect.bottom <= 0 || rect.top >= window.innerHeight) setOpen(false);
+        };
+        window.addEventListener('scroll', checkStillVisible, { passive: true });
+        return () => window.removeEventListener('scroll', checkStillVisible);
+    }, [open]);
 
     return (
         <div ref={wrapperRef} style={{ position: 'relative', width: '100%' }}>

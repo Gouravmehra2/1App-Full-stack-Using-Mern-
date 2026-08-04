@@ -352,16 +352,178 @@ const BookingCard = ({ booking, onCancelled }) => {
                             </div>
                             <div style={styles.sectionCard}>
                                 <div style={styles.sectionTitle}>Technician & Instructions</div>
-                                <div style={styles.sectionValue}>{technician?.name ? `${technician.name} • ${technician.phone || 'No phone'}` : 'Awaiting assignment'}</div>
-                                <div style={styles.mutedText}>{booking.specialInstructions || 'No special instructions provided.'}</div>
+
+                                {technician?.name ? (
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            gap: "12px",
+                                            marginBottom: "16px",
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: "12px",
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    width: "40px",
+                                                    height: "40px",
+                                                    borderRadius: "50%",
+                                                    background: "#F3F4F6",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    fontSize: "18px",
+                                                }}
+                                            >
+                                                👤
+                                            </div>
+
+                                            <div>
+                                                <div
+                                                    style={{
+                                                        fontSize: "12px",
+                                                        color: "#6B7280",
+                                                        textTransform: "uppercase",
+                                                        fontWeight: 600,
+                                                    }}
+                                                >
+                                                    Technician
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        fontSize: "16px",
+                                                        fontWeight: 600,
+                                                        color: "#111827",
+                                                    }}
+                                                >
+                                                    {technician.name}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: "12px",
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    width: "40px",
+                                                    height: "40px",
+                                                    borderRadius: "50%",
+                                                    background: "#F3F4F6",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    fontSize: "18px",
+                                                }}
+                                            >
+                                                📞
+                                            </div>
+
+                                            <div>
+                                                <div
+                                                    style={{
+                                                        fontSize: "12px",
+                                                        color: "#6B7280",
+                                                        textTransform: "uppercase",
+                                                        fontWeight: 600,
+                                                    }}
+                                                >
+                                                    Phone
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        fontSize: "16px",
+                                                        fontWeight: 600,
+                                                        color: "#111827",
+                                                    }}
+                                                >
+                                                    {technician.phone || "No phone"}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div
+                                        style={{
+                                            padding: "14px",
+                                            background: "#F9FAFB",
+                                            border: "1px solid #E5E7EB",
+                                            borderRadius: "10px",
+                                            color: "#6B7280",
+                                            marginBottom: "16px",
+                                        }}
+                                    >
+                                        👨‍🔧 Awaiting assignment
+                                    </div>
+                                )}
+
+                                <div
+                                    style={{
+                                        borderTop: "1px solid #E5E7EB",
+                                        paddingTop: "16px",
+                                        display: "flex",
+                                        gap: "12px",
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            width: "40px",
+                                            height: "40px",
+                                            borderRadius: "50%",
+                                            background: "#F3F4F6",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            fontSize: "18px",
+                                            flexShrink: 0,
+                                        }}
+                                    >
+                                        📝
+                                    </div>
+
+                                    <div>
+                                        <div
+                                            style={{
+                                                fontSize: "12px",
+                                                color: "#6B7280",
+                                                textTransform: "uppercase",
+                                                fontWeight: 600,
+                                                marginBottom: "4px",
+                                            }}
+                                        >
+                                            Special Instructions
+                                        </div>
+
+                                        <div
+                                            style={{
+                                                color: "#374151",
+                                                lineHeight: "22px",
+                                                fontSize: "14px",
+                                            }}
+                                        >
+                                            {booking.specialInstructions ||
+                                                "No special instructions provided."}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div style={styles.sectionCard}>
+                            {/* <div style={styles.sectionCard}>
                                 <div style={styles.sectionTitle}>Extras</div>
                                 <div style={styles.mutedText}>Service type: {booking.services?.[0]?.service?.serviceType || 'N/A'}</div>
                                 <div style={styles.mutedText}>Duration: {booking.services?.[0]?.service?.serviceDuration || booking.services?.[0]?.service?.duration || 'N/A'} mins</div>
                                 <div style={styles.mutedText}>Created: {new Date(booking.createdAt).toLocaleString()}</div>
                                 <div style={styles.mutedText}>Updated: {new Date(booking.updatedAt).toLocaleString()}</div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

@@ -364,7 +364,7 @@ const Home = () => {
                             <HeroBookingBar />
                             {/* Subtitle */}
                             <p style={{
-                                fontSize: '16px', color: '#000000ff', fontWeight: 'bold',
+                                fontSize: '20px', color: '#000000ff', fontWeight: 'bold',
                                 textAlign: 'center', marginBottom: '28px', lineHeight: 1.5,
                                 textShadow: '0 1px 6px rgba(241, 241, 241, 0.5)',
                                 padding: '12px ',

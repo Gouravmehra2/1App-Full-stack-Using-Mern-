@@ -52,8 +52,8 @@ const NavigationBar = () => {
 
                         {/* Search fields — shrink to content */}
                         <div className="d-none d-lg-flex align-items-center gap-2">
-                            <SearchAutocomplete wrapperStyle={{ minWidth: '185px', maxWidth: '200px' }} />
-                            <ServiceSearchAutocomplete wrapperStyle={{ minWidth: '185px', maxWidth: '200px' }} /></div>
+                            {/* <SearchAutocomplete wrapperStyle={{ minWidth: '185px', maxWidth: '200px' }} /> */}
+                            <ServiceSearchAutocomplete wrapperStyle={{ minWidth: '200px', maxWidth: '200px' }} /></div>
                         {/* Cart */}
                         <Link to="/cart" className="position-relative text-dark" style={{ fontSize: '20px' }}>
                             <FaShoppingCart />

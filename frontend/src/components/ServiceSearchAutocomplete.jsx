@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { FaSearch, FaTag } from 'react-icons/fa';
+import { FaTag } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import serviceService from '../services/serviceService';
 
@@ -70,8 +70,7 @@ const ServiceSearchAutocomplete = ({ placeholder = "Search services...", wrapper
 
     return (
         <div ref={wrapperRef} style={{ position: 'relative', ...wrapperStyle }}>
-            <form onSubmit={handleSubmit} className="d-flex align-items-center gap-2 px-3 py-2 rounded-pill border" style={{ background: '#fff', fontSize: '13px', color: '#444', cursor: 'text' }}>
-                <FaSearch size={13} className="text-muted flex-shrink-0" />
+            <form onSubmit={handleSubmit} className="d-flex align-items-center px-3 py-2 rounded-pill border" style={{ background: '#fff', fontSize: '13px', color: '#444', cursor: 'text', gap: 0 }}>
                 <input
                     type="text"
                     className="border-0 bg-transparent"
@@ -79,17 +78,35 @@ const ServiceSearchAutocomplete = ({ placeholder = "Search services...", wrapper
                     value={query}
                     onChange={handleChange}
                     onFocus={() => suggestions.length > 0 && setOpen(true)}
-                    style={{ outline: 'none', fontSize: '13px', color: '#444', width: query ? `${Math.max(80, query.length * 8)}px` : '150px', minWidth: '80px', maxWidth: '160px', transition: 'width 0.2s' }}
+                    style={{ outline: 'none', fontSize: '13px', color: '#444', width: query ? `${Math.max(80, query.length * 8)}px` : '150px', minWidth: '80px', maxWidth: '160px', transition: 'width 0.2s', flex: 1 }}
                     autoComplete="off"
                 />
-                {loading && (
-                    <span className="d-flex gap-1">
-                        <span style={{ animation: 'pulse 1s infinite' }}>•</span>
-                        <span style={{ animation: 'pulse 1s infinite 0.2s' }}>•</span>
-                        <span style={{ animation: 'pulse 1s infinite 0.4s' }}>•</span>
-                    </span>
-                )}
+                {/* Loader sits flush on the right inside the pill */}
+                <span
+                    className="flex-shrink-0 d-flex align-items-center"
+                    style={{ width: 28, justifyContent: 'center' }}
+                >
+                    {loading ? (
+                        <span
+                            style={{
+                                display: 'inline-block',
+                                width: 14,
+                                height: 14,
+                                border: '2px solid #e0e0e0',
+                                borderTop: '2px solid #888',
+                                borderRadius: '50%',
+                                animation: 'spin 0.7s linear infinite',
+                            }}
+                        />
+                    ) : (
+                        <svg width="13" height="13" viewBox="0 0 20 20" fill="none" style={{ opacity: 0.4 }}>
+                            <circle cx="8.5" cy="8.5" r="5.5" stroke="#444" strokeWidth="2" />
+                            <path d="M13 13l4 4" stroke="#444" strokeWidth="2" strokeLinecap="round" />
+                        </svg>
+                    )}
+                </span>
             </form>
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
             {open && (
                 <ul
@@ -105,7 +122,10 @@ const ServiceSearchAutocomplete = ({ placeholder = "Search services...", wrapper
                             onMouseEnter={e => e.currentTarget.style.background = '#f8f8f8'}
                             onMouseLeave={e => e.currentTarget.style.background = '#fff'}
                         >
-                            <FaSearch size={12} className="text-muted flex-shrink-0" />
+                            <svg width="11" height="11" viewBox="0 0 20 20" fill="none" className="flex-shrink-0" style={{ opacity: 0.35 }}>
+                                    <circle cx="8.5" cy="8.5" r="5.5" stroke="#444" strokeWidth="2" />
+                                    <path d="M13 13l4 4" stroke="#444" strokeWidth="2" strokeLinecap="round" />
+                                </svg>
                             <div style={{ flex: 1, overflow: 'hidden' }}>
                                 <div className="text-truncate" style={{ fontWeight: 500 }}>{service.name}</div>
                                 {(service.category?.name || service.subcategory?.name) && (

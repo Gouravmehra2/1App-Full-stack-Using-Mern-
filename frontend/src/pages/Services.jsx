@@ -404,15 +404,13 @@ export default function Services() {
                                                 background: isActive ? '#f0f0f0' : '#fff',
                                                 border: isActive ? '1.5px solid #000' : '1.5px solid #ddd',
                                                 borderRadius: '18px',
-                                                padding: '14px 8px 12px',
+                                                padding: '12px 6px 10px',
                                                 display: 'flex',
                                                 flexDirection: 'column',
                                                 alignItems: 'center',
-                                                justifyContent: 'center',
+                                                justifyContent: 'flex-start',
                                                 textAlign: 'center',
-                                        
-                                                height:'100px',
-                                                // minHeight: '110px',
+                                                minHeight: '100px',
                                                 boxShadow: isActive
                                                     ? '0 0 0 2px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.12)'
                                                     : '0 0 0 1px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.06)',
@@ -421,9 +419,10 @@ export default function Services() {
                                         >
                                             {/* Icon area */}
                                             <div style={{
-                                                width: 40,
-                                                height: 40,
-                                                marginBottom: 8,
+                                                width: 38,
+                                                height: 38,
+                                                marginBottom: 6,
+                                                flexShrink: 0,
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
@@ -437,15 +436,20 @@ export default function Services() {
                                                     : <FaTag size={22} color="#222" />
                                                 }
                                             </div>
-                                            {/* Label */}
+                                            {/* Label — max 2 lines, no mid-word break */}
                                             <div style={{
                                                 fontSize: 11,
                                                 color: '#1a1a1a',
                                                 fontWeight: 600,
-                                                // lineHeight: 1.35,
-                                                wordBreak: 'break-word',
+                                                lineHeight: 1.35,
                                                 textAlign: 'center',
-                                                // maxWidth: '90%',
+                                                width: '100%',
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 2,
+                                                WebkitBoxOrient: 'vertical',
+                                                overflow: 'hidden',
+                                                overflowWrap: 'break-word',
+                                                wordBreak: 'break-word',
                                             }}>
                                                 {sub.name}
                                             </div>
@@ -524,7 +528,7 @@ export default function Services() {
                                                 <div style={{ fontWeight: 700, fontSize: '1rem' }}>{svc.name}</div>
                                                 <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 12 }}>
                                                     <div style={{ fontWeight: 700, fontSize: 14 }}>Starts at ${svc.price}</div>
-                                                    {svc.duration && <div style={{ fontSize: 12, color: '#888' }}>• {svc.duration}</div>}
+                                                    {/* {svc.duration && <div style={{ fontSize: 12, color: '#888' }}>• {svc.duration}</div>} */}
                                                 </div>
                                             </div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>

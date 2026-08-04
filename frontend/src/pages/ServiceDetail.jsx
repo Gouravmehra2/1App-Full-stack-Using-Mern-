@@ -231,7 +231,7 @@ const ServiceDetail = () => {
                     {discountPct > 0 && (
                         <span style={{ fontSize: '14px', color: '#999', textDecoration: 'line-through' }}>${(service.actualPrice || 0).toFixed(2)}</span>
                     )}
-                    <span style={{ color: '#555', fontSize: '14px' }}>• {service.duration} hrs</span>
+                    <span style={{ color: '#555', fontSize: '14px', display:'none'}}>• {service.duration} hrs</span>
                 </div>
                 {service.hasVariants && service.variants?.length > 0 && (() => {
                     const cheapest = service.variants.reduce((min, v) => (v.offerPrice || v.price) < (min.offerPrice || min.price) ? v : min, service.variants[0]);

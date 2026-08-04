@@ -7,8 +7,19 @@ import { AuthContext } from '../context/AuthContext';
 import bookingService from '../services/bookingService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { CheckoutShimmer } from '../components/Shimmer';
-import { FaMapMarkerAlt, FaPhoneAlt, FaCalendarAlt, FaClock, FaLock, FaArrowLeft } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaPhoneAlt, FaCalendarAlt, FaClock, FaLock, FaArrowLeft, FaCrosshairs } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+
+// Reverse-geocode lat/lng → human-readable address using OpenStreetMap Nominatim (free, no key needed)
+const reverseGeocode = async (lat, lng) => {
+    const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+        { headers: { 'Accept-Language': 'en' } }
+    );
+    if (!res.ok) throw new Error('Geocoding request failed');
+    const data = await res.json();
+    return data.display_name || '';
+};
 
 const inputStyle = {
     width: '100%',
@@ -129,6 +140,7 @@ const Checkout = () => {
     const [phone, setPhone] = useState('');
     const [instructions, setInstructions] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const [locating, setLocating] = useState(false);
     const [bookingDetails, setBookingDetails] = useState(null);
     const [paymentOrder, setPaymentOrder] = useState(null);
     const [showGateway, setShowGateway] = useState(false);
@@ -161,6 +173,38 @@ const Checkout = () => {
             setPhone(user.phone || '');
         }
     }, [user, cartItems, bookingDate, bookingSlot, navigate, showGateway]);
+
+    const handleUseCurrentLocation = () => {
+        if (!navigator.geolocation) {
+            toast.error('Geolocation is not supported by your browser.');
+            return;
+        }
+
+        setLocating(true);
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                try {
+                    const { latitude, longitude } = position.coords;
+                    const addr = await reverseGeocode(latitude, longitude);
+                    setAddress(addr);
+                    toast.success('Current location detected!');
+                } catch {
+                    toast.error('Could not fetch address for your location.');
+                } finally {
+                    setLocating(false);
+                }
+            },
+            (err) => {
+                setLocating(false);
+                if (err.code === err.PERMISSION_DENIED) {
+                    toast.error('Location permission denied. Please allow access in your browser settings.');
+                } else {
+                    toast.error('Unable to retrieve your location.');
+                }
+            },
+            { timeout: 10000 }
+        );
+    };
 
     const handleCreateOrder = async (e) => {
         e.preventDefault();
@@ -267,9 +311,25 @@ const Checkout = () => {
 
                                 <form onSubmit={handleCreateOrder} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                                     <div>
-                                        <label style={labelStyle}>
-                                            <FaMapMarkerAlt color="#000000" /> Full Address
-                                        </label>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                                            <label style={labelStyle}>
+                                                <FaMapMarkerAlt color="#000000" /> Full Address
+                                            </label>
+                                            <button
+                                                type="button"
+                                                onClick={handleUseCurrentLocation}
+                                                disabled={locating}
+                                                style={{
+                                                    display: 'flex', alignItems: 'center', gap: 5,
+                                                    background: '#f0f4ff', color: '#333', border: '1px solid #cdd8f6',
+                                                    borderRadius: 8, padding: '5px 10px', fontSize: 12,
+                                                    fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap'
+                                                }}
+                                            >
+                                                <FaCrosshairs size={11} />
+                                                {locating ? 'Detecting...' : 'Use Current Location'}
+                                            </button>
+                                        </div>
                                         <textarea
                                             rows="3"
                                             required

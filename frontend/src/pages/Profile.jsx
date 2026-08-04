@@ -2,8 +2,19 @@ import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { ProfileShimmer } from '../components/Shimmer';
-import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaCheckCircle, FaExclamationTriangle, FaCheckDouble, FaUpload,FaPhoneAlt } from 'react-icons/fa';
+import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaCheckCircle, FaExclamationTriangle, FaCheckDouble, FaUpload, FaPhoneAlt, FaCrosshairs } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+
+// Reverse-geocode lat/lng → human-readable address using OpenStreetMap Nominatim (free, no key needed)
+const reverseGeocode = async (lat, lng) => {
+    const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+        { headers: { 'Accept-Language': 'en' } }
+    );
+    if (!res.ok) throw new Error('Geocoding request failed');
+    const data = await res.json();
+    return data.display_name || '';
+};
 
 const Profile = () => {
     const { user, updateProfile, sendOTP, verifyOTP, loading } = useContext(AuthContext);
@@ -14,6 +25,7 @@ const Profile = () => {
     const [address, setAddress] = useState(user?.address || '');
     const [addressLen, setAddressLen] = useState((user?.address || '').length);
     const [updating, setUpdating] = useState(false);
+    const [locating, setLocating] = useState(false);
 
     // OTP verification variables
     const [showOtpField, setShowOtpField] = useState(false);
@@ -31,7 +43,7 @@ const Profile = () => {
         try {
             await updateProfile({ name, phone, address });
             toast.success('Profile updated successfully!');
-            setShowOtpField(false); // Reset in case phone changed
+            setShowOtpField(false);
         } catch (err) {
             toast.error(err.message || 'Failed to update profile');
         } finally {
@@ -73,6 +85,40 @@ const Profile = () => {
         }
     };
 
+    const handleUseCurrentLocation = () => {
+        if (!navigator.geolocation) {
+            toast.error('Geolocation is not supported by your browser.');
+            return;
+        }
+
+        setLocating(true);
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                try {
+                    const { latitude, longitude } = position.coords;
+                    const addr = await reverseGeocode(latitude, longitude);
+                    const trimmed = addr.slice(0, 200);
+                    setAddress(trimmed);
+                    setAddressLen(trimmed.length);
+                    toast.success('Current location detected!');
+                } catch {
+                    toast.error('Could not fetch address for your location.');
+                } finally {
+                    setLocating(false);
+                }
+            },
+            (err) => {
+                setLocating(false);
+                if (err.code === err.PERMISSION_DENIED) {
+                    toast.error('Location permission denied. Please allow access in your browser settings.');
+                } else {
+                    toast.error('Unable to retrieve your location.');
+                }
+            },
+            { timeout: 10000 }
+        );
+    };
+
     if (loading) {
         return <ProfileShimmer />;
     }
@@ -92,7 +138,7 @@ const Profile = () => {
                             </span>
                         </div>
                         <h4 className="fw-bold mb-1">{user?.name}</h4>
-                        <span className="badge text-uppercase mb-4" style={{ background: '#d8f3dc', color: '#2d6a4f', fontSize: '0.7rem', padding: '5px 10px' ,alignSelf: 'center'}}>{user?.role}</span>
+                        <span className="badge text-uppercase mb-4" style={{ background: '#d8f3dc', color: '#2d6a4f', fontSize: '0.7rem', padding: '5px 10px', alignSelf: 'center' }}>{user?.role}</span>
 
                         <div className="text-start d-flex flex-column gap-3 pt-3 border-top w-100">
                             <div className="d-flex align-items-center gap-2 text-muted">
@@ -153,11 +199,31 @@ const Profile = () => {
                                     <input type="tel" required className="form-control" style={{ background: '#f8f9fa', border: '1px solid #e9ecef' }} value={phone} onChange={(e) => setPhone(e.target.value)} />
                                 </div>
                                 <div className="col-12">
-                                    <label className="form-label fw-semibold small text-dark mb-1 d-flex align-items-center gap-2">
-                                        <FaMapMarkerAlt size={13} /> Default Delivery Address
-                                    </label>
+                                    <div className="d-flex align-items-center justify-content-between mb-1">
+                                        <label className="form-label fw-semibold small text-dark mb-0 d-flex align-items-center gap-2">
+                                            <FaMapMarkerAlt size={13} /> Default Delivery Address
+                                        </label>
+                                        <button
+                                            type="button"
+                                            onClick={handleUseCurrentLocation}
+                                            disabled={locating}
+                                            className="btn btn-sm d-flex align-items-center gap-1 fw-semibold"
+                                            style={{ background: '#f0fff4', color: '#2d6a4f', border: '1px solid #b7e4c7', borderRadius: '6px', fontSize: '0.75rem', padding: '4px 10px' }}
+                                        >
+                                            <FaCrosshairs size={11} />
+                                            {locating ? 'Detecting...' : 'Use Current Location'}
+                                        </button>
+                                    </div>
                                     <div className="position-relative">
-                                        <textarea rows="5" maxLength={200} className="form-control" style={{ background: '#f8f9fa', border: '1px solid #e9ecef', resize: 'none' }} placeholder="Add default home or office address details..." value={address} onChange={(e) => { setAddress(e.target.value); setAddressLen(e.target.value.length); }} />
+                                        <textarea
+                                            rows="5"
+                                            maxLength={200}
+                                            className="form-control"
+                                            style={{ background: '#f8f9fa', border: '1px solid #e9ecef', resize: 'none' }}
+                                            placeholder="Add default home or office address details..."
+                                            value={address}
+                                            onChange={(e) => { setAddress(e.target.value); setAddressLen(e.target.value.length); }}
+                                        />
                                         <small className="text-muted position-absolute" style={{ bottom: '8px', right: '12px', fontSize: '0.72rem' }}>{addressLen}/200</small>
                                     </div>
                                 </div>
